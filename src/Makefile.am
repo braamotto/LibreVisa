@@ -8,7 +8,6 @@ libvisa_la_SOURCES = \
 	session.cpp session.h \
 	session_creator.h \
 	session_factory.cpp session_factory.h \
-	tcpip_session.cpp tcpip_session.h \
 	viClose.cpp \
 	viGetAttribute.cpp \
 	viLock.cpp \
@@ -16,6 +15,13 @@ libvisa_la_SOURCES = \
 	viOpenDefaultRM.cpp \
 	viParseRsrc.cpp \
 	viSetAttribute.cpp \
-	viUnlock.cpp
+	viUnlock.cpp \
+	$(VXI_SOURCES)
+
+if WITH_VXI
+VXI_SOURCES = tcpip_session.cpp tcpip_session.h
+else
+VXI_SOURCES =
+endif
 
 INCLUDES = -I$(top_srcdir)/include
