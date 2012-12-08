@@ -5,6 +5,7 @@
 #include "visa.h"
 
 #include "object_cache.h"
+#include "object.h"
 
 using namespace freevisa;
 
@@ -15,7 +16,7 @@ ViStatus viClose(ViObject vi)
 		ViStatus ret = objects.get_object(vi)->Close();
 
 		if(ret == VI_SUCCESS)
-			objects.set(vi, 0);
+			objects.remove(vi);
 
 		return ret;
 	}

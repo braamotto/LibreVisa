@@ -3,6 +3,7 @@
 #endif
 
 #include "object_cache.h"
+#include "object.h"
 
 using namespace freevisa;
 

@@ -4,7 +4,7 @@
 
 #include "object_cache.h"
 
-#include "exception.h"
+#include "resource_manager.h"
 
 #include <cassert>
 
@@ -14,50 +14,69 @@ object *object_cache::get_object(ViObject vi) const throw(exception)
 {
 	if(vi == VI_NULL)
 		throw exception(VI_WARN_NULL_OBJECT);
-	
-	if(vi >= max_objects)
-		throw exception(VI_ERROR_INV_OBJECT);
 
-	object *ret = objects[vi];
+	{
+		rmmap::const_iterator i = resource_managers.find(vi);
+		if(i != resource_managers.end())
+			return i->second;
+	}
 
-	if(!ret)
-		throw exception(VI_ERROR_INV_OBJECT);
+	{
+		smap::const_iterator i = sessions.find(vi);
+		if(i != sessions.end())
+			return i->second;
+	}
 
-	return ret;
+	throw exception(VI_ERROR_INV_OBJECT);
 }
 
-void object_cache::set(ViObject vi, object *obj) throw()
+void object_cache::remove(ViObject vi) throw(exception)
 {
 	assert(vi != VI_NULL);
-	assert(vi < max_objects);
 
-	objects[vi] = obj;
+	rmmap::iterator ri = resource_managers.find(vi);
+	if(ri != resource_managers.end())
+	{
+		resource_managers.erase(ri);
+		return;
+	}
 
-	return;
+	smap::iterator si = sessions.find(vi);
+	if(si != sessions.end())
+	{
+		sessions.erase(si);
+		return;
+	}
+
+	throw(VI_ERROR_INV_OBJECT);
 }
 
-ViObject object_cache::add(object *obj) throw(exception)
+ViSession object_cache::add(resource_manager *obj) throw(exception)
 {
 	assert(obj);
-	for(ViObject i = last; i < max_objects; ++i)
+	return resource_managers.insert(std::make_pair(find_id(), obj)).first->first;
+}
+
+ViObject object_cache::find_id() throw(exception)
+{
+	unsigned int id = 0;
+	if(!resource_managers.empty())
 	{
-		if(!objects[i])
-		{
-			set(i, obj);
-			last = i;
-			return i;
-		}
+		unsigned int maxrm = resource_managers.rbegin()->first;
+		if(maxrm > id)
+			id = maxrm;
 	}
-	for(ViObject i = VI_NULL + 1; i < last; ++i)
+	if(!sessions.empty())
 	{
-		if(!objects[i])
-		{
-			set(i, obj);
-			last = i;
-			return i;
-		}
+		unsigned int maxses = sessions.rbegin()->first;
+		if(maxses > id)
+			id = maxses;
 	}
-	throw exception(VI_ERROR_ALLOC);
+	++id;
+	if(!id)
+		throw exception(VI_ERROR_ALLOC);
+	
+	return id;
 }
 
 object_cache objects;
