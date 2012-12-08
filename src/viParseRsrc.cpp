@@ -4,7 +4,7 @@
 
 #include "visa.h"
 
-ViStatus viParseRsrc(ViSession sesn, ViRsrc rsrcName, ViUInt16 *intfType, ViUInt16 *intfNum)
+ViStatus viParseRsrc(ViSession, ViRsrc, ViUInt16 *, ViUInt16 *)
 {
 	return VI_SUCCESS;
 }

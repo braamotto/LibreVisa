@@ -1,6 +1,10 @@
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <visa.h>
 
-int main(int argc, char **argv)
+int main()
 {
 	ViSession rm1, rm2;
 

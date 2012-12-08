@@ -8,6 +8,8 @@ namespace freevisa {
 class object
 {
 public:
+	virtual ~object() throw() { }
+
 	virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
 	virtual ViStatus Unlock();
 

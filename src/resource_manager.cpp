@@ -29,7 +29,7 @@ ViStatus resource_manager::GetAttribute(ViAttr attr, void *attrState)
 	switch(attr)
 	{
 	case VI_ATTR_RSRC_NAME:
-		*reinterpret_cast<ViRsrc *>(attrState) = "";
+		*reinterpret_cast<ViRsrc>(attrState) = '\0';
 		return VI_SUCCESS;
 
 	case VI_ATTR_RM_SESSION:

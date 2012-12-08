@@ -23,7 +23,7 @@ int main()
 	if(access != VI_NO_LOCK)
 		return 1;
 
-	ViKeyId key;
+	ViChar key[256];
 
 	rc = viLock(vi, VI_NO_LOCK, 0, VI_NULL, key);
 

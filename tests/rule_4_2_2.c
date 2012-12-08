@@ -4,7 +4,7 @@
 
 #include <visa.h>
 
-int main(int argc, char **argv)
+int main()
 {
 	ViSession rmgr;
 

@@ -4,7 +4,7 @@
 
 #include <visa.h>
 
-int main(int argc, char **argv)
+int main()
 {
 	ViSession rmgr;
 
@@ -13,9 +13,9 @@ int main(int argc, char **argv)
 	if(rc != VI_SUCCESS)
 		return 1;
 
-	ViRsrc rmgr_rsrc;
+	ViChar rmgr_rsrc[256];
 
-	rc = viGetAttribute(rmgr, VI_ATTR_RSRC_NAME, &rmgr_rsrc);
+	rc = viGetAttribute(rmgr, VI_ATTR_RSRC_NAME, rmgr_rsrc);
 
 	if(rc != VI_SUCCESS)
 		return 1;

@@ -4,7 +4,7 @@
 
 #include <visa.h>
 
-int main(int argc, char **argv)
+int main()
 {
 	ViStatus rc = viClose(VI_NULL);
 

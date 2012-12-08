@@ -23,9 +23,9 @@ int main()
 	if(access != VI_NO_LOCK)
 		return 1;
 
-	ViKeyId key;
+	ViChar key[256];
 
-	rc = viLock(rmgr, VI_SHARED_LOCK, 100, VI_NULL, &key);
+	rc = viLock(rmgr, VI_SHARED_LOCK, 100, VI_NULL, key);
 
 	if(rc != VI_SUCCESS)
 		return 1;

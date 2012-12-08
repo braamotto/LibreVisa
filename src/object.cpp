@@ -11,7 +11,7 @@ object::object() : lockState(VI_NO_LOCK)
 	return;
 }
 
-ViStatus object::Lock(ViAccessMode accessMode, ViUInt32 timeout, ViKeyId requestedKey, ViKeyId accessKey)
+ViStatus object::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId)
 {
 	if(accessMode != VI_SHARED_LOCK && accessMode != VI_EXCLUSIVE_LOCK)
 		return VI_ERROR_INV_ACC_MODE;
