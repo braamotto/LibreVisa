@@ -17,6 +17,7 @@ libvisa_la_SOURCES = \
 	viSetAttribute.cpp \
 	viUnlock.cpp \
 	viSetBuf.cpp \
+	viFlush.cpp \
 	$(VXI_SOURCES)
 
 if WITH_VXI
