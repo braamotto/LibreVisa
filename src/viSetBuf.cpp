@@ -12,7 +12,6 @@ ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
 {        
 	try
 	{
-
                 if(!(mask & VI_READ_BUF)  && !(mask & VI_WRITE_BUF) &&
                    !(mask & VI_IO_IN_BUF) && !(mask & VI_IO_OUT_BUF))
                         return VI_WARN_NSUP_BUF;
@@ -29,24 +28,28 @@ ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
                                 delete[](s->fmt_read_buf);
                         s->fmt_read_buf = new ViByte[size];
                         s->fmt_read_buf_siz = size;
+                        s->fmt_read_buf_cnt = 0;
                 }
                 if(mask & VI_WRITE_BUF) {
                         if(s->fmt_write_buf_siz)
                                 delete[](s->fmt_write_buf);
                         s->fmt_write_buf = new ViByte[size];
                         s->fmt_write_buf_siz = size;
+                        s->fmt_write_buf_cnt = 0;
                 }
                 if(mask & VI_IO_IN_BUF) {
                         if(s->io_in_buf_siz)
                                 delete[](s->io_in_buf);
                         s->io_in_buf = new ViByte[size];
                         s->io_in_buf_siz = size;
+                        s->io_in_buf_cnt = 0;
                 }
                 if(mask & VI_IO_OUT_BUF) {
                         if(s->io_out_buf_siz)
                                 delete[](s->io_out_buf);
                         s->io_out_buf = new ViByte[size];
                         s->io_out_buf_siz = size;
+                        s->io_out_buf_cnt = 0;
                 }
 		return VI_SUCCESS;
 	}

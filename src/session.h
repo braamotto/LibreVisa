@@ -21,15 +21,19 @@ public:
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
 
         ViUInt32 fmt_read_buf_siz;
+        ViUInt32 fmt_read_buf_cnt;
         ViAByte fmt_read_buf;
 
         ViUInt32 fmt_write_buf_siz;
+        ViUInt32 fmt_write_buf_cnt;
         ViAByte fmt_write_buf;
 
         ViUInt32 io_in_buf_siz;
+        ViUInt32 io_in_buf_cnt;
         ViAByte io_in_buf;
 
         ViUInt32 io_out_buf_siz;
+        ViUInt32 io_out_buf_cnt;
         ViAByte io_out_buf;
 };
 
