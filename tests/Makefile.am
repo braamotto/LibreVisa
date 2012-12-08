@@ -13,3 +13,4 @@ TESTS = $(check_PROGRAMS)
 
 INCLUDES = -I$(top_srcdir)/include
 LDADD = ../src/libvisa.la
+LDFLAGS = -no-install
