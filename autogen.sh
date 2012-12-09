@@ -1,4 +1,3 @@
 #!/bin/sh
 
-aclocal && autoheader && autoconf && automake --add-missing && libtoolize && automake
-
+aclocal && autoheader && libtoolize && autoconf && automake --add-missing && automake
