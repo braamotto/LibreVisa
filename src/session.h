@@ -13,8 +13,8 @@ public:
 
         virtual ~session() throw() { }
 
-        virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
-        virtual ViStatus Unlock();
+        virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId) {};
+        virtual ViStatus Unlock() {};
 
         virtual ViStatus Close();
         virtual ViStatus GetAttribute(ViAttr, void *);
