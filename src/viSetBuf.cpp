@@ -18,7 +18,7 @@ ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
                 
                 // @todo viFlush(vi, mask);
 
-                session *s = reinterpret_cast<session *>(objects.get_session(vi));
+                session *s = reinterpret_cast<session *>(objects.get_object(vi));
 
                 // @todo return VI_ERROR_INV_SESSION if session object invalid
                 // @todo return VI_ERROR_RSRC_LOCKED if object locked

@@ -14,7 +14,7 @@ ViStatus viBufWrite(ViSession vi, ViBuf buf, ViUInt32 count, ViUInt32 &retCount)
 {        
 	try
 	{
-                session *s = reinterpret_cast<session *>(objects.get_session(vi));
+                session *s = reinterpret_cast<session *>(objects.get_object(vi));
 
                 // @todo return VI_ERROR_INV_SESSION if session object invalid
                 // @todo return VI_ERROR_RSRC_LOCKED if object locked
