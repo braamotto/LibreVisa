@@ -15,6 +15,8 @@ public:
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
 
+        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
+
         resource_manager &get() const { return rm; }
 
 private:

@@ -5,11 +5,13 @@ libvisa_la_SOURCES = \
 	local_session.cpp local_session.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
-	resource_manager.cpp resource_manager.h \
-	resource_manager_session.cpp resource_manager_session.h \
-	session.cpp session.h \
+	resource.h \
 	resource_creator.h \
 	resource_factory.cpp resource_factory.h \
+	resource_manager.cpp resource_manager.h \
+	resource_manager_session.cpp resource_manager_session.h \
+	resource_session.cpp resource_session.h \
+	session.cpp session.h \
 	viClose.cpp \
 	viGetAttribute.cpp \
 	viLock.cpp \

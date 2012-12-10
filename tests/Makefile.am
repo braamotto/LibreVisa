@@ -1,3 +1,5 @@
+SUBDIRS = . io
+
 check_PROGRAMS = \
 	lock_attr_exclusive \
 	lock_attr_shared \
@@ -7,8 +9,7 @@ check_PROGRAMS = \
 	rule_3_6_38 \
 	rule_4_2_1 \
 	rule_4_2_2 \
-	rule_4_3_11 \
-	print
+	rule_4_3_11
 
 TESTS = $(check_PROGRAMS)
 

@@ -6,7 +6,7 @@ AM_INIT_AUTOMAKE([1.10 foreign])
 LT_INIT
 
 AC_CONFIG_HEADER([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile tests/io/Makefile])
 
 # Checks for programs.
 AC_PROG_CXX

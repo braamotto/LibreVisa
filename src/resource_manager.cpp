@@ -4,6 +4,10 @@
 
 #include "resource_manager.h"
 
+#include "resource.h"
+#include "resource_factory.h"
+#include "object_cache.h"
+
 namespace freevisa {
 
 resource_manager::resource_manager() :
@@ -16,6 +20,24 @@ ViStatus resource_manager::Open()
 {
         ++refcount;
         return VI_SUCCESS;
+}
+
+ViStatus resource_manager::Open(ViRsrc rsrcName, ViAccessMode /*accessMode*/, ViUInt32 /*timeout*/, ViSession *vi)
+{
+        try
+        {
+                resource *res = resource_factory::instance.create(rsrcName);
+                *vi = objects.add(res);
+                return VI_SUCCESS;
+        }
+        catch(std::bad_alloc &e)
+        {
+                return VI_ERROR_ALLOC;
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }
 
 ViStatus resource_manager::Close()

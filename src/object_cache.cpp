@@ -6,6 +6,7 @@
 
 #include "resource_manager.h"
 #include "resource_manager_session.h"
+#include "resource_session.h"
 
 #include <cassert>
 
@@ -23,9 +24,9 @@ object *object_cache::get_object(ViObject vi) throw(exception)
         }
 
         {
-                smap::const_iterator i = sessions.find(vi);
+                smap::iterator i = sessions.find(vi);
                 if(i != sessions.end())
-                        return i->second;
+                        return &i->second;
         }
 
         throw exception(VI_ERROR_INV_OBJECT);
@@ -43,9 +44,9 @@ session *object_cache::get_session(ViSession vi) throw(exception)
         }
 
         {
-                smap::const_iterator i = sessions.find(vi);
+                smap::iterator i = sessions.find(vi);
                 if(i != sessions.end())
-                        return i->second;
+                        return &i->second;
         }
 
         throw exception(VI_ERROR_INV_OBJECT);
@@ -75,6 +76,11 @@ void object_cache::remove(ViObject vi) throw(exception)
 ViSession object_cache::add(resource_manager &obj) throw(exception)
 {
         return resource_managers.insert(std::make_pair(find_id(), resource_manager_session(obj))).first->first;
+}
+
+ViSession object_cache::add(resource *res) throw(exception)
+{
+        return sessions.insert(std::make_pair(find_id(), resource_session(*res))).first->first;
 }
 
 ViObject object_cache::find_id() throw(exception)

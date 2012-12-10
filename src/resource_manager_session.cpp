@@ -24,4 +24,9 @@ ViStatus resource_manager_session::SetAttribute(ViAttr attr, ViAttrState attrSta
         return rc;
 }
 
+ViStatus resource_manager_session::Open(ViRsrc rsrc, ViAccessMode accessMode, ViUInt32 timeout, ViSession *vi)
+{
+        return rm.Open(rsrc, accessMode, timeout, vi);
+}
+
 }
