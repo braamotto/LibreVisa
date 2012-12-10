@@ -30,7 +30,7 @@ int main()
         if(rc != VI_SUCCESS)
                 return 1;
 
-        if(key != VI_NULL)
+        if(key[0])
                 return 1;
 
         rc = viGetAttribute(rmgr, VI_ATTR_RSRC_LOCK_STATE, &access);
