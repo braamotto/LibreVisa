@@ -37,13 +37,13 @@ ViStatus resource_manager::GetAttribute(ViAttr attr, void *attrState)
 		return VI_SUCCESS;
 
 	default:
-		return GetObjectAttribute(attr, attrState);
+		return object::GetAttribute(attr, attrState);
 	}
 }
 
 ViStatus resource_manager::SetAttribute(ViAttr attr, ViAttrState attrState)
 {
-	return SetObjectAttribute(attr, attrState);
+	return object::SetAttribute(attr, attrState);
 }
 
 resource_manager default_resource_manager;

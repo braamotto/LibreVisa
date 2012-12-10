@@ -8,7 +8,9 @@ namespace freevisa {
 class session :
 	public object
 {
-
+public:
+	virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId) = 0;
+	virtual ViStatus Unlock() = 0;
 };
 
 }

@@ -5,21 +5,36 @@
 #include "object_cache.h"
 
 #include "resource_manager.h"
+#include "resource_manager_session.h"
 
 #include <cassert>
 
 namespace freevisa {
 
-object *object_cache::get_object(ViObject vi) const throw(exception)
+object *object_cache::get_object(ViObject vi) throw(exception)
 {
 	if(vi == VI_NULL)
 		throw exception(VI_WARN_NULL_OBJECT);
 
 	{
-		rmmap::const_iterator i = resource_managers.find(vi);
+		rmmap::iterator i = resource_managers.find(vi);
 		if(i != resource_managers.end())
+			return &i->second;
+	}
+
+	{
+		smap::const_iterator i = sessions.find(vi);
+		if(i != sessions.end())
 			return i->second;
 	}
+
+	throw exception(VI_ERROR_INV_OBJECT);
+}
+
+session *object_cache::get_session(ViSession vi) const throw(exception)
+{
+	if(vi == VI_NULL)
+		throw exception(VI_WARN_NULL_OBJECT);
 
 	{
 		smap::const_iterator i = sessions.find(vi);
@@ -51,10 +66,9 @@ void object_cache::remove(ViObject vi) throw(exception)
 	throw(VI_ERROR_INV_OBJECT);
 }
 
-ViSession object_cache::add(resource_manager *obj) throw(exception)
+ViSession object_cache::add(resource_manager &obj) throw(exception)
 {
-	assert(obj);
-	return resource_managers.insert(std::make_pair(find_id(), obj)).first->first;
+	return resource_managers.insert(std::make_pair(find_id(), resource_manager_session(obj))).first->first;
 }
 
 ViObject object_cache::find_id() throw(exception)

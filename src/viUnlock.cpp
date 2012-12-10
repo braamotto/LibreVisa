@@ -3,7 +3,7 @@
 #endif
 
 #include "object_cache.h"
-#include "object.h"
+#include "session.h"
 
 using namespace freevisa;
 
@@ -11,7 +11,7 @@ ViStatus viUnlock(ViSession vi)
 {
 	try
 	{
-		return objects.get_object(vi)->Unlock();
+		return objects.get_session(vi)->Unlock();
 	}
 	catch(exception &e)
 	{

@@ -14,14 +14,24 @@ ViStatus tcpip_session::Close()
 	return VI_SUCCESS;
 }
 
+ViStatus tcpip_session::Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId)
+{
+	return VI_SUCCESS;
+}
+
+ViStatus tcpip_session::Unlock()
+{
+	return VI_SUCCESS;
+}
+
 ViStatus tcpip_session::GetAttribute(ViAttr attr, void *attrState)
 {
-	return GetObjectAttribute(attr, attrState);
+	return session::GetAttribute(attr, attrState);
 }
 
 ViStatus tcpip_session::SetAttribute(ViAttr attr, ViAttrState attrState)
 {
-	return SetObjectAttribute(attr, attrState);
+	return session::SetAttribute(attr, attrState);
 }
 
 class tcpip_session::creator :

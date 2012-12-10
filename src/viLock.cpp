@@ -3,7 +3,7 @@
 #endif
 
 #include "object_cache.h"
-#include "object.h"
+#include "session.h"
 
 using namespace freevisa;
 
@@ -13,7 +13,7 @@ ViStatus viLock(ViSession vi, ViAccessMode lockType, ViUInt32 timeout, ViKeyId r
 {
 	try
 	{
-		return objects.get_object(vi)->Lock(lockType, timeout, requestedKey, accessKey);
+		return objects.get_session(vi)->Lock(lockType, timeout, requestedKey, accessKey);
 	}
 	catch(exception &e)
 	{

@@ -1,12 +1,12 @@
 #ifndef freevisa_resource_manager_h_
 #define freevisa_resource_manager_h_ 1
 
-#include "session.h"
+#include "object.h"
 
 namespace freevisa {
 
 class resource_manager :
-	public session
+	public object
 {
 public:
 	resource_manager();

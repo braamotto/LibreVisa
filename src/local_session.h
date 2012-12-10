@@ -1,11 +1,11 @@
-#ifndef tcpip_session_h_
-#define tcpip_session_h_ 1
+#ifndef freevisa_local_session_h_
+#define freevisa_local_session_h_ 1
 
 #include "session.h"
 
 namespace freevisa {
 
-class tcpip_session :
+class local_session :
 	public session
 {
 public:
@@ -16,8 +16,7 @@ public:
 	virtual ViStatus SetAttribute(ViAttr, ViAttrState);
 
 private:
-	class creator;
-	static creator const creator_inst;
+	unsigned int exclusive_lock_count, shared_lock_count;
 };
 
 }

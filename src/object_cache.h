@@ -9,21 +9,22 @@ namespace freevisa {
 
 class object;
 class resource_manager;
+class resource_manager_session;
 class session;
 
 class object_cache
 {
 public:
-	object *get_object(ViObject) const throw(exception);
+	object *get_object(ViObject) throw(exception);
 	resource_manager *get_resource_manager(ViSession) const throw(exception);
 	session *get_session(ViSession) const throw(exception);
 
 	void remove(ViObject) throw(exception);
 
-	ViSession add(resource_manager *) throw(exception);
+	ViSession add(resource_manager &) throw(exception);
 
 private:
-	typedef std::map<ViSession, resource_manager *> rmmap;
+	typedef std::map<ViSession, resource_manager_session> rmmap;
 	rmmap resource_managers;
 
 	typedef std::map<ViSession, session *> smap;

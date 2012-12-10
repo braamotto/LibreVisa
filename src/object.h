@@ -10,20 +10,9 @@ class object
 public:
 	virtual ~object() throw() { }
 
-	virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
-	virtual ViStatus Unlock();
-
 	virtual ViStatus Close() = 0;
-	virtual ViStatus GetAttribute(ViAttr, void *) = 0;
-	virtual ViStatus SetAttribute(ViAttr, ViAttrState) = 0;
-
-protected:
-	object();
-
-	ViStatus GetObjectAttribute(ViAttr, void *);
-	ViStatus SetObjectAttribute(ViAttr, ViAttrState);
-
-	ViAccessMode lockState;
+	virtual ViStatus GetAttribute(ViAttr, void *);
+	virtual ViStatus SetAttribute(ViAttr, ViAttrState);
 };
 
 }

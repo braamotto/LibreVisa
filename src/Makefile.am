@@ -2,9 +2,11 @@ lib_LTLIBRARIES = libvisa.la
 
 libvisa_la_SOURCES = \
 	exception.h \
+	local_session.cpp local_session.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
 	resource_manager.cpp resource_manager.h \
+	resource_manager_session.h \
 	session.cpp session.h \
 	session_creator.h \
 	session_factory.cpp session_factory.h \
