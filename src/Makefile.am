@@ -6,7 +6,7 @@ libvisa_la_SOURCES = \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
 	resource_manager.cpp resource_manager.h \
-	resource_manager_session.h \
+	resource_manager_session.cpp resource_manager_session.h \
 	session.cpp session.h \
 	session_creator.h \
 	session_factory.cpp session_factory.h \

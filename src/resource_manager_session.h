@@ -12,6 +12,9 @@ class resource_manager_session :
 public:
         explicit resource_manager_session(resource_manager &rm) : rm(rm) { }
 
+        virtual ViStatus GetAttribute(ViAttr, void *);
+        virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+
         resource_manager &get() const { return rm; }
 
 private:
