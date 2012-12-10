@@ -20,7 +20,7 @@ ViStatus local_session::Close()
         return VI_SUCCESS;
 }
 
-ViStatus local_session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId)
+ViStatus local_session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId accessKey)
 {
         if(accessMode != VI_SHARED_LOCK && accessMode != VI_EXCLUSIVE_LOCK)
                 return VI_ERROR_INV_ACC_MODE;
@@ -34,6 +34,8 @@ ViStatus local_session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId
         if(accessMode == VI_EXCLUSIVE_LOCK)
         {
                 ++exclusive_lock_count;
+                if(accessKey)
+                        *accessKey = '\0';
                 return VI_SUCCESS;
         }
 
