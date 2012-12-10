@@ -11,12 +11,12 @@ extern "C" ViStatus viLock(ViSession vi, ViAccessMode lockType, ViUInt32 timeout
 
 ViStatus viLock(ViSession vi, ViAccessMode lockType, ViUInt32 timeout, ViKeyId requestedKey, ViKeyId accessKey)
 {
-	try
-	{
-		return objects.get_session(vi)->Lock(lockType, timeout, requestedKey, accessKey);
-	}
-	catch(exception &e)
-	{
-		return e.code;
-	}
+        try
+        {
+                return objects.get_session(vi)->Lock(lockType, timeout, requestedKey, accessKey);
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }

@@ -6,10 +6,10 @@
 
 int main()
 {
-	ViStatus rc = viClose(VI_NULL);
+        ViStatus rc = viClose(VI_NULL);
 
-	if(rc != VI_WARN_NULL_OBJECT)
-		return 1;
+        if(rc != VI_WARN_NULL_OBJECT)
+                return 1;
 
-	return 0;
+        return 0;
 }

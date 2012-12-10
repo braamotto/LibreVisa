@@ -9,12 +9,12 @@ using namespace freevisa;
 
 ViStatus viGetAttribute(ViObject vi, ViAttr attribute, void *attrState)
 {
-	try
-	{
-		return objects.get_object(vi)->GetAttribute(attribute, attrState);
-	}
-	catch(exception &e)
-	{
-		return e.code;
-	}
+        try
+        {
+                return objects.get_object(vi)->GetAttribute(attribute, attrState);
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }

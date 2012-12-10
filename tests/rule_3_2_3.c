@@ -6,22 +6,22 @@
 
 int main()
 {
-	ViSession rmgr;
+        ViSession rmgr;
 
-	ViStatus rc = viGetDefaultRM(&rmgr);
+        ViStatus rc = viGetDefaultRM(&rmgr);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	ViVersion version;
+        ViVersion version;
 
-	rc = viGetAttribute(rmgr, VI_ATTR_RSRC_SPEC_VERSION, &version);
+        rc = viGetAttribute(rmgr, VI_ATTR_RSRC_SPEC_VERSION, &version);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	if(version != VI_SPEC_VERSION)
-		return 1;
+        if(version != VI_SPEC_VERSION)
+                return 1;
 
-	return 0;
+        return 0;
 }

@@ -10,8 +10,8 @@ class session;
 class session_creator
 {
 public:
-	virtual char const *name() const = 0;
-	virtual session *create(ViRsrc) const = 0;
+        virtual char const *name() const = 0;
+        virtual session *create(ViRsrc) const = 0;
 };
 
 }

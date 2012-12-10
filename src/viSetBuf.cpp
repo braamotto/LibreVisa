@@ -9,13 +9,13 @@
 using namespace freevisa;
 
 ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
-{        
-	try
-	{
+{
+        try
+        {
                 if(!(mask & VI_READ_BUF)  && !(mask & VI_WRITE_BUF) &&
                    !(mask & VI_IO_IN_BUF) && !(mask & VI_IO_OUT_BUF))
                         return VI_WARN_NSUP_BUF;
-                
+
                 // @todo viFlush(vi, mask);
 
                 session *s = reinterpret_cast<session *>(objects.get_object(vi));
@@ -51,14 +51,14 @@ ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
                         s->io_out_buf_siz = size;
                         s->io_out_buf_cnt = 0;
                 }
-		return VI_SUCCESS;
-	}
+                return VI_SUCCESS;
+        }
         catch(std::bad_alloc &e)
         {
                 return VI_ERROR_ALLOC;
         }
-	catch(exception &e)
-	{
-		return e.code;
-	}
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }

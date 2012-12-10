@@ -10,13 +10,13 @@ namespace freevisa {
 class session_factory
 {
 public:
-	session *create(ViRsrc rsrc);
+        session *create(ViRsrc rsrc);
 
-	void register_creator(session_creator const &);
-	void unregister_creator(session_creator const &);
+        void register_creator(session_creator const &);
+        void unregister_creator(session_creator const &);
 
 private:
-	std::map<char const *, session_creator const *> creators;
+        std::map<char const *, session_creator const *> creators;
 };
 
 }

@@ -6,5 +6,5 @@
 
 ViStatus viParseRsrc(ViSession, ViRsrc, ViUInt16 *, ViUInt16 *)
 {
-	return VI_SUCCESS;
+        return VI_SUCCESS;
 }

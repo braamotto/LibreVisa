@@ -6,19 +6,19 @@
 namespace freevisa {
 
 class resource_manager :
-	public object
+        public object
 {
 public:
-	resource_manager();
+        resource_manager();
 
-	ViStatus Open();
+        ViStatus Open();
 
-	virtual ViStatus Close();
-	virtual ViStatus GetAttribute(ViAttr, void *);
-	virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+        virtual ViStatus Close();
+        virtual ViStatus GetAttribute(ViAttr, void *);
+        virtual ViStatus SetAttribute(ViAttr, ViAttrState);
 
 private:
-	unsigned int refcount;
+        unsigned int refcount;
 };
 
 extern resource_manager default_resource_manager;

@@ -11,9 +11,9 @@
 using namespace freevisa;
 
 ViStatus viBufWrite(ViSession vi, ViBuf buf, ViUInt32 count, ViUInt32 &/*retCount*/)
-{        
-	try
-	{
+{
+        try
+        {
                 session *s = reinterpret_cast<session *>(objects.get_object(vi));
 
                 // @todo return VI_ERROR_RSRC_LOCKED if object locked
@@ -24,10 +24,10 @@ ViStatus viBufWrite(ViSession vi, ViBuf buf, ViUInt32 count, ViUInt32 &/*retCoun
                 memcpy(s->fmt_write_buf + s->fmt_write_buf_cnt, buf, count);
                 s->fmt_write_buf_cnt += count;
 
-		return VI_SUCCESS;
-	}
-	catch(exception &e)
-	{
-		return e.code;
-	}
+                return VI_SUCCESS;
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }

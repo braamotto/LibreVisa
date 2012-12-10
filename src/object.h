@@ -8,11 +8,11 @@ namespace freevisa {
 class object
 {
 public:
-	virtual ~object() throw() { }
+        virtual ~object() throw() { }
 
-	virtual ViStatus Close() = 0;
-	virtual ViStatus GetAttribute(ViAttr, void *);
-	virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+        virtual ViStatus Close() = 0;
+        virtual ViStatus GetAttribute(ViAttr, void *);
+        virtual ViStatus SetAttribute(ViAttr, ViAttrState);
 };
 
 }

@@ -7,15 +7,15 @@
 namespace freevisa {
 
 class resource_manager_session :
-	public local_session
+        public local_session
 {
 public:
-	explicit resource_manager_session(resource_manager &rm) : rm(rm) { }
+        explicit resource_manager_session(resource_manager &rm) : rm(rm) { }
 
-	resource_manager &get() const { return rm; }
+        resource_manager &get() const { return rm; }
 
 private:
-	resource_manager &rm;
+        resource_manager &rm;
 };
 
 }

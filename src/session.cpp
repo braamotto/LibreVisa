@@ -18,12 +18,12 @@ ViStatus session::Close()
 
 ViStatus session::GetAttribute(ViAttr attr, void *attrState)
 {
-	return object::GetAttribute(attr, attrState);
+        return object::GetAttribute(attr, attrState);
 }
 
 ViStatus session::SetAttribute(ViAttr attr, ViAttrState attrState)
 {
-	return object::SetAttribute(attr, attrState);
+        return object::SetAttribute(attr, attrState);
 }
 
 }

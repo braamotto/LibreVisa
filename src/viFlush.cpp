@@ -9,17 +9,17 @@
 using namespace freevisa;
 
 ViStatus viFlush(ViSession vi, ViUInt16 mask)
-{        
-	try
-	{
+{
+        try
+        {
 
                 if(!(mask & VI_READ_BUF)  && !(mask & VI_WRITE_BUF) &&
                    !(mask & VI_IO_IN_BUF) && !(mask & VI_IO_OUT_BUF) &&
-                   !(mask & VI_READ_BUF_DISCARD) && 
+                   !(mask & VI_READ_BUF_DISCARD) &&
                    !(mask & VI_WRITE_BUF_DISCARD) &&
-                   !(mask & VI_IO_IN_BUF_DISCARD) && 
+                   !(mask & VI_IO_IN_BUF_DISCARD) &&
                    !(mask & VI_IO_OUT_BUF_DISCARD))
-                        return VI_ERROR_INV_MASK;                
+                        return VI_ERROR_INV_MASK;
 
                 session *s = reinterpret_cast<session *>(objects.get_object(vi));
 
@@ -50,10 +50,10 @@ ViStatus viFlush(ViSession vi, ViUInt16 mask)
                 if(mask & VI_IO_OUT_BUF_DISCARD) {
                         s->io_out_buf_cnt = 0;
                 }
-		return VI_SUCCESS;
-	}
-	catch(exception &e)
+                return VI_SUCCESS;
+        }
+        catch(exception &e)
         {
-		return e.code;
-	}
+                return e.code;
+        }
 }

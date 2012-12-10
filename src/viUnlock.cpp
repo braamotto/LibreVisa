@@ -9,12 +9,12 @@ using namespace freevisa;
 
 ViStatus viUnlock(ViSession vi)
 {
-	try
-	{
-		return objects.get_session(vi)->Unlock();
-	}
-	catch(exception &e)
-	{
-		return e.code;
-	}
+        try
+        {
+                return objects.get_session(vi)->Unlock();
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }

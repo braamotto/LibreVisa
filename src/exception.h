@@ -8,9 +8,9 @@ namespace freevisa {
 class exception
 {
 public:
-	exception(ViStatus code) : code(code) { }
+        exception(ViStatus code) : code(code) { }
 
-	ViStatus const code;
+        ViStatus const code;
 };
 
 }

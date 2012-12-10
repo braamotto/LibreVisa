@@ -11,17 +11,17 @@ using namespace freevisa;
 
 ViStatus viClose(ViObject vi)
 {
-	try
-	{
-		ViStatus ret = objects.get_object(vi)->Close();
+        try
+        {
+                ViStatus ret = objects.get_object(vi)->Close();
 
-		if(ret == VI_SUCCESS)
-			objects.remove(vi);
+                if(ret == VI_SUCCESS)
+                        objects.remove(vi);
 
-		return ret;
-	}
-	catch(exception &e)
-	{
-		return e.code;
-	}
+                return ret;
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }

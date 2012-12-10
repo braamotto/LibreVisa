@@ -6,53 +6,53 @@
 
 int main()
 {
-	ViSession rmgr;
+        ViSession rmgr;
 
-	ViStatus rc = viOpenDefaultRM(&rmgr);
+        ViStatus rc = viOpenDefaultRM(&rmgr);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	ViAccessMode access;
+        ViAccessMode access;
 
-	rc = viGetAttribute(rmgr, VI_ATTR_RSRC_LOCK_STATE, &access);
+        rc = viGetAttribute(rmgr, VI_ATTR_RSRC_LOCK_STATE, &access);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	if(access != VI_NO_LOCK)
-		return 1;
+        if(access != VI_NO_LOCK)
+                return 1;
 
-	ViChar key[256];
+        ViChar key[256];
 
-	rc = viLock(rmgr, VI_EXCLUSIVE_LOCK, 100, VI_NULL, key);
+        rc = viLock(rmgr, VI_EXCLUSIVE_LOCK, 100, VI_NULL, key);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	if(key != VI_NULL)
-		return 1;
+        if(key != VI_NULL)
+                return 1;
 
-	rc = viGetAttribute(rmgr, VI_ATTR_RSRC_LOCK_STATE, &access);
+        rc = viGetAttribute(rmgr, VI_ATTR_RSRC_LOCK_STATE, &access);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	if(access != VI_EXCLUSIVE_LOCK)
-		return 1;
+        if(access != VI_EXCLUSIVE_LOCK)
+                return 1;
 
-	rc = viUnlock(rmgr);
+        rc = viUnlock(rmgr);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	rc = viGetAttribute(rmgr, VI_ATTR_RSRC_LOCK_STATE, &access);
+        rc = viGetAttribute(rmgr, VI_ATTR_RSRC_LOCK_STATE, &access);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	if(access != VI_NO_LOCK)
-		return 1;
+        if(access != VI_NO_LOCK)
+                return 1;
 
-	return 0;
+        return 0;
 }

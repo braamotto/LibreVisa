@@ -6,17 +6,17 @@
 
 int main()
 {
-	ViSession vi;
+        ViSession vi;
 
-	ViStatus rc = viOpenDefaultRM(&vi);
+        ViStatus rc = viOpenDefaultRM(&vi);
 
-	if(rc != VI_SUCCESS)
-		return 1;
+        if(rc != VI_SUCCESS)
+                return 1;
 
-	rc = viUnlock(vi);
+        rc = viUnlock(vi);
 
-	if(rc != VI_ERROR_SESN_NLOCKED)
-		return 1;
+        if(rc != VI_ERROR_SESN_NLOCKED)
+                return 1;
 
-	return 0;
+        return 0;
 }

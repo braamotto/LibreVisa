@@ -9,20 +9,20 @@ using namespace freevisa;
 
 ViStatus viOpenDefaultRM(ViSession *sesn)
 {
-	ViStatus res = default_resource_manager.Open();
-	if(res != VI_SUCCESS)
-	{
-		*sesn = VI_NULL;
-		return res;
-	}
+        ViStatus res = default_resource_manager.Open();
+        if(res != VI_SUCCESS)
+        {
+                *sesn = VI_NULL;
+                return res;
+        }
 
-	try
-	{
-		*sesn = objects.add(default_resource_manager);
-		return VI_SUCCESS;
-	}
-	catch(exception &e)
-	{
-		return e.code;
-	}
+        try
+        {
+                *sesn = objects.add(default_resource_manager);
+                return VI_SUCCESS;
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }
