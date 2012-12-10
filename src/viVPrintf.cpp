@@ -11,7 +11,7 @@
 
 using namespace freevisa;
 
-ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList params)
+ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList)
 {        
 	try
 	{
@@ -68,7 +68,7 @@ ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList params)
                         *p++ = *f++;
                         s->fmt_write_buf_cnt++;
                 }
-
+                return VI_SUCCESS;
 	}
         catch(std::bad_alloc &e)
         {
