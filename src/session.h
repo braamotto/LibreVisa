@@ -20,6 +20,8 @@ public:
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
 
+        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
+
         ViUInt32 fmt_read_buf_siz;
         ViUInt32 fmt_read_buf_cnt;
         ViAByte fmt_read_buf;

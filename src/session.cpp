@@ -32,6 +32,11 @@ ViStatus session::Close()
         return VI_SUCCESS;
 }
 
+ViStatus session::Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *)
+{
+        return VI_ERROR_NSUP_OPER;
+}
+
 ViStatus session::GetAttribute(ViAttr attr, void *attrState)
 {
         return object::GetAttribute(attr, attrState);
