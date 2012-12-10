@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
-AC_INIT([freevisa], [0.0.20121207], [Simon.Richter@hogyros.de])
+AC_PREREQ([2.67])
+AC_INIT([freevisa], [0.0.20121210], [Simon.Richter@hogyros.de])
 AM_INIT_AUTOMAKE([1.10 foreign])
 LT_INIT
 
