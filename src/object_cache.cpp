@@ -31,10 +31,16 @@ object *object_cache::get_object(ViObject vi) throw(exception)
         throw exception(VI_ERROR_INV_OBJECT);
 }
 
-session *object_cache::get_session(ViSession vi) const throw(exception)
+session *object_cache::get_session(ViSession vi) throw(exception)
 {
         if(vi == VI_NULL)
                 throw exception(VI_WARN_NULL_OBJECT);
+
+        {
+                rmmap::iterator i = resource_managers.find(vi);
+                if(i != resource_managers.end())
+                        return &i->second;
+        }
 
         {
                 smap::const_iterator i = sessions.find(vi);

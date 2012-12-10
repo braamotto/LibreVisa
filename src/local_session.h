@@ -9,6 +9,8 @@ class local_session :
         public session
 {
 public:
+        local_session();
+
         virtual ViStatus Close();
         virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
         virtual ViStatus Unlock();

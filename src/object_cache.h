@@ -17,7 +17,7 @@ class object_cache
 public:
         object *get_object(ViObject) throw(exception);
         resource_manager *get_resource_manager(ViSession) const throw(exception);
-        session *get_session(ViSession) const throw(exception);
+        session *get_session(ViSession) throw(exception);
 
         void remove(ViObject) throw(exception);
 

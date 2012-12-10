@@ -6,6 +6,13 @@
 
 namespace freevisa {
 
+local_session::local_session() :
+        exclusive_lock_count(0),
+        shared_lock_count(0)
+{
+        return;
+}
+
 ViStatus local_session::Close()
 {
         // @todo
