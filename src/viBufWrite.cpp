@@ -16,7 +16,6 @@ ViStatus viBufWrite(ViSession vi, ViBuf buf, ViUInt32 count, ViUInt32 &/*retCoun
 	{
                 session *s = reinterpret_cast<session *>(objects.get_object(vi));
 
-                // @todo return VI_ERROR_INV_SESSION if session object invalid
                 // @todo return VI_ERROR_RSRC_LOCKED if object locked
 
                 if(s->fmt_write_buf_cnt + count >= s->fmt_write_buf_siz)
