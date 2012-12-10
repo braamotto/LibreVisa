@@ -21,6 +21,8 @@ libvisa_la_SOURCES = \
 	viSetBuf.cpp \
 	viFlush.cpp \
 	viBufWrite.cpp \
+	viVPrintf.cpp \
+	viPrintf.cpp \
 	$(VXI_SOURCES)
 
 if WITH_VXI

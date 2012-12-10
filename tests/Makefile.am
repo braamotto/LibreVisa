@@ -7,7 +7,8 @@ check_PROGRAMS = \
 	rule_3_6_38 \
 	rule_4_2_1 \
 	rule_4_2_2 \
-	rule_4_3_11
+	rule_4_3_11 \
+	print
 
 TESTS = $(check_PROGRAMS)
 
