@@ -1,3 +1,4 @@
 libdummy.a
 open
+open_multi
 print

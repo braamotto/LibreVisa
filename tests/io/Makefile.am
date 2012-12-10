@@ -1,5 +1,6 @@
 check_PROGRAMS = \
         open \
+        open_multi \
 	print
 
 check_LIBRARIES = libdummy.a
