@@ -1,12 +1,12 @@
-#ifndef tcpip_session_h_
-#define tcpip_session_h_ 1
+#ifndef tcpip_resource_h_
+#define tcpip_resource_h_ 1
 
-#include "session.h"
+#include "resource.h"
 
 namespace freevisa {
 
-class tcpip_session :
-        public session
+class tcpip_resource :
+        public resource
 {
 public:
         virtual ViStatus Close();

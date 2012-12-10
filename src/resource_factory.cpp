@@ -2,11 +2,11 @@
 #include <config.h>
 #endif
 
-#include "session_factory.h"
+#include "resource_factory.h"
 
 namespace freevisa {
 
-void session_factory::register_creator(session_creator const &cre)
+void resource_factory::register_creator(resource_creator const &cre)
 {
         creators[cre.name()] = &cre;
 }

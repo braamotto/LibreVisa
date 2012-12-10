@@ -8,8 +8,8 @@ libvisa_la_SOURCES = \
 	resource_manager.cpp resource_manager.h \
 	resource_manager_session.cpp resource_manager_session.h \
 	session.cpp session.h \
-	session_creator.h \
-	session_factory.cpp session_factory.h \
+	resource_creator.h \
+	resource_factory.cpp resource_factory.h \
 	viClose.cpp \
 	viGetAttribute.cpp \
 	viLock.cpp \
@@ -26,7 +26,7 @@ libvisa_la_SOURCES = \
 	$(VXI_SOURCES)
 
 if WITH_VXI
-VXI_SOURCES = tcpip_session.cpp tcpip_session.h
+VXI_SOURCES = tcpip_resource.cpp tcpip_resource.h
 else
 VXI_SOURCES =
 endif
