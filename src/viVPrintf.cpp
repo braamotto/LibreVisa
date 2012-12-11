@@ -20,10 +20,10 @@ ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList)
                 // @todo return VI_ERROR_INV_SESSION if session object invalid
                 // @todo return VI_ERROR_RSRC_LOCKED if object locked
 
-                if(strlen(writeFmt) + s->fmt_write_buf_cnt >= s->fmt_write_buf_siz)
+                if(strlen(writeFmt) + s->GetFmtWriteBufCnt() >= s->GetFmtWriteBufSiz())
                         return VI_ERROR_IO;
 
-                ViByte *p = s->fmt_write_buf + s->fmt_write_buf_cnt;
+                ViByte *p = s->GetFmtWriteBuf() + s->GetFmtWriteBufCnt();
                 ViChar *f;
                 for(f = writeFmt; *f; f++) {
                         if(*f == '\\') {
@@ -66,7 +66,7 @@ ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList)
                         // @todo Actually process format string
 
                         *p++ = *f++;
-                        s->fmt_write_buf_cnt++;
+                        s->SetFmtWriteBufCnt(s->GetFmtWriteBufCnt()+1);
                 }
                 return VI_SUCCESS;
 	}

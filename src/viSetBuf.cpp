@@ -24,32 +24,32 @@ ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
                 // @todo return VI_ERROR_RSRC_LOCKED if object locked
 
                 if(mask & VI_READ_BUF) {
-                        if(s->fmt_read_buf_siz)
-                                delete[](s->fmt_read_buf);
-                        s->fmt_read_buf = new ViByte[size];
-                        s->fmt_read_buf_siz = size;
-                        s->fmt_read_buf_cnt = 0;
+                        if(s->GetFmtReadBufSiz())
+                                delete[](s->GetFmtReadBuf());
+                        s->SetFmtReadBuf(new ViByte[size]);
+                        s->SetFmtReadBufSiz(size);
+                        s->SetFmtReadBufCnt(0);
                 }
                 if(mask & VI_WRITE_BUF) {
-                        if(s->fmt_write_buf_siz)
-                                delete[](s->fmt_write_buf);
-                        s->fmt_write_buf = new ViByte[size];
-                        s->fmt_write_buf_siz = size;
-                        s->fmt_write_buf_cnt = 0;
+                        if(s->GetFmtWriteBufSiz())
+                                delete[](s->GetFmtWriteBuf());
+                        s->SetFmtWriteBuf(new ViByte[size]);
+                        s->SetFmtWriteBufSiz(size);
+                        s->SetFmtWriteBufCnt(0);
                 }
                 if(mask & VI_IO_IN_BUF) {
-                        if(s->io_in_buf_siz)
-                                delete[](s->io_in_buf);
-                        s->io_in_buf = new ViByte[size];
-                        s->io_in_buf_siz = size;
-                        s->io_in_buf_cnt = 0;
+                        if(s->GetIOInBufSiz())
+                                delete[](s->GetIOInBuf());
+                        s->SetIOInBuf(new ViByte[size]);
+                        s->SetIOInBufSiz(size);
+                        s->SetIOInBufCnt(0);
                 }
                 if(mask & VI_IO_OUT_BUF) {
-                        if(s->io_out_buf_siz)
-                                delete[](s->io_out_buf);
-                        s->io_out_buf = new ViByte[size];
-                        s->io_out_buf_siz = size;
-                        s->io_out_buf_cnt = 0;
+                        if(s->GetIOOutBufSiz())
+                                delete[](s->GetIOOutBuf());
+                        s->SetIOOutBuf(new ViByte[size]);
+                        s->SetIOOutBufSiz(size);
+                        s->SetIOOutBufCnt(0);
                 }
                 return VI_SUCCESS;
         }

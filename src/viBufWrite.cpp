@@ -18,11 +18,11 @@ ViStatus viBufWrite(ViSession vi, ViBuf buf, ViUInt32 count, ViUInt32 &/*retCoun
 
                 // @todo return VI_ERROR_RSRC_LOCKED if object locked
 
-                if(s->fmt_write_buf_cnt + count >= s->fmt_write_buf_siz)
+                if(s->GetFmtWriteBufCnt() + count >= s->GetFmtWriteBufSiz())
                         return VI_ERROR_IO;
 
-                memcpy(s->fmt_write_buf + s->fmt_write_buf_cnt, buf, count);
-                s->fmt_write_buf_cnt += count;
+                memcpy(s->GetFmtWriteBuf() + s->GetFmtWriteBufCnt(), buf, count);
+                s->SetFmtWriteBufCnt(s->GetFmtWriteBufCnt() + count);
 
                 return VI_SUCCESS;
         }

@@ -27,28 +27,28 @@ ViStatus viFlush(ViSession vi, ViUInt16 mask)
                 // @todo return VI_ERROR_RSRC_LOCKED if object locked
 
                 if(mask & VI_READ_BUF_DISCARD) {
-                        s->fmt_read_buf_cnt = 0;
+                        s->SetFmtReadBufCnt(0);
                 }
                 if(mask & VI_READ_BUF) {
                         // @todo viRead
-                        s->fmt_read_buf_cnt = 0;
+                        s->SetFmtReadBufCnt(0);
                 }
                 if(mask & VI_WRITE_BUF) {
                         // @todo viWrite
-                        s->fmt_write_buf_cnt = 0;
+                        s->SetFmtWriteBufCnt(0);
                 }
                 if(mask & VI_WRITE_BUF_DISCARD) {
-                        s->fmt_write_buf_cnt = 0;
+                        s->SetFmtWriteBufCnt(0);
                 }
                 if((mask & VI_IO_IN_BUF) || (mask & VI_IO_IN_BUF_DISCARD)) {
-                        s->io_in_buf_cnt = 0;
+                        s->SetIOInBufCnt(0);
                 }
                 if(mask & VI_IO_OUT_BUF) {
                         // @todo viWrite
-                        s->io_out_buf_cnt = 0;
+                        s->SetIOOutBufCnt(0);
                 }
                 if(mask & VI_IO_OUT_BUF_DISCARD) {
-                        s->io_out_buf_cnt = 0;
+                        s->SetIOOutBufCnt(0);
                 }
                 return VI_SUCCESS;
         }
