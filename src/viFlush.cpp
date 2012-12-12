@@ -34,7 +34,15 @@ ViStatus viFlush(ViSession vi, ViUInt16 mask)
                         s->SetFmtReadBufCnt(0);
                 }
                 if(mask & VI_WRITE_BUF) {
-                        // @todo viWrite
+                        ViStatus ret;
+                        ViUInt32 written = 42;
+                        ret = viWrite(vi, s->GetFmtWriteBuf(), s->GetFmtWriteBufCnt(), &written);
+                        if(ret != VI_SUCCESS) {
+                                if(ret == VI_ERROR_TMO)
+                                        return ret;
+                                return VI_ERROR_IO;
+                        }
+
                         s->SetFmtWriteBufCnt(0);
                 }
                 if(mask & VI_WRITE_BUF_DISCARD) {
@@ -44,7 +52,14 @@ ViStatus viFlush(ViSession vi, ViUInt16 mask)
                         s->SetIOInBufCnt(0);
                 }
                 if(mask & VI_IO_OUT_BUF) {
-                        // @todo viWrite
+                        ViStatus ret;
+                        ViUInt32 written = 42;
+                        ret = viWrite(vi, s->GetIOOutBuf(), s->GetIOOutBufCnt(), &written);
+                        if(ret != VI_SUCCESS) {
+                                if(ret == VI_ERROR_TMO)
+                                        return ret;
+                                return VI_ERROR_IO;
+                        }
                         s->SetIOOutBufCnt(0);
                 }
                 if(mask & VI_IO_OUT_BUF_DISCARD) {
