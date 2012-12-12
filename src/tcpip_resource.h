@@ -3,6 +3,10 @@
 
 #include "resource.h"
 
+#include <rpc/rpc.h>
+
+#include <vxi.h>
+
 namespace freevisa {
 
 class tcpip_resource :
@@ -17,6 +21,14 @@ public:
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
 private:
+        // RPC
+        CLIENT *client;
+
+        Device_Link lid;
+
+        u_long io_timeout;
+        u_long lock_timeout;
+
         class creator;
         static creator const creator_inst;
 };

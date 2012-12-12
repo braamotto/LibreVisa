@@ -13,9 +13,6 @@ public:
 
         virtual ~session() throw() { }
 
-        virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId) = 0;
-        virtual ViStatus Unlock() = 0;
-
         virtual ViStatus Close();
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);

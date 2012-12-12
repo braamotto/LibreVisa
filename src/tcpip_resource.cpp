@@ -34,8 +34,26 @@ ViStatus tcpip_resource::SetAttribute(ViAttr attr, ViAttrState attrState)
         return resource::SetAttribute(attr, attrState);
 }
 
-ViStatus tcpip_resource::Write(ViBuf, ViUInt32, ViUInt32 *)
+ViStatus tcpip_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {
+        Device_WriteParms write_parms =
+        {
+                lid,
+                io_timeout,
+                lock_timeout,
+                0,
+                {
+                        static_cast<u_int>(count),
+                        reinterpret_cast<char *>(buf)
+                }
+        };
+
+        Device_WriteResp *write_resp = device_write_1(&write_parms, client);
+
+        *retCount = write_resp->size;
+
+        // @todo handle errors
+
         return VI_SUCCESS;
 }
 

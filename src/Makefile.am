@@ -2,7 +2,6 @@ lib_LTLIBRARIES = libvisa.la
 
 libvisa_la_SOURCES = \
 	exception.h \
-	local_session.cpp local_session.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
 	resource.h \
