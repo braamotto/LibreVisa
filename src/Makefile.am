@@ -12,19 +12,19 @@ libvisa_la_SOURCES = \
 	resource_manager_session.cpp resource_manager_session.h \
 	resource_session.cpp resource_session.h \
 	session.cpp session.h \
+	viBufWrite.cpp \
 	viClose.cpp \
+	viFlush.cpp \
 	viGetAttribute.cpp \
 	viLock.cpp \
 	viOpen.cpp \
 	viOpenDefaultRM.cpp \
 	viParseRsrc.cpp \
-	viSetAttribute.cpp \
-	viUnlock.cpp \
-	viSetBuf.cpp \
-	viFlush.cpp \
-	viBufWrite.cpp \
-	viVPrintf.cpp \
 	viPrintf.cpp \
+	viSetAttribute.cpp \
+	viSetBuf.cpp \
+	viUnlock.cpp \
+	viVPrintf.cpp \
 	$(VXI_SOURCES)
 
 if WITH_VXI
