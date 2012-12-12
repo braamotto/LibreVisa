@@ -2,6 +2,7 @@ SUBDIRS = . io
 
 check_PROGRAMS = \
 	lock_attr_exclusive \
+        lock_attr_global \
 	lock_attr_shared \
 	lock_invalid_mode \
 	rule_3_2_3 \
