@@ -59,15 +59,20 @@ ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList)
                                 default:
                                         return VI_ERROR_INV_FMT;
                                 }
-
-                                f++;
                         }
 
                         // @todo Actually process format string
 
-                        *p++ = *f++;
+                        *p++ = *f;
                         s->SetFmtWriteBufCnt(s->GetFmtWriteBufCnt()+1);
+                        if(s->GetFmtWriteBufCnt() >= s->GetFmtWriteBufSiz()) {
+                                ViStatus ret;
+                                ret = viFlush(vi, VI_WRITE_BUF);
+                                if(ret != VI_SUCCESS)
+                                        return ret;
+                        }
                 }
+
                 return VI_SUCCESS;
 	}
         catch(std::bad_alloc &e)

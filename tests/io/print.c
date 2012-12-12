@@ -2,42 +2,53 @@
 #include <config.h>
 #endif
 
-#include <visa.h>
-#include <stdio.h>
-
 #include "dummy.h"
+
+#include <visa.h>
+#include <string.h>
+#include <stdio.h>
 
 int main()
 {
         using_dummy_resource();
 
-        ViSession rm;
-        ViStatus rc = viOpenDefaultRM(&rm);
+        ViSession rmgr;
 
-        if(rc != VI_SUCCESS)
+        if(viOpenDefaultRM(&rmgr) != VI_SUCCESS)
                 return 1;
 
-        ViSession dummySession;
+        ViSession vi;
 
-        rc = viOpen(rm, "DUMMY", VI_NO_LOCK, 0, &dummySession);
-
-        if(rc != VI_SUCCESS)
+        if(viOpen(rmgr, "DUMMY", VI_NO_LOCK, 0, &vi) != VI_SUCCESS)
                 return 1;
 
-        if(dummySession == VI_NULL)
+        if(viSetBuf(vi, VI_WRITE_BUF, 42) != VI_SUCCESS)
+                return 1;
+        if(viPrintf(vi, "foo\\rbar\\n\\\\baz") != VI_SUCCESS)
+                return 1;
+        if(viFlush(vi, VI_WRITE_BUF) != VI_SUCCESS)
                 return 1;
 
-        if(dummySession == rm)
+        dummy_reader_restart();
+
+        if(dummy_reader_isempty())
                 return 1;
 
-        viSetBuf(dummySession, VI_WRITE_BUF, 42);
-        viPrintf(dummySession, "foobar\\nbaz");
+        ViUInt32 count;
+        ViByte const *data = dummy_reader_read(&count);
 
-        // @todo Do a debug output of buffer contents
+        char *testdata = "foo\rbar\n\\baz";
 
-        viClose(rm);
+        if(count != strlen(testdata))
+                return 1;
 
-        if(rc != VI_SUCCESS)
+        if(memcmp(data, testdata, sizeof testdata))
+                return 1;
+
+        if(viClose(vi) != VI_SUCCESS)
+                return 1;
+
+        if(viClose(rmgr) != VI_SUCCESS)
                 return 1;
 
         return 0;
