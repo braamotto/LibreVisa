@@ -14,6 +14,8 @@ public:
         virtual ~session() throw() { }
 
         virtual ViStatus Close();
+        virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
+        virtual ViStatus Unlock();
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
 
@@ -66,6 +68,9 @@ public:
         void SetIOOutBufCnt(ViUInt32 i) {io_out_buf_cnt=i;}
         ViAByte GetIOOutBuf() {return io_out_buf;}
         void SetIOOutBuf(ViAByte a) {io_out_buf=a;}
+
+private:
+        unsigned int exclusive_lock_count, shared_lock_count;
 };
 
 }
