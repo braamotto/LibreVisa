@@ -2,12 +2,12 @@
 #define freevisa_resource_session_h_ 1
 
 #include "resource.h"
-#include "local_session.h"
+#include "session.h"
 
 namespace freevisa {
 
 class resource_session :
-        public local_session
+        public session
 {
 public:
         explicit resource_session(resource &r) : r(r) { }

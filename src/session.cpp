@@ -28,7 +28,6 @@ session::session()
 
 ViStatus session::Close()
 {
-        delete this;
         return VI_SUCCESS;
 }
 

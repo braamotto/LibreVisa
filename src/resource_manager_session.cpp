@@ -8,7 +8,7 @@ namespace freevisa {
 
 ViStatus resource_manager_session::GetAttribute(ViAttr attr, void *attrState)
 {
-        ViStatus rc = local_session::GetAttribute(attr, attrState);
+        ViStatus rc = session::GetAttribute(attr, attrState);
         if(rc == VI_ERROR_NSUP_ATTR)
                 rc = rm.GetAttribute(attr, attrState);
 
@@ -17,7 +17,7 @@ ViStatus resource_manager_session::GetAttribute(ViAttr attr, void *attrState)
 
 ViStatus resource_manager_session::SetAttribute(ViAttr attr, ViAttrState attrState)
 {
-        ViStatus rc = local_session::SetAttribute(attr, attrState);
+        ViStatus rc = session::SetAttribute(attr, attrState);
         if(rc == VI_ERROR_NSUP_ATTR)
                 rc = rm.SetAttribute(attr, attrState);
 

@@ -2,12 +2,12 @@
 #define freevisa_resource_manager_session_h_ 1
 
 #include "resource_manager.h"
-#include "local_session.h"
+#include "session.h"
 
 namespace freevisa {
 
 class resource_manager_session :
-        public local_session
+        public session
 {
 public:
         explicit resource_manager_session(resource_manager &rm) : rm(rm) { }
