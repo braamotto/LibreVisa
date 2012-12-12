@@ -20,16 +20,18 @@ ViStatus object::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId access
 
         if(accessMode == VI_SHARED_LOCK)
         {
+                bool const nested = (shared_lock_count);
                 ++shared_lock_count;
-                return VI_SUCCESS;
+                return nested ? VI_SUCCESS_NESTED_SHARED : VI_SUCCESS;
         }
 
         if(accessMode == VI_EXCLUSIVE_LOCK)
         {
+                bool const nested = (exclusive_lock_count);
                 ++exclusive_lock_count;
                 if(accessKey)
                         *accessKey = '\0';
-                return VI_SUCCESS;
+                return nested ? VI_SUCCESS_NESTED_EXCLUSIVE : VI_SUCCESS;
         }
 
         // @todo
