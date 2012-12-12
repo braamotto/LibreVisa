@@ -5,6 +5,8 @@ check_PROGRAMS = \
         lock_attr_global \
 	lock_attr_shared \
 	lock_invalid_mode \
+        lock_recursive_exclusive \
+        lock_recursive_shared \
 	rule_3_2_3 \
 	rule_3_3_2 \
 	rule_3_6_38 \
