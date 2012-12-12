@@ -42,7 +42,17 @@ int main()
         if(count != strlen(testdata))
                 return 1;
 
-        if(memcmp(data, testdata, sizeof testdata))
+        if(memcmp(data, testdata, strlen(testdata)))
+                return 1;
+
+        unsigned char buf[42];
+        if(viSPrintf(vi, buf, "\\42foo\\rbar\\n\\\\baz\\05\\2342") != VI_SUCCESS)
+                return 1;
+
+        if(memcmp(buf, testdata, strlen(testdata)))
+                return 1;
+
+        if(*(buf + strlen(testdata)) != '\0')
                 return 1;
 
         if(viClose(vi) != VI_SUCCESS)

@@ -1,6 +1,7 @@
 lib_LTLIBRARIES = libvisa.la
 
 libvisa_la_SOURCES = \
+	base_vprintf.cpp base_vprintf.h \
 	exception.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
@@ -22,8 +23,10 @@ libvisa_la_SOURCES = \
 	viPrintf.cpp \
 	viSetAttribute.cpp \
 	viSetBuf.cpp \
+	viSPrintf.cpp \
 	viUnlock.cpp \
 	viVPrintf.cpp \
+	viVSPrintf.cpp \
         viWrite.cpp \
 	$(VXI_SOURCES)
 
