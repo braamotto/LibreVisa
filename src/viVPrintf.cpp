@@ -24,8 +24,9 @@ ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList)
                         return VI_ERROR_IO;
 
                 ViByte *p = s->GetFmtWriteBuf() + s->GetFmtWriteBufCnt();
-                ViChar *f;
-                for(f = writeFmt; *f; f++) {
+                ViChar *f = writeFmt;
+
+                for(; *f; f++) {
                         if(*f == '\\') {
                                 switch(*++f) {
                                 case 'n':
@@ -45,25 +46,29 @@ ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList)
                                         break;
                                 case '0' ... '7':
                                 {
-                                        char oct[3+1] = {*f,0,0,0};
-                                        int i;
-                                        for(i=1; i<3; i++) {
-                                                if(*p >= '0' && *p <= '7')
-                                                        oct[i] = *f;
-                                                p++;
+                                        char oct[3+1] = {0,0,0,0};
+                                        if((*f >= '0' && *f <= '7')) {
+                                                oct[0] = *f++;
+                                                if((*f >= '0' && *f <= '7')) {
+                                                        oct[1] = *f++;
+                                                        if((*f >= '0' && *f <= '7'))
+                                                                oct[2] = *f++;
+                                                }
                                         }
+                                        f--;
                                         ViByte n = strtoul(oct, 0, 8);
                                         *p++ = n;
-                                }
                                         break;
+                                }
                                 default:
                                         return VI_ERROR_INV_FMT;
                                 }
+                        } else {
+                                *p++ = *f;
                         }
 
                         // @todo Actually process format string
 
-                        *p++ = *f;
                         s->SetFmtWriteBufCnt(s->GetFmtWriteBufCnt()+1);
                         if(s->GetFmtWriteBufCnt() >= s->GetFmtWriteBufSiz()) {
                                 ViStatus ret;
