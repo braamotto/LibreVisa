@@ -24,7 +24,7 @@ int main()
 
         if(viSetBuf(vi, VI_WRITE_BUF, 42) != VI_SUCCESS)
                 return 1;
-        if(viPrintf(vi, "foo\\rbar\\n\\\\baz") != VI_SUCCESS)
+        if(viPrintf(vi, "\\42foo\\rbar\\n\\\\baz\\05\\2342") != VI_SUCCESS)
                 return 1;
         if(viFlush(vi, VI_WRITE_BUF) != VI_SUCCESS)
                 return 1;
@@ -37,7 +37,7 @@ int main()
         ViUInt32 count;
         ViByte const *data = dummy_reader_read(&count);
 
-        char *testdata = "foo\rbar\n\\baz";
+        char *testdata = "\42foo\rbar\n\\baz\05\2342";
 
         if(count != strlen(testdata))
                 return 1;
