@@ -22,6 +22,8 @@ public:
 
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
 
+        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
+
 protected:
         ViUInt32 fmt_read_buf_siz;
         ViUInt32 fmt_read_buf_cnt;

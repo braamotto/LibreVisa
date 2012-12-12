@@ -34,6 +34,11 @@ ViStatus tcpip_resource::SetAttribute(ViAttr attr, ViAttrState attrState)
         return resource::SetAttribute(attr, attrState);
 }
 
+ViStatus tcpip_resource::Write(ViBuf, ViUInt32, ViUInt32 *)
+{
+        return VI_SUCCESS;
+}
+
 class tcpip_resource::creator :
         public resource_creator
 {

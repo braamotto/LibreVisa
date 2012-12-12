@@ -37,6 +37,12 @@ ViStatus session::Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *)
         return VI_ERROR_NSUP_OPER;
 }
 
+ViStatus session::Write(ViBuf, ViUInt32, ViUInt32 *retCount)
+{
+        *retCount = 0;
+        return VI_ERROR_NSUP_OPER;
+}
+
 ViStatus session::GetAttribute(ViAttr attr, void *attrState)
 {
         return object::GetAttribute(attr, attrState);

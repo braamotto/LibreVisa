@@ -14,6 +14,7 @@ public:
         virtual ViStatus Unlock();
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
 private:
         class creator;

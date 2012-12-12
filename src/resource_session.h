@@ -14,6 +14,8 @@ public:
 
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+        
+        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
         resource &get() const { return r; }
 

@@ -8,6 +8,8 @@ namespace freevisa {
 class resource :
         public object
 {
+public:
+        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *) = 0;
 };
 
 }

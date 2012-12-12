@@ -24,4 +24,9 @@ ViStatus resource_session::SetAttribute(ViAttr attr, ViAttrState attrState)
         return rc;
 }
 
+ViStatus resource_session::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
+{
+        return r.Write(buf, count, retCount);
+}
+
 }
