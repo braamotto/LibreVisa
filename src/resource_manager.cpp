@@ -3,6 +3,7 @@
 #endif
 
 #include "resource_manager.h"
+#include "resource_creator.h"
 
 #include "resource.h"
 #include "object_cache.h"
@@ -80,14 +81,14 @@ ViStatus resource_manager::ParseRsrc(
 
 void resource_manager::register_creator(resource_creator const &cre)
 {
-        creators[cre.name()] = &cre;
+        creators.push_back(&cre);
 }
 
 resource *resource_manager::create(ViRsrc rsrcName)
 {
         for(creator_iterator i = creators.begin(); i != creators.end(); ++i)
         {
-                resource *rsrc = i->second->create(rsrcName);
+                resource *rsrc = (*i)->create(rsrcName);
                 if(rsrc)
                         return rsrc;
         }

@@ -3,12 +3,11 @@
 
 #include "resource.h"
 
-#include "resource_creator.h"
-
-#include <map>
-#include <cstring>
+#include <list>
 
 namespace freevisa {
+
+class resource_creator;
 
 class resource_manager :
         public resource
@@ -41,16 +40,11 @@ public:
 private:
         unsigned int refcount;
 
-        struct case_insensitive_less
-        {
-                bool operator()(char const *lhs, char const *rhs) { return strcasecmp(lhs, rhs) < 0; }
-        };
+        typedef std::list<resource_creator const *> creator_list;
+        typedef creator_list::iterator creator_iterator;
+        typedef creator_list::const_iterator creator_const_iterator;
 
-        typedef std::map<char const *, resource_creator const *, case_insensitive_less> creator_map;
-        typedef creator_map::iterator creator_iterator;
-        typedef creator_map::const_iterator creator_const_iterator;
-
-        creator_map creators;
+        creator_list creators;
 };
 
 extern resource_manager default_resource_manager;
