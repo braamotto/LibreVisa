@@ -85,11 +85,13 @@ void resource_manager::register_creator(resource_creator const &cre)
 
 resource *resource_manager::create(ViRsrc rsrcName)
 {
-        // @todo use viParseRsrc
-        creator_iterator i = creators.find(rsrcName);
-        if(i == creators.end())
-                throw exception(VI_ERROR_RSRC_NFOUND);
-        return i->second->create(rsrcName);
+        for(creator_iterator i = creators.begin(); i != creators.end(); ++i)
+        {
+                resource *rsrc = i->second->create(rsrcName);
+                if(rsrc)
+                        return rsrc;
+        }
+        throw exception(VI_ERROR_RSRC_NFOUND);
 }
 
 resource_manager default_resource_manager;
