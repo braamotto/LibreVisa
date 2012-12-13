@@ -22,9 +22,11 @@ int main()
         if(viOpen(rmgr, "DUMMY", VI_NO_LOCK, 0, &vi) != VI_SUCCESS)
                 return 1;
 
+        char *fmt = "%d%1X%5d%2s\\42foo\\rbar\\n\\\\baz\\05\\2342";
+
         if(viSetBuf(vi, VI_WRITE_BUF, 42) != VI_SUCCESS)
                 return 1;
-        if(viPrintf(vi, "\\42foo\\rbar\\n\\\\baz\\05\\2342") != VI_SUCCESS)
+        if(viPrintf(vi, fmt, 0, 0xbeef, 1234, "Fnord" ) != VI_SUCCESS)
                 return 1;
         if(viFlush(vi, VI_WRITE_BUF) != VI_SUCCESS)
                 return 1;
@@ -37,7 +39,7 @@ int main()
         ViUInt32 count;
         ViByte const *data = dummy_reader_read(&count);
 
-        char *testdata = "\42foo\rbar\n\\baz\05\2342";
+        char *testdata = "0BEEF 1234Fnord\42foo\rbar\n\\baz\05\2342";
 
         if(count != strlen(testdata))
                 return 1;
@@ -46,7 +48,7 @@ int main()
                 return 1;
 
         unsigned char buf[42];
-        if(viSPrintf(vi, buf, "\\42foo\\rbar\\n\\\\baz\\05\\2342") != VI_SUCCESS)
+        if(viSPrintf(vi, buf, fmt, 0, 0xbeef, 1234, "Fnord") != VI_SUCCESS)
                 return 1;
 
         if(memcmp(buf, testdata, strlen(testdata)))
