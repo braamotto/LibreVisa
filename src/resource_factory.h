@@ -12,7 +12,7 @@ namespace freevisa {
 class resource_factory
 {
 public:
-        ~resource_factory() throw();
+        ~resource_factory() throw() {}
 
         resource *create(ViRsrc rsrc);
 
