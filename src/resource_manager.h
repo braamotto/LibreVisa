@@ -2,11 +2,13 @@
 #define freevisa_resource_manager_h_ 1
 
 #include "resource.h"
+#include "resource_factory.h"
 
 namespace freevisa {
 
 class resource_manager :
-        public resource
+        public resource,
+        public resource_factory
 {
 public:
         resource_manager();

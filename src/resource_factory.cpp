@@ -2,7 +2,7 @@
 #include <config.h>
 #endif
 
-#include "resource_factory.h"
+#include "resource_manager.h"
 
 #include "exception.h"
 
@@ -22,6 +22,6 @@ resource *resource_factory::create(ViRsrc rsrcName)
         return i->second->create(rsrcName);
 }
 
-resource_factory resource_factory::instance;
+resource_factory &resource_factory::instance = default_resource_manager;
 
 }
