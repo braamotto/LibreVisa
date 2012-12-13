@@ -6,7 +6,7 @@
 
 #include "resource.h"
 #include "resource_creator.h"
-#include "resource_factory.h"
+#include "resource_manager.h"
 
 #include <list>
 #include <string>
@@ -80,7 +80,7 @@ void dummy_reader_reset()
 
 void using_dummy_resource()
 {
-        resource_factory::instance.register_creator(dummy_creator::instance);
+        default_resource_manager.register_creator(dummy_creator::instance);
         dummy_reader_reset();
 }
 

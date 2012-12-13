@@ -22,6 +22,4 @@ resource *resource_factory::create(ViRsrc rsrcName)
         return i->second->create(rsrcName);
 }
 
-resource_factory &resource_factory::instance = default_resource_manager;
-
 }

@@ -19,8 +19,6 @@ public:
         void register_creator(resource_creator const &);
         void unregister_creator(resource_creator const &);
 
-        static resource_factory &instance;
-
 private:
         struct case_insensitive_less
         {

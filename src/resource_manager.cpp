@@ -26,7 +26,7 @@ ViStatus resource_manager::Open(ViRsrc rsrcName, ViAccessMode /*accessMode*/, Vi
 {
         try
         {
-                resource *res = resource_factory::instance.create(rsrcName);
+                resource *res = create(rsrcName);
                 *vi = objects.add(*res);        // @todo fix leak
                 return VI_SUCCESS;
         }
