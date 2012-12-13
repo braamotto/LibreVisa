@@ -10,7 +10,6 @@ namespace freevisa {
 
 ViStatus tcpip_resource::Close()
 {
-        delete this;
         return VI_SUCCESS;
 }
 
