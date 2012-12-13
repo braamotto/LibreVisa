@@ -7,7 +7,6 @@ libvisa_la_SOURCES = \
 	object_cache.cpp object_cache.h \
 	resource.h \
 	resource_creator.h \
-	resource_factory.cpp resource_factory.h \
 	resource_manager.cpp resource_manager.h \
 	session.cpp session.h \
 	viBufWrite.cpp \

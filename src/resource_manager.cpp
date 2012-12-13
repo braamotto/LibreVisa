@@ -5,7 +5,6 @@
 #include "resource_manager.h"
 
 #include "resource.h"
-#include "resource_factory.h"
 #include "object_cache.h"
 
 namespace freevisa {
@@ -77,6 +76,20 @@ ViStatus resource_manager::ParseRsrc(
         ViString *)//aliasIfExists)
 {
         return VI_ERROR_NSUP_OPER;
+}
+
+void resource_manager::register_creator(resource_creator const &cre)
+{
+        creators[cre.name()] = &cre;
+}
+
+resource *resource_manager::create(ViRsrc rsrcName)
+{
+        // @todo use viParseRsrc
+        creator_iterator i = creators.find(rsrcName);
+        if(i == creators.end())
+                throw exception(VI_ERROR_RSRC_NFOUND);
+        return i->second->create(rsrcName);
 }
 
 resource_manager default_resource_manager;
