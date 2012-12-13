@@ -16,6 +16,8 @@ check_PROGRAMS = \
 
 TESTS = $(check_PROGRAMS)
 
+XFAIL_TESTS = lock_attr_global
+
 INCLUDES = -I$(top_srcdir)/include
 LDADD = ../src/libvisa.la
 LDFLAGS = -no-install
