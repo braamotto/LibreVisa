@@ -9,8 +9,6 @@ libvisa_la_SOURCES = \
 	resource_creator.h \
 	resource_factory.cpp resource_factory.h \
 	resource_manager.cpp resource_manager.h \
-	resource_manager_session.cpp resource_manager_session.h \
-	resource_session.cpp resource_session.h \
 	session.cpp session.h \
 	viBufWrite.cpp \
 	viClose.cpp \

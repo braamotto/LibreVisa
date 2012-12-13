@@ -2,14 +2,15 @@
 #define freevisa_session_h_ 1
 
 #include "object.h"
+#include "resource.h"
 
 namespace freevisa {
 
-class session
-        : public object
+class session :
+        public object
 {
 public:
-        session();
+        session(resource &);
 
         virtual ~session() throw() { }
 
@@ -24,6 +25,8 @@ public:
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
 protected:
+        resource &res;
+
         ViUInt32 fmt_read_buf_siz;
         ViUInt32 fmt_read_buf_cnt;
         ViAByte fmt_read_buf;

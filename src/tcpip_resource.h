@@ -18,6 +18,7 @@ public:
         virtual ViStatus Unlock();
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *) { return VI_ERROR_NSUP_OPER; }
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
 private:

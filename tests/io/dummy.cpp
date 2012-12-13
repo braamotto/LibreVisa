@@ -20,6 +20,7 @@ class dummy_resource :
 {
 public:
         virtual ViStatus Close() { return VI_SUCCESS; }
+        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *) { return VI_ERROR_NSUP_OPER; }
         virtual ViStatus Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
         {
                 log.push_back(log_line_type(buf, count));

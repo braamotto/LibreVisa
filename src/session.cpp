@@ -6,7 +6,8 @@
 
 namespace freevisa {
 
-session::session() :
+session::session(resource &res) :
+        res(res),
         exclusive_lock_count(0),
         shared_lock_count(0)
 {
@@ -33,15 +34,14 @@ ViStatus session::Close()
         return VI_SUCCESS;
 }
 
-ViStatus session::Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *)
+ViStatus session::Open(ViRsrc rsrc, ViAccessMode accessMode, ViUInt32 timeout, ViSession *vi)
 {
-        return VI_ERROR_NSUP_OPER;
+        return res.Open(rsrc, accessMode, timeout, vi);
 }
 
-ViStatus session::Write(ViBuf, ViUInt32, ViUInt32 *retCount)
+ViStatus session::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {
-        *retCount = 0;
-        return VI_ERROR_NSUP_OPER;
+        return res.Write(buf, count, retCount);
 }
 
 ViStatus session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId accessKey)
@@ -59,6 +59,8 @@ ViStatus session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId acces
         if(accessMode == VI_EXCLUSIVE_LOCK)
         {
                 bool const nested = (exclusive_lock_count);
+                if(!nested && !res.lock_exclusive(this))
+                        return VI_ERROR_RSRC_LOCKED;
                 ++exclusive_lock_count;
                 if(accessKey)
                         *accessKey = '\0';
@@ -75,7 +77,11 @@ ViStatus session::Unlock()
         // @todo
 
         if(exclusive_lock_count)
+        {
                 --exclusive_lock_count;
+                if(!exclusive_lock_count)
+                        res.unlock_exclusive();
+        }
         else if(shared_lock_count)
                 --shared_lock_count;
         else
@@ -99,11 +105,11 @@ ViStatus session::GetAttribute(ViAttr attr, void *attrState)
                 else if(shared_lock_count)
                         *reinterpret_cast<ViAccessMode *>(attrState) = VI_SHARED_LOCK;
                 else
-                        *reinterpret_cast<ViAccessMode *>(attrState) = VI_NO_LOCK;
+                        return res.GetAttribute(VI_ATTR_RSRC_LOCK_STATE, attrState);
                 return VI_SUCCESS;
 
         default:
-                return object::GetAttribute(attr, attrState);
+                return res.GetAttribute(attr, attrState);
         }
 }
 
@@ -115,7 +121,7 @@ ViStatus session::SetAttribute(ViAttr attr, ViAttrState attrState)
                 return VI_ERROR_ATTR_READONLY;
 
         default:
-                return object::SetAttribute(attr, attrState);
+                return res.SetAttribute(attr, attrState);
         }
 }
 

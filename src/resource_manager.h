@@ -1,19 +1,20 @@
 #ifndef freevisa_resource_manager_h_
 #define freevisa_resource_manager_h_ 1
 
-#include "object.h"
+#include "resource.h"
 
 namespace freevisa {
 
 class resource_manager :
-        public object
+        public resource
 {
 public:
         resource_manager();
 
         ViStatus Open();
 
-        ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
+        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
+        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *) { return VI_ERROR_NSUP_OPER; }
 
         virtual ViStatus Close();
         virtual ViStatus GetAttribute(ViAttr, void *);

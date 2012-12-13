@@ -9,6 +9,7 @@ class resource :
         public object
 {
 public:
+        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *) = 0;
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *) = 0;
 };
 
