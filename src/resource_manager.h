@@ -17,6 +17,13 @@ public:
 
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *) { return VI_ERROR_NSUP_OPER; }
+        virtual ViStatus ParseRsrc(
+                ViRsrc rsrc,
+                ViUInt16 *intfType,
+                ViUInt16 *intfNum,
+                ViString *rsrcClass,
+                ViString *unaliasedExpandedRsrcName,
+                ViString *aliasIfExists);
 
         virtual ViStatus Close();
         virtual ViStatus GetAttribute(ViAttr, void *);

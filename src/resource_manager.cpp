@@ -68,6 +68,17 @@ ViStatus resource_manager::SetAttribute(ViAttr attr, ViAttrState attrState)
         return object::SetAttribute(attr, attrState);
 }
 
+ViStatus resource_manager::ParseRsrc(
+        ViRsrc,//rsrc,
+        ViUInt16 *,//intfType,
+        ViUInt16 *,//intfNum,
+        ViString *,//rsrcClass,
+        ViString *,//unaliasedExpandedRsrcName,
+        ViString *)//aliasIfExists)
+{
+        return VI_ERROR_NSUP_OPER;
+}
+
 resource_manager default_resource_manager;
 
 }

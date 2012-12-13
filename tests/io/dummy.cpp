@@ -27,6 +27,10 @@ public:
                 *retCount = count;
                 return VI_SUCCESS;
         }
+        virtual ViStatus ParseRsrc(ViRsrc, ViUInt16 *, ViUInt16 *, ViString *, ViString *, ViString *)
+        {
+                return VI_ERROR_NSUP_OPER;
+        }
 
         typedef std::basic_string<ViByte> log_line_type;
         typedef std::list<log_line_type> log_type;
