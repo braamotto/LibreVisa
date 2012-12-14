@@ -56,7 +56,7 @@ void lltostr(char *pnum, unsigned long long i, int base, bool ucase)
 }
 
 
-ViStatus process_percent(ViSession vi, ViPBuf &userstring, ViChar *&f, ViVAList &arg_ptr)
+ViStatus process_percent(ViSession vi, ViPBuf &userstring, ViChar *&f, ViVAList arg_ptr)
 {
         char numbuf[23]; // has to hold signchar+LLONG_MAX chars
         char *pnum = numbuf;
