@@ -16,7 +16,11 @@ ViStatus viVSPrintf(ViSession vi, ViPBuf buf, ViString writeFmt, ViVAList params
 {
         try
         {
-                return base_vprintf(vi, buf, writeFmt, params);
+                va_list aq;
+                va_copy(aq, params);
+                ViStatus ret = base_vprintf(vi, buf, writeFmt, aq);
+                va_end(aq);
+                return ret;
         }
 	catch(exception &e)
 	{
