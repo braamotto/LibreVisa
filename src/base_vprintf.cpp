@@ -55,6 +55,30 @@ void lltostr(char *pnum, unsigned long long i, int base, bool ucase)
         *pnum = '\0';
 }
 
+void dbltostr(char *pnum, long double f, bool ucase)
+{
+        char buf[512];
+        char *bufp = buf;
+
+        if(!f)
+                *bufp++ = '0';
+
+        while(f) {
+                char c = (f - f/10.0) + '0';
+                if(c > '9')
+                        c += (ucase?'A':'a') - '9' - 1;
+                *bufp++ = c;
+                f /= 10.0;
+        }
+
+        for(--bufp; bufp >= buf; bufp--)
+                *pnum++ = *bufp;
+
+        // @todo decimal digits, exponential notation
+
+        *pnum = '\0';
+}
+
 
 ViStatus process_backslash(ViSession vi, ViPBuf &userstring, ViChar *&f)
 {
@@ -115,7 +139,7 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                 if(ret != VI_SUCCESS)
                                         return ret;
                         } else if(*f == '%') {
-                                char numbuf[23]; // has to hold signchar+LLONG_MAX chars
+                                char numbuf[512];
                                 char *pnum = numbuf;
                                 char *s;
                                 char *endptr;
@@ -129,6 +153,7 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                 int base = 10;
                                 int lng = 0;
                                 bool shrt = 0;
+                                bool padright = 0;
 
                                 ViStatus ret;
 
@@ -206,8 +231,7 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                                 lltostr(pnum, num, base, ucase);
 
                                         nprecnum = (prec==-1) ? strlen(pnum) : prec > (ViInt32)strlen(pnum) ? prec : strlen(pnum);
-
-                                        if(fwidth && fwidth > strlen(pnum)) {
+                                        if(!padright && fwidth && fwidth > strlen(pnum)) {
                                                 for(ViUInt32 n=0; n < fwidth - nprecnum; n++) {
                                                         ViStatus ret = buf_put(vi, userstring, ' ');
                                                         if(ret != VI_SUCCESS)
@@ -215,7 +239,7 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                                 }
                                         }
 
-                                        for(nprecnum = nprecnum - strlen(pnum); nprecnum > 0; nprecnum--) {
+                                        for(ViInt32 i = nprecnum - strlen(pnum); i > 0; i--) {
                                                 ViStatus ret = buf_put(vi, userstring, '0');
                                                 if(ret != VI_SUCCESS)
                                                         return ret;
@@ -228,15 +252,67 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                                         return ret;
                                         }
 
+                                        if(padright && fwidth && fwidth > strlen(numbuf)) {
+                                                for(ViUInt32 n=0; n < fwidth - nprecnum; n++) {
+                                                        ViStatus ret = buf_put(vi, userstring, ' ');
+                                                        if(ret != VI_SUCCESS)
+                                                                return ret;
+                                                }
+                                        }
+
                                         break;
                                 case 'o':
                                         base = 8;
                                         goto do_num;
+                                case 'f':
+                                        num = va_arg(arg_ptr, double);
+                                        if(!lng)
+                                                num = float(num);
+
+                                        if(num < 0 && sign) {
+                                                *pnum = '-';
+                                                num = 0 - num;
+                                                dbltostr(pnum+1, num, ucase);
+                                        }
+                                        else
+                                                dbltostr(pnum, num, ucase);
+
+                                        nprecnum = (prec==-1) ? strlen(pnum) : prec > (ViInt32)strlen(pnum) ? prec : strlen(pnum);
+
+                                        if(!padright && fwidth && fwidth > strlen(pnum)) {
+                                                for(ViUInt32 n=0; n < fwidth - nprecnum; n++) {
+                                                        ViStatus ret = buf_put(vi, userstring, ' ');
+                                                        if(ret != VI_SUCCESS)
+                                                                return ret;
+                                                }
+                                        }
+
+                                        for(ViInt32 i = nprecnum - strlen(pnum); i > 0; i--) {
+                                                ViStatus ret = buf_put(vi, userstring, '0');
+                                                if(ret != VI_SUCCESS)
+                                                        return ret;
+                                        }
+
+                                        for(pnum = numbuf; *pnum; pnum++) {
+                                                ViStatus ret = buf_put(vi, userstring, *pnum);
+                                                if(ret != VI_SUCCESS)
+                                                        return ret;
+                                        }
+
+
+                                        if(padright && fwidth && fwidth > strlen(numbuf)) {
+                                                for(ViUInt32 n=0; n < fwidth - nprecnum; n++) {
+                                                        ViStatus ret = buf_put(vi, userstring, ' ');
+                                                        if(ret != VI_SUCCESS)
+                                                                return ret;
+                                                }
+                                        }
+
+                                        break;
                                 case '.':
                                         isprec = 1;
                                         f++;
                                         goto in_fmt;
-
                                 case '0' ... '9':
                                         if(isprec)
                                                 prec = strtoul(f, &endptr, 10);
@@ -251,6 +327,11 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                                 fwidth = va_arg(arg_ptr, int);
                                         f++;
                                         goto in_fmt;
+                                case '-':
+                                        padright = 1;
+                                        f++;
+                                        goto in_fmt;
+
                                 default:
                                         // @todo lots of missing formats
 
