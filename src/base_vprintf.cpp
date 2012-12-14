@@ -244,6 +244,13 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                                 fwidth = strtoul(f, &endptr, 10);
                                         f = endptr;
                                         goto in_fmt;
+                                case '*':
+                                        if(isprec)
+                                                prec = va_arg(arg_ptr, int);
+                                        else
+                                                fwidth = va_arg(arg_ptr, int);
+                                        f++;
+                                        goto in_fmt;
                                 default:
                                         // @todo lots of missing formats
 

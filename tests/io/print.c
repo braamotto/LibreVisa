@@ -22,11 +22,11 @@ int main()
         if(viOpen(rmgr, "DUMMY", VI_NO_LOCK, 0, &vi) != VI_SUCCESS)
                 return 1;
 
-        char *fmt = "%o%5.3d%1X%5d%.2s\\42foo\\rbar\\n\\\\baz\\05\\2342";
+        char *fmt = "%o%*.*d%1X%5d%.2s\\42foo\\rbar\\n\\\\baz\\05\\2342";
 
         if(viSetBuf(vi, VI_WRITE_BUF, 42) != VI_SUCCESS)
                 return 1;
-        if(viPrintf(vi, fmt, 9, 0, 0xbeef, 1234, "Fnord" ) != VI_SUCCESS)
+        if(viPrintf(vi, fmt, 9, 5, 3, 0, 0xbeef, 1234, "Fnord" ) != VI_SUCCESS)
                 return 1;
         if(viFlush(vi, VI_WRITE_BUF) != VI_SUCCESS)
                 return 1;
@@ -48,7 +48,7 @@ int main()
                 return 1;
 
         unsigned char buf[42];
-        if(viSPrintf(vi, buf, fmt, 9, 0, 0xbeef, 1234, "Fnord") != VI_SUCCESS)
+        if(viSPrintf(vi, buf, fmt, 9, 5, 3, 0, 0xbeef, 1234, "Fnord") != VI_SUCCESS)
                 return 1;
 
         if(memcmp(buf, testdata, strlen(testdata)))
