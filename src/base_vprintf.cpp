@@ -122,11 +122,13 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                 ViUInt32 fwidth = 0;
                                 ViInt32 prec = -1;
                                 ViInt32 nprecnum;
-                                ViUInt32 num = 0;
+                                long long num = 0;
                                 bool isprec =  0;
                                 bool sign = 1;
                                 bool ucase = 0;
                                 int base = 10;
+                                int lng = 0;
+                                bool shrt = 0;
 
                                 ViStatus ret;
 
@@ -164,6 +166,19 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                         }
                                         break;
 
+                                case 'l':
+                                        lng++;
+                                        f++;
+                                        if(lng > 2)
+                                                return VI_ERROR_INV_FMT;
+                                        goto in_fmt;
+                                case 'h':
+                                        if(shrt)
+                                                return VI_ERROR_INV_FMT;
+                                        shrt=1;
+                                        f++;
+                                        goto in_fmt;
+
                                 case 'X':
                                         ucase = 1;
                                 case 'x':
@@ -173,9 +188,16 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                 case 'i':
                                 case 'd':
                                 do_num:
-                                        num = va_arg(arg_ptr, int);
+                                        if(lng == 1)
+                                                num = va_arg(arg_ptr, long);
+                                        else if(lng == 2)
+                                                num = va_arg(arg_ptr, long long);
+                                        else
+                                                num = va_arg(arg_ptr, int);
+                                        if(shrt)
+                                                num = short(num);
 
-                                        if((ViInt32)num < 0 && sign) {
+                                        if(num < 0 && sign) {
                                                 *pnum = '-';
                                                 num = 0 - num;
                                                 lltostr(pnum+1, num, base, ucase);
