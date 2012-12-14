@@ -56,110 +56,6 @@ void lltostr(char *pnum, unsigned long long i, int base, bool ucase)
 }
 
 
-ViStatus process_percent(ViSession vi, ViPBuf &userstring, ViChar *&f, ViVAList arg_ptr)
-{
-        char numbuf[23]; // has to hold signchar+LLONG_MAX chars
-        char *pnum = numbuf;
-        char *s;
-        char *endptr;
-        ViUInt32 fwidth = 0;
-        ViUInt32 prec = 0;
-        ViUInt32 num = 0;
-        ViUInt32 i;
-        bool isprec =  0;
-        bool sign = 1;
-        bool ucase = 0;
-        int base = 10;
-
-        ViStatus ret;
-
-        f++; // eat %
-
-in_fmt:
-        switch(*f) {
-        case '%':
-                ret = buf_put(vi, userstring, '%');
-                if(ret != VI_SUCCESS)
-                        return ret;
-                break;
-
-        case 'c':
-                ret = buf_put(vi, userstring, (char)va_arg(arg_ptr, int));
-                if(ret != VI_SUCCESS)
-                        return ret;
-                break;
-
-        case 's':
-                s = va_arg(arg_ptr, char *);
-
-                if(fwidth && fwidth > strlen(pnum)) {
-                        for(ViUInt32 n=0; n < fwidth - strlen(pnum); n++) {
-                                ViStatus ret = buf_put(vi, userstring, ' ');
-                                if(ret != VI_SUCCESS)
-                                        return ret;
-                        }
-                }
-                for(i=0; *s && (prec ? i<prec : 1); i++, s++) {
-                        ViStatus ret = buf_put(vi, userstring, *s);
-                        if(ret != VI_SUCCESS)
-                                return ret;
-                }
-                break;
-
-        case 'X':
-                ucase = 1;
-        case 'x':
-                base = 16;
-        case 'u':
-                sign = 0;
-        case 'i':
-        case 'd':
-                num = va_arg(arg_ptr, int);
-
-                if((ViInt32)num < 0 && sign) {
-                        *pnum++ = '-';
-                        num = 0 - num;
-                }
-
-                lltostr(pnum, num, base, ucase);
-
-                if(fwidth && fwidth > strlen(pnum)) {
-                        for(ViUInt32 n=0; n < fwidth - strlen(pnum); n++) {
-                                ViStatus ret = buf_put(vi, userstring, ' ');
-                                if(ret != VI_SUCCESS)
-                                        return ret;
-                        }
-                }
-
-                for(pnum = numbuf; *pnum && (prec ? ViUInt32(pnum - numbuf) < prec : 1); pnum++) {
-                        ViStatus ret = buf_put(vi, userstring, *pnum);
-                        if(ret != VI_SUCCESS)
-                                return ret;
-                }
-
-                break;
-        case '.':
-                isprec = 1;
-                f++;
-                goto in_fmt;
-
-        case '0' ... '9':
-                if(isprec)
-                        prec = strtoul(f, &endptr, 10);
-                else
-                        fwidth = strtoul(f, &endptr, 10);
-                f = endptr;
-                goto in_fmt;
-        default:
-                // @todo lots of missing formats
-
-                return VI_ERROR_NSUP_FMT;
-        }
-
-        return VI_SUCCESS;
-}
-
-
 ViStatus process_backslash(ViSession vi, ViPBuf &userstring, ViChar *&f)
 {
         char c;
@@ -219,9 +115,105 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                 if(ret != VI_SUCCESS)
                                         return ret;
                         } else if(*f == '%') {
-                                ViStatus ret = process_percent(vi, userstring, f, arg_ptr);
-                                if(ret != VI_SUCCESS)
-                                        return ret;
+                                char numbuf[23]; // has to hold signchar+LLONG_MAX chars
+                                char *pnum = numbuf;
+                                char *s;
+                                char *endptr;
+                                ViUInt32 fwidth = 0;
+                                ViUInt32 prec = 0;
+                                ViUInt32 num = 0;
+                                bool isprec =  0;
+                                bool sign = 1;
+                                bool ucase = 0;
+                                int base = 10;
+
+                                ViStatus ret;
+
+                                f++; // eat %
+
+                        in_fmt:
+                                switch(*f) {
+                                case '%':
+                                        ret = buf_put(vi, userstring, '%');
+                                        if(ret != VI_SUCCESS)
+                                                return ret;
+                                        break;
+
+                                case 'c':
+                                        ret = buf_put(vi, userstring, (char)va_arg(arg_ptr, int));
+                                        if(ret != VI_SUCCESS)
+                                                return ret;
+                                        break;
+
+                                case 's':
+                                        s = va_arg(arg_ptr, char *);
+
+                                        if(fwidth && fwidth > strlen(pnum)) {
+                                                for(ViUInt32 n=0; n < fwidth - strlen(pnum); n++) {
+                                                        ViStatus ret = buf_put(vi, userstring, ' ');
+                                                        if(ret != VI_SUCCESS)
+                                                                return ret;
+                                                }
+                                        }
+
+                                        prec=prec; //@todo
+
+                                        for(; *s; s++) {
+                                                ViStatus ret = buf_put(vi, userstring, *s);
+                                                if(ret != VI_SUCCESS)
+                                                        return ret;
+                                        }
+                                        break;
+
+                                case 'X':
+                                        ucase = 1;
+                                case 'x':
+                                        base = 16;
+                                case 'u':
+                                        sign = 0;
+                                case 'i':
+                                case 'd':
+                                        num = va_arg(arg_ptr, int);
+
+                                        if((ViInt32)num < 0 && sign) {
+                                                *pnum++ = '-';
+                                                num = 0 - num;
+                                        }
+
+                                        lltostr(pnum, num, base, ucase);
+
+                                        if(fwidth && fwidth > strlen(pnum)) {
+                                                for(ViUInt32 n=0; n < fwidth - strlen(pnum); n++) {
+                                                        ViStatus ret = buf_put(vi, userstring, ' ');
+                                                        if(ret != VI_SUCCESS)
+                                                                return ret;
+                                                }
+                                        }
+
+                                        for(pnum = numbuf; *pnum; pnum++) {
+                                                ViStatus ret = buf_put(vi, userstring, *pnum);
+                                                if(ret != VI_SUCCESS)
+                                                        return ret;
+                                        }
+
+                                        break;
+                                case '.':
+                                        isprec = 1;
+                                        f++;
+                                        goto in_fmt;
+
+                                case '0' ... '9':
+                                        if(isprec)
+                                                prec = strtoul(f, &endptr, 10);
+                                        else
+                                                fwidth = strtoul(f, &endptr, 10);
+                                        f = endptr;
+                                        goto in_fmt;
+                                default:
+                                        // @todo lots of missing formats
+
+                                        return VI_ERROR_NSUP_FMT;
+                                }
                         } else {
                                 ViStatus ret = buf_put(vi, userstring, *f);
                                 if(ret != VI_SUCCESS)
