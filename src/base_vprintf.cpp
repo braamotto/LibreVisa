@@ -120,7 +120,8 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                 char *s;
                                 char *endptr;
                                 ViUInt32 fwidth = 0;
-                                ViUInt32 prec = 0;
+                                ViInt32 prec = -1;
+                                ViInt32 nprecnum;
                                 ViUInt32 num = 0;
                                 bool isprec =  0;
                                 bool sign = 1;
@@ -156,9 +157,7 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                                 }
                                         }
 
-                                        prec=prec; //@todo
-
-                                        for(; *s; s++) {
+                                        for(; *s && (prec > -1 ? prec-- : 1); s++) {
                                                 ViStatus ret = buf_put(vi, userstring, *s);
                                                 if(ret != VI_SUCCESS)
                                                         return ret;
@@ -173,22 +172,33 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                         sign = 0;
                                 case 'i':
                                 case 'd':
+                                do_num:
                                         num = va_arg(arg_ptr, int);
 
                                         if((ViInt32)num < 0 && sign) {
-                                                *pnum++ = '-';
+                                                *pnum = '-';
                                                 num = 0 - num;
+                                                lltostr(pnum+1, num, base, ucase);
                                         }
+                                        else
+                                                lltostr(pnum, num, base, ucase);
 
-                                        lltostr(pnum, num, base, ucase);
+                                        nprecnum = (prec==-1) ? strlen(pnum) : prec > (ViInt32)strlen(pnum) ? prec : strlen(pnum);
 
                                         if(fwidth && fwidth > strlen(pnum)) {
-                                                for(ViUInt32 n=0; n < fwidth - strlen(pnum); n++) {
+                                                for(ViUInt32 n=0; n < fwidth - nprecnum; n++) {
                                                         ViStatus ret = buf_put(vi, userstring, ' ');
                                                         if(ret != VI_SUCCESS)
                                                                 return ret;
                                                 }
                                         }
+
+                                        for(nprecnum = nprecnum - strlen(pnum); nprecnum > 0; nprecnum--) {
+                                                ViStatus ret = buf_put(vi, userstring, '0');
+                                                if(ret != VI_SUCCESS)
+                                                        return ret;
+                                        }
+
 
                                         for(pnum = numbuf; *pnum; pnum++) {
                                                 ViStatus ret = buf_put(vi, userstring, *pnum);
@@ -197,6 +207,9 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                         }
 
                                         break;
+                                case 'o':
+                                        base = 8;
+                                        goto do_num;
                                 case '.':
                                         isprec = 1;
                                         f++;
