@@ -44,7 +44,6 @@ class dummy_creator :
         public resource_creator
 {
 public:
-        virtual char const *name() const { return "DUMMY"; }
         virtual resource *create(ViRsrc) const { return new dummy_resource; }
         static dummy_creator instance;
 };

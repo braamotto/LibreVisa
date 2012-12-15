@@ -60,14 +60,8 @@ class tcpip_resource::creator :
         public resource_creator
 {
 public:
-        virtual char const *name() const;
         virtual tcpip_resource *create(ViRsrc) const;
 };
-
-char const *tcpip_resource::creator::name() const
-{
-        return "TCPIP";
-}
 
 tcpip_resource *tcpip_resource::creator::create(ViRsrc) const
 {

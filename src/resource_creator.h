@@ -10,7 +10,6 @@ class resource;
 class resource_creator
 {
 public:
-        virtual char const *name() const = 0;
         virtual resource *create(ViRsrc) const = 0;
 };
 
