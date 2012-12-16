@@ -24,7 +24,7 @@ public:
 
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
-protected:
+private:
         resource *res;
 
         ViUInt32 fmt_read_buf_siz;
