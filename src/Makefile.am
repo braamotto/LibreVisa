@@ -18,13 +18,14 @@ libvisa_la_SOURCES = \
 	viOpenDefaultRM.cpp \
 	viParseRsrc.cpp \
 	viPrintf.cpp \
+	viRead.cpp \
 	viSetAttribute.cpp \
 	viSetBuf.cpp \
 	viSPrintf.cpp \
 	viUnlock.cpp \
 	viVPrintf.cpp \
 	viVSPrintf.cpp \
-        viWrite.cpp \
+	viWrite.cpp \
 	$(VXI_SOURCES)
 libvisa_la_LDFLAGS = -export-symbols libvisa.sym
 

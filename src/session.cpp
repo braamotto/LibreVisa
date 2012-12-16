@@ -26,6 +26,11 @@ ViStatus session::Open(ViRsrc rsrc, ViAccessMode accessMode, ViUInt32 timeout, V
         return res->Open(rsrc, accessMode, timeout, vi);
 }
 
+ViStatus session::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
+{
+        return res->Read(buf, count, retCount);
+}
+
 ViStatus session::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {
         return res->Write(buf, count, retCount);

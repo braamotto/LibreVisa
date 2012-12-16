@@ -55,6 +55,7 @@ public:
         virtual ViStatus Unlock();
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+        virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
 private:
@@ -112,6 +113,28 @@ ViStatus tcpip_resource::GetAttribute(ViAttr attr, void *attrState)
 ViStatus tcpip_resource::SetAttribute(ViAttr attr, ViAttrState attrState)
 {
         return resource::SetAttribute(attr, attrState);
+}
+
+ViStatus tcpip_resource::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
+{
+        Device_ReadParms read_parms =
+        {
+                lid,
+                count,
+                io_timeout,
+                lock_timeout,
+                0,
+                0
+        };
+
+        Device_ReadResp *read_resp = device_read_1(&read_parms, client);
+
+        ::memcpy(buf, read_resp->data.data_val, read_resp->data.data_len);
+        *retCount = read_resp->data.data_len;
+
+        // @todo handle errors
+
+        return VI_SUCCESS;
 }
 
 ViStatus tcpip_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)

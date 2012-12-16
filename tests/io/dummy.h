@@ -15,6 +15,8 @@ bool dummy_reader_isempty();
 ViByte const *dummy_reader_read(ViUInt32 *count);
 void dummy_reader_reset();
 
+void dummy_writer_append(char const *data, unsigned int count, ViStatus ret);
+
 #ifdef __cplusplus
 }
 #endif
