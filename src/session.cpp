@@ -9,7 +9,8 @@ namespace freevisa {
 session::session(resource *res) :
         res(res),
         exclusive_lock_count(0),
-        shared_lock_count(0)
+        shared_lock_count(0),
+        event_queue_length(0)
 {
         res->add_ref();
 }
@@ -100,6 +101,10 @@ ViStatus session::GetAttribute(ViAttr attr, void *attrState)
                         return res->GetAttribute(VI_ATTR_RSRC_LOCK_STATE, attrState);
                 return VI_SUCCESS;
 
+        case VI_ATTR_MAX_QUEUE_LENGTH:
+                *reinterpret_cast<ViUInt32 *>(attrState) = event_queue_length;
+                return VI_SUCCESS;
+
         default:
                 return res->GetAttribute(attr, attrState);
         }
@@ -111,6 +116,12 @@ ViStatus session::SetAttribute(ViAttr attr, ViAttrState attrState)
         {
         case VI_ATTR_RSRC_LOCK_STATE:
                 return VI_ERROR_ATTR_READONLY;
+
+        case VI_ATTR_MAX_QUEUE_LENGTH:
+                if(attrState > 0xffffffff)
+                        return VI_ERROR_NSUP_ATTR_STATE;
+                event_queue_length = attrState;
+                return VI_SUCCESS;
 
         default:
                 return res->SetAttribute(attr, attrState);

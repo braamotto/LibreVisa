@@ -71,6 +71,8 @@ private:
         buffer fmt_write_buf;
         buffer io_in_buf;
         buffer io_out_buf;
+
+        unsigned int event_queue_length;
 };
 
 }
