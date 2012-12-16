@@ -29,7 +29,7 @@ libvisa_la_SOURCES = \
 libvisa_la_LDFLAGS = -export-symbols libvisa.sym
 
 if WITH_VXI
-VXI_SOURCES = tcpip_resource.cpp tcpip_resource.h
+VXI_SOURCES = tcpip.cpp
 else
 VXI_SOURCES =
 endif

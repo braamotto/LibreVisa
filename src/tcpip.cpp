@@ -2,7 +2,7 @@
 #include <config.h>
 #endif
 
-#include "tcpip_resource.h"
+#include "resource.h"
 
 #include "resource_creator.h"
 #include "resource_manager.h"
@@ -10,8 +10,11 @@
 #include "exception.h"
 
 #include <limits>
+#include <string>
 
-namespace freevisa {
+#include <rpc/rpc.h>
+
+#include <vxi.h>
 
 namespace {
 
@@ -38,6 +41,34 @@ unsigned int parse_optional_int(char const *&cursor)
 }
 
 }
+
+namespace freevisa {
+
+class tcpip_resource :
+        public resource
+{
+public:
+        tcpip_resource(std::string const &hostname);
+
+        virtual ViStatus Close();
+        virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
+        virtual ViStatus Unlock();
+        virtual ViStatus GetAttribute(ViAttr, void *);
+        virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
+
+private:
+        // RPC
+        CLIENT *client;
+
+        Device_Link lid;
+
+        u_long io_timeout;
+        u_long lock_timeout;
+
+        class creator;
+        static creator const creator_inst;
+};
 
 tcpip_resource::tcpip_resource(std::string const &hostname) :
         io_timeout(10), lock_timeout(10)
