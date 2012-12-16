@@ -11,22 +11,6 @@ session::session(resource *res) :
         exclusive_lock_count(0),
         shared_lock_count(0)
 {
-        fmt_read_buf_siz = 0;
-        fmt_read_buf_cnt = 0;
-        fmt_read_buf = 0;
-
-        fmt_write_buf_siz = 0;
-        fmt_write_buf_cnt = 0;
-        fmt_write_buf = 0;
-
-        io_in_buf_siz = 0;
-        io_in_buf_cnt = 0;
-        io_in_buf = 0;
-
-        io_out_buf_siz = 0;
-        io_out_buf_cnt = 0;
-        io_out_buf = 0;
-
         res->add_ref();
 }
 
