@@ -3,6 +3,8 @@
 
 #include "resource.h"
 
+#include <string>
+
 #include <rpc/rpc.h>
 
 #include <vxi.h>
@@ -13,6 +15,8 @@ class tcpip_resource :
         public resource
 {
 public:
+        tcpip_resource(std::string const &hostname);
+
         virtual ViStatus Close();
         virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
         virtual ViStatus Unlock();
