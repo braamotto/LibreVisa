@@ -7,7 +7,7 @@
 namespace freevisa {
 
 resource::resource() :
-        exclusive_lock_holder(0)
+        refcount(0), exclusive_lock_holder(0)
 {
         return;
 }

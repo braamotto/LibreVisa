@@ -13,10 +13,10 @@ class resource :
 public:
         resource();
 
-protected:
-        ~resource() throw() { }
-
 public:
+        unsigned int add_ref() { return ++refcount; }
+        unsigned int release() { return --refcount; }
+
         virtual ViStatus GetAttribute(ViAttr, void *);
 
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *)
@@ -44,6 +44,7 @@ public:
         void unlock_exclusive();
 
 private:
+        unsigned int refcount;
         session const *exclusive_lock_holder;
 };
 

@@ -13,10 +13,7 @@ class resource_manager :
         public resource
 {
 public:
-        resource_manager();
         ~resource_manager() throw() { }
-
-        ViStatus Open();
 
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
         virtual ViStatus ParseRsrc(

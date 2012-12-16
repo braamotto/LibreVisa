@@ -27,11 +27,14 @@ session::session(resource *res) :
         io_out_buf_cnt = 0;
         io_out_buf = 0;
 
+        res->add_ref();
 }
 
 ViStatus session::Close()
 {
-        return VI_SUCCESS;
+        if(res->release() != 0)
+                return VI_SUCCESS;
+        return res->Close();
 }
 
 ViStatus session::Open(ViRsrc rsrc, ViAccessMode accessMode, ViUInt32 timeout, ViSession *vi)

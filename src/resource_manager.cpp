@@ -10,18 +10,6 @@
 
 namespace freevisa {
 
-resource_manager::resource_manager() :
-        refcount(0)
-{
-        return;
-}
-
-ViStatus resource_manager::Open()
-{
-        ++refcount;
-        return VI_SUCCESS;
-}
-
 ViStatus resource_manager::Open(ViRsrc rsrcName, ViAccessMode /*accessMode*/, ViUInt32 /*timeout*/, ViSession *vi)
 {
         try
@@ -42,7 +30,7 @@ ViStatus resource_manager::Open(ViRsrc rsrcName, ViAccessMode /*accessMode*/, Vi
 
 ViStatus resource_manager::Close()
 {
-        --refcount;
+        // Closing the last instance of the resource manager has no effect.
         return VI_SUCCESS;
 }
 
