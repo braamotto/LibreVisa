@@ -27,7 +27,7 @@ ViStatus resource_manager::Open(ViRsrc rsrcName, ViAccessMode /*accessMode*/, Vi
         try
         {
                 resource *res = create(rsrcName);
-                *vi = objects.add(*res);        // @todo fix leak
+                *vi = objects.add(res);
                 return VI_SUCCESS;
         }
         catch(std::bad_alloc &e)

@@ -10,7 +10,7 @@ class session :
         public object
 {
 public:
-        session(resource &);
+        session(resource *);
 
         virtual ~session() throw() { }
 
@@ -25,7 +25,7 @@ public:
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
 protected:
-        resource &res;
+        resource *res;
 
         ViUInt32 fmt_read_buf_siz;
         ViUInt32 fmt_read_buf_cnt;

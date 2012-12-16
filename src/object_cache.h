@@ -20,7 +20,7 @@ public:
 
         void remove(ViObject) throw(exception);
 
-        ViSession add(resource &) throw(exception);
+        ViSession add(resource *) throw(exception);
 
 private:
         typedef std::map<ViSession, session> smap;

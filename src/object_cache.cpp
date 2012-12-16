@@ -52,7 +52,7 @@ void object_cache::remove(ViObject vi) throw(exception)
         throw(VI_ERROR_INV_OBJECT);
 }
 
-ViSession object_cache::add(resource &res) throw(exception)
+ViSession object_cache::add(resource *res) throw(exception)
 {
         return sessions.insert(std::make_pair(find_id(), session(res))).first->first;
 }

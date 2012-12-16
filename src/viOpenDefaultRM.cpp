@@ -18,7 +18,7 @@ ViStatus viOpenDefaultRM(ViSession *sesn)
 
         try
         {
-                *sesn = objects.add(default_resource_manager);
+                *sesn = objects.add(&default_resource_manager);
                 return VI_SUCCESS;
         }
         catch(exception &e)
