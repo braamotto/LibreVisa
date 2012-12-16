@@ -26,6 +26,7 @@ libvisa_la_SOURCES = \
 	viVSPrintf.cpp \
         viWrite.cpp \
 	$(VXI_SOURCES)
+libvisa_la_LDFLAGS = -export-symbols libvisa.sym
 
 if WITH_VXI
 VXI_SOURCES = tcpip_resource.cpp tcpip_resource.h
