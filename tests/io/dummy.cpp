@@ -20,16 +20,11 @@ class dummy_resource :
 {
 public:
         virtual ViStatus Close() { return VI_SUCCESS; }
-        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *) { return VI_ERROR_NSUP_OPER; }
         virtual ViStatus Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
         {
                 log.push_back(log_line_type(buf, count));
                 *retCount = count;
                 return VI_SUCCESS;
-        }
-        virtual ViStatus ParseRsrc(ViRsrc, ViUInt16 *, ViUInt16 *, ViString *, ViString *, ViString *)
-        {
-                return VI_ERROR_NSUP_OPER;
         }
 
         typedef std::basic_string<ViByte> log_line_type;

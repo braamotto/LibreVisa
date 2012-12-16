@@ -19,7 +19,6 @@ public:
         ViStatus Open();
 
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
-        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *) { return VI_ERROR_NSUP_OPER; }
         virtual ViStatus ParseRsrc(
                 ViRsrc rsrc,
                 ViUInt16 *intfType,
