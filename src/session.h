@@ -24,26 +24,6 @@ public:
 
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
-private:
-        resource *res;
-
-        ViUInt32 fmt_read_buf_siz;
-        ViUInt32 fmt_read_buf_cnt;
-        ViAByte fmt_read_buf;
-
-        ViUInt32 fmt_write_buf_siz;
-        ViUInt32 fmt_write_buf_cnt;
-        ViAByte fmt_write_buf;
-
-        ViUInt32 io_in_buf_siz;
-        ViUInt32 io_in_buf_cnt;
-        ViAByte io_in_buf;
-
-        ViUInt32 io_out_buf_siz;
-        ViUInt32 io_out_buf_cnt;
-        ViAByte io_out_buf;
-
-public:
         ViUInt32 GetFmtReadBufSiz() {return fmt_read_buf_siz;}
         void SetFmtReadBufSiz(ViUInt32 i) {fmt_read_buf_siz=i;}
         ViUInt32 GetFmtReadBufCnt() {return fmt_read_buf_cnt;}
@@ -73,7 +53,25 @@ public:
         void SetIOOutBuf(ViAByte a) {io_out_buf=a;}
 
 private:
+        resource *res;
+
         unsigned int exclusive_lock_count, shared_lock_count;
+
+        ViUInt32 fmt_read_buf_siz;
+        ViUInt32 fmt_read_buf_cnt;
+        ViAByte fmt_read_buf;
+
+        ViUInt32 fmt_write_buf_siz;
+        ViUInt32 fmt_write_buf_cnt;
+        ViAByte fmt_write_buf;
+
+        ViUInt32 io_in_buf_siz;
+        ViUInt32 io_in_buf_cnt;
+        ViAByte io_in_buf;
+
+        ViUInt32 io_out_buf_siz;
+        ViUInt32 io_out_buf_cnt;
+        ViAByte io_out_buf;
 };
 
 }
