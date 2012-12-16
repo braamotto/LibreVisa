@@ -88,6 +88,9 @@ tcpip_resource::tcpip_resource(std::string const &hostname) :
 
 ViStatus tcpip_resource::Close()
 {
+        destroy_link_1(&lid, client);
+        clnt_destroy(client);
+        delete this;
         return VI_SUCCESS;
 }
 
