@@ -5,7 +5,7 @@ libvisa_la_SOURCES = \
 	exception.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
-	resource.h \
+	resource.cpp resource.h \
 	resource_creator.h \
 	resource_manager.cpp resource_manager.h \
 	session.cpp session.h \

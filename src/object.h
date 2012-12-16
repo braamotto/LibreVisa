@@ -5,8 +5,6 @@
 
 namespace freevisa {
 
-class session;
-
 class object
 {
 public:
@@ -17,12 +15,6 @@ public:
         virtual ViStatus Close() = 0;
         virtual ViStatus GetAttribute(ViAttr, void *);
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
-
-        bool lock_exclusive(session const *);
-        void unlock_exclusive();
-
-private:
-        session const *exclusive_lock_holder;
 };
 
 }
