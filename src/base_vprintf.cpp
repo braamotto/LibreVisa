@@ -11,7 +11,7 @@
 
 namespace freevisa {
 
-// @todo stuff strings into buffer in chunks instead of single-character-wise for speed
+/// @todo stuff strings into buffer in chunks instead of single-character-wise for speed
 ViStatus buf_put(ViSession vi, ViPBuf &userstring, ViChar c)
 {
         session *s = objects.get_session(vi);
@@ -74,7 +74,7 @@ void dbltostr(char *pnum, long double f, bool ucase)
         for(--bufp; bufp >= buf; bufp--)
                 *pnum++ = *bufp;
 
-        // @todo decimal digits, exponential notation
+        /// @todo decimal digits, exponential notation
 
         *pnum = '\0';
 }
@@ -128,8 +128,8 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
 {
         try
         {
-                // @todo return VI_ERROR_INV_SESSION if session object invalid
-                // @todo return VI_ERROR_RSRC_LOCKED if object locked
+                /// @todo return VI_ERROR_INV_SESSION if session object invalid
+                /// @todo return VI_ERROR_RSRC_LOCKED if object locked
 
                 ViChar *f = writeFmt;
 
@@ -333,7 +333,7 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                         goto in_fmt;
 
                                 default:
-                                        // @todo lots of missing formats
+                                        /// @todo lots of missing formats
 
                                         return VI_ERROR_NSUP_FMT;
                                 }

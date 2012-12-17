@@ -23,14 +23,14 @@ ViStatus viFlush(ViSession vi, ViUInt16 mask)
 
                 session *s = objects.get_session(vi);
 
-                // @todo return VI_ERROR_INV_SESSION if session object invalid
-                // @todo return VI_ERROR_RSRC_LOCKED if object locked
+                /// @todo return VI_ERROR_INV_SESSION if session object invalid
+                /// @todo return VI_ERROR_RSRC_LOCKED if object locked
 
                 if(mask & VI_READ_BUF_DISCARD) {
                         s->SetFmtReadBufCnt(0);
                 }
                 if(mask & VI_READ_BUF) {
-                        // @todo viRead
+                        /// @todo viRead
                         s->SetFmtReadBufCnt(0);
                 }
                 if(mask & VI_WRITE_BUF) {

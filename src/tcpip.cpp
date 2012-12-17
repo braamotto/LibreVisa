@@ -82,7 +82,7 @@ tcpip_resource::tcpip_resource(std::string const &hostname) :
         Create_LinkParms clp = { 1, false, lock_timeout, const_cast<char *>("INSTR") };
         Create_LinkResp *resp = create_link_1(&clp, client);
 
-        // @todo handle errors
+        /// @todo handle errors
         lid = resp->lid;
         return;
 }
@@ -132,7 +132,7 @@ ViStatus tcpip_resource::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
         ::memcpy(buf, read_resp->data.data_val, read_resp->data.data_len);
         *retCount = read_resp->data.data_len;
 
-        // @todo handle errors
+        /// @todo handle errors
 
         return VI_SUCCESS;
 }
@@ -155,7 +155,7 @@ ViStatus tcpip_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 
         *retCount = write_resp->size;
 
-        // @todo handle errors
+        /// @todo handle errors
 
         return VI_SUCCESS;
 }

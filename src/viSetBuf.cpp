@@ -16,12 +16,12 @@ ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
                    !(mask & VI_IO_IN_BUF) && !(mask & VI_IO_OUT_BUF))
                         return VI_WARN_NSUP_BUF;
 
-                // @todo viFlush(vi, mask);
+                /// @todo viFlush(vi, mask);
 
                 session *s = objects.get_session(vi);
 
-                // @todo return VI_ERROR_INV_SESSION if session object invalid
-                // @todo return VI_ERROR_RSRC_LOCKED if object locked
+                /// @todo return VI_ERROR_INV_SESSION if session object invalid
+                /// @todo return VI_ERROR_RSRC_LOCKED if object locked
 
                 if(mask & VI_READ_BUF) {
                         if(s->GetFmtReadBufSiz())

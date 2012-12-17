@@ -60,14 +60,14 @@ ViStatus session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId acces
                 return nested ? VI_SUCCESS_NESTED_EXCLUSIVE : VI_SUCCESS;
         }
 
-        // @todo
+        /// @todo
 
         return VI_SUCCESS;
 }
 
 ViStatus session::Unlock()
 {
-        // @todo
+        /// @todo
 
         if(exclusive_lock_count)
         {
