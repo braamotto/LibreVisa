@@ -2,7 +2,11 @@ lib_LTLIBRARIES = libvisa.la
 
 libvisa_la_SOURCES = \
 	base_vprintf.cpp base_vprintf.h \
+	event.h \
+	event_queue.cpp event_queue.h \
 	exception.h \
+	lock.h \
+	mutex.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
 	resource.cpp resource.h \
