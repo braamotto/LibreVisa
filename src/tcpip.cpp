@@ -147,7 +147,7 @@ ViStatus tcpip_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
                 lid,
                 io_timeout,
                 lock_timeout,
-                0,
+                8,
                 {
                         static_cast<u_int>(count),
                         reinterpret_cast<char *>(buf)
