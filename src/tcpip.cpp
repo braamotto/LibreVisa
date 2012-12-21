@@ -74,7 +74,7 @@ private:
 tcpip_resource::tcpip_resource(std::string const &hostname) :
         io_timeout(10), lock_timeout(10)
 {
-        client = clnt_create(hostname.c_str(), DEVICE_ASYNC, DEVICE_ASYNC_VERSION, "tcp");
+        client = clnt_create(hostname.c_str(), DEVICE_CORE, DEVICE_CORE_VERSION, "tcp");
 
         if(!client)
                 throw exception(VI_ERROR_RSRC_NFOUND);
