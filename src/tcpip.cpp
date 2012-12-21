@@ -82,6 +82,9 @@ tcpip_resource::tcpip_resource(std::string const &hostname) :
         Create_LinkParms clp = { 1, false, lock_timeout, const_cast<char *>("inst0") };
         Create_LinkResp *resp = create_link_1(&clp, client);
 
+        if(!resp)
+                throw exception(VI_ERROR_RSRC_NFOUND);
+
         /// @todo handle errors
         lid = resp->lid;
         return;
