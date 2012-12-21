@@ -79,7 +79,7 @@ tcpip_resource::tcpip_resource(std::string const &hostname) :
         if(!client)
                 throw exception(VI_ERROR_RSRC_NFOUND);
 
-        Create_LinkParms clp = { 1, false, lock_timeout, const_cast<char *>("INSTR") };
+        Create_LinkParms clp = { 1, false, lock_timeout, const_cast<char *>("inst0") };
         Create_LinkResp *resp = create_link_1(&clp, client);
 
         /// @todo handle errors
