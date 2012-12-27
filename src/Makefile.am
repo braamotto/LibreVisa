@@ -36,7 +36,7 @@ libvisa_la_LDFLAGS = -export-symbols $(srcdir)/libvisa.sym
 dist_noinst_DATA = libvisa.sym
 
 if WITH_VXI
-VXI_SOURCES = tcpip.cpp
+VXI_SOURCES = vxi.cpp
 else
 VXI_SOURCES =
 endif

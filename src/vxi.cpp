@@ -44,11 +44,11 @@ unsigned int parse_optional_int(char const *&cursor)
 
 namespace freevisa {
 
-class tcpip_resource :
+class vxi_resource :
         public resource
 {
 public:
-        tcpip_resource(std::string const &hostname);
+        vxi_resource(std::string const &hostname);
 
         virtual ViStatus Close();
         virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
@@ -71,7 +71,7 @@ private:
         static creator const creator_inst;
 };
 
-tcpip_resource::tcpip_resource(std::string const &hostname) :
+vxi_resource::vxi_resource(std::string const &hostname) :
         io_timeout(10), lock_timeout(10)
 {
         client = clnt_create(hostname.c_str(), DEVICE_CORE, DEVICE_CORE_VERSION, "tcp");
@@ -90,7 +90,7 @@ tcpip_resource::tcpip_resource(std::string const &hostname) :
         return;
 }
 
-ViStatus tcpip_resource::Close()
+ViStatus vxi_resource::Close()
 {
         destroy_link_1(&lid, client);
         clnt_destroy(client);
@@ -98,27 +98,27 @@ ViStatus tcpip_resource::Close()
         return VI_SUCCESS;
 }
 
-ViStatus tcpip_resource::Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId)
+ViStatus vxi_resource::Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId)
 {
         return VI_SUCCESS;
 }
 
-ViStatus tcpip_resource::Unlock()
+ViStatus vxi_resource::Unlock()
 {
         return VI_SUCCESS;
 }
 
-ViStatus tcpip_resource::GetAttribute(ViAttr attr, void *attrState)
+ViStatus vxi_resource::GetAttribute(ViAttr attr, void *attrState)
 {
         return resource::GetAttribute(attr, attrState);
 }
 
-ViStatus tcpip_resource::SetAttribute(ViAttr attr, ViAttrState attrState)
+ViStatus vxi_resource::SetAttribute(ViAttr attr, ViAttrState attrState)
 {
         return resource::SetAttribute(attr, attrState);
 }
 
-ViStatus tcpip_resource::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
+ViStatus vxi_resource::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {
         Device_ReadParms read_parms =
         {
@@ -140,7 +140,7 @@ ViStatus tcpip_resource::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
         return VI_SUCCESS;
 }
 
-ViStatus tcpip_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
+ViStatus vxi_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {
         Device_WriteParms write_parms =
         {
@@ -163,23 +163,23 @@ ViStatus tcpip_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
         return VI_SUCCESS;
 }
 
-class tcpip_resource::creator :
+class vxi_resource::creator :
         public resource_creator
 {
 public:
         creator();
 
-        virtual tcpip_resource *create(ViRsrc) const;
+        virtual vxi_resource *create(ViRsrc) const;
 
         static creator instance;
 };
 
-tcpip_resource::creator::creator()
+vxi_resource::creator::creator()
 {
         default_resource_manager.register_creator(*this);
 }
 
-tcpip_resource *tcpip_resource::creator::create(ViRsrc rsrc) const
+vxi_resource *vxi_resource::creator::create(ViRsrc rsrc) const
 {
         // Expect "TCPIP"
         if((rsrc[0] | 0x20) != 't' ||
@@ -236,9 +236,9 @@ tcpip_resource *tcpip_resource::creator::create(ViRsrc rsrc) const
         if(*cursor != '\0')
                 return 0;
 
-        return new tcpip_resource(std::string(hostname, hostname_end));
+        return new vxi_resource(std::string(hostname, hostname_end));
 }
 
-tcpip_resource::creator tcpip_resource::creator::instance;
+vxi_resource::creator vxi_resource::creator::instance;
 
 }
