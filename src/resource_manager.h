@@ -31,7 +31,7 @@ public:
         resource *create(ViRsrc rsrc);
 
         void register_creator(resource_creator const &);
-        void unregister_creator(resource_creator const &);
+        void unregister_creator(resource_creator const &) { } /// @todo
 
 private:
         unsigned int refcount;

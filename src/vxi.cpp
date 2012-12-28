@@ -156,6 +156,7 @@ class vxi_resource::creator :
 {
 public:
         creator();
+        ~creator() throw();
 
         virtual vxi_resource *create(ViRsrc) const;
 
@@ -165,6 +166,11 @@ public:
 vxi_resource::creator::creator()
 {
         default_resource_manager.register_creator(*this);
+}
+
+vxi_resource::creator::~creator() throw()
+{
+        default_resource_manager.unregister_creator(*this);
 }
 
 vxi_resource *vxi_resource::creator::create(ViRsrc rsrc) const
