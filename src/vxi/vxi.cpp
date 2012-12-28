@@ -68,7 +68,6 @@ private:
         u_long lock_timeout;
 
         class creator;
-        static creator const creator_inst;
 };
 
 vxi_resource::vxi_resource(std::string const &hostname) :
