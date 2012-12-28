@@ -31,10 +31,17 @@ libvisa_la_SOURCES = \
 	viVPrintf.cpp \
 	viVSPrintf.cpp \
 	viWrite.cpp \
+	$(USB_SOURCES) \
 	$(VXI_SOURCES)
 libvisa_la_LDFLAGS = -export-symbols $(srcdir)/libvisa.sym
 
 dist_noinst_DATA = libvisa.sym
+
+if WITH_USB
+USB_SOURCES = usb.cpp
+else
+USB_SOURCES =
+endif
 
 if WITH_VXI
 VXI_SOURCES = vxi.cpp
