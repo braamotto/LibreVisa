@@ -13,7 +13,7 @@ inline unsigned int parse_optional_int(char const *&cursor)
                 if(ret > std::numeric_limits<unsigned int>::max() / 10)
                         return 0;
                 ret *= 10;
-                ret += *cursor - '0';
+                ret += *cursor++ - '0';
         }
         return ret;
 }
