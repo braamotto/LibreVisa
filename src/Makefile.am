@@ -46,7 +46,9 @@ USB_SOURCES =
 endif
 
 if WITH_VXI
-VXI_SOURCES = vxi/vxi.cpp
+VXI_SOURCES = \
+	vxi/vxi_resource.cpp vxi/vxi_resource.h \
+	vxi/vxi_resource_creator.cpp vxi/vxi_resource_creator.h
 else
 VXI_SOURCES =
 endif

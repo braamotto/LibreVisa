@@ -5,6 +5,15 @@
 
 namespace freevisa {
 
+inline bool is_valid_in_hostname(char c)
+{
+        return
+                (c >= '0' && c <= '9') ||
+                (c >= 'A' && c <= 'Z') ||
+                (c >= 'a' && c <= 'z') ||
+                (c == '-') || (c == '.');
+}
+
 inline unsigned int parse_optional_int(char const *&cursor)
 {
         unsigned int ret = 0;

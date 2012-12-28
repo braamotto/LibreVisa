@@ -2,72 +2,20 @@
 #include <config.h>
 #endif
 
-#include "resource.h"
-
-#include "resource_creator.h"
-#include "resource_manager.h"
-
-#include "util.h"
+#include "vxi_resource.h"
 
 #include "exception.h"
 
-#include <string>
+#include <vxi_intr.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include <rpc/rpc.h>
-
-#include <vxi.h>
-#include <vxi_intr.h>
-
 extern "C" void device_intr_1(struct svc_req *rqstp, register SVCXPRT *transp);
 
-namespace {
-
-bool is_valid_in_hostname(char c)
-{
-        return
-                (c >= '0' && c <= '9') ||
-                (c >= 'A' && c <= 'Z') ||
-                (c >= 'a' && c <= 'z') ||
-                (c == '-') || (c == '.');
-}
-
-}
-
-void *device_intr_srq_1_svc(Device_SrqParms *, svc_req *)
-{
-        return 0;
-}
-
 namespace freevisa {
-
-class vxi_resource :
-        public resource
-{
-private:
-        vxi_resource(std::string const &hostname);
-
-        virtual ViStatus Close();
-        virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
-        virtual ViStatus Unlock();
-        virtual ViStatus GetAttribute(ViAttr, void *);
-        virtual ViStatus SetAttribute(ViAttr, ViAttrState);
-        virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
-        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
-
-        // RPC
-        CLIENT *client;
-
-        Device_Link lid;
-
-        u_long io_timeout;
-        u_long lock_timeout;
-
-        class creator;
-};
+namespace vxi {
 
 vxi_resource::vxi_resource(std::string const &hostname) :
         io_timeout(10), lock_timeout(10)
@@ -232,88 +180,11 @@ ViStatus vxi_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
         return VI_SUCCESS;
 }
 
-class vxi_resource::creator :
-        public resource_creator
-{
-private:
-        creator();
-        ~creator() throw();
-
-        virtual vxi_resource *create(ViRsrc) const;
-
-        static creator instance;
-};
-
-vxi_resource::creator::creator()
-{
-        default_resource_manager.register_creator(*this);
+}
 }
 
-vxi_resource::creator::~creator() throw()
+void *device_intr_srq_1_svc(Device_SrqParms *, svc_req *)
 {
-        default_resource_manager.unregister_creator(*this);
+        return 0;
 }
 
-vxi_resource *vxi_resource::creator::create(ViRsrc rsrc) const
-{
-        // Expect "TCPIP"
-        if((rsrc[0] | 0x20) != 't' ||
-                (rsrc[1] | 0x20) != 'c' ||
-                (rsrc[2] | 0x20) != 'p' ||
-                (rsrc[3] | 0x20) != 'i' ||
-                (rsrc[4] | 0x20) != 'p')
-        {
-                return 0;
-        }
-
-        // Expect optional board number
-        char const *cursor = &rsrc[5];
-        /*unsigned int board = */(void)parse_optional_int(cursor);
-
-        // Expect two colons
-        if(*cursor++ != ':')
-                return 0;
-        if(*cursor++ != ':')
-                return 0;
-
-        // Expect host name
-        char const *const hostname = cursor;
-
-        while(is_valid_in_hostname(*cursor))
-                ++cursor;
-
-        char const *const hostname_end = cursor;
-
-        // Expect two colons
-        if(*cursor++ != ':')
-                return 0;
-        if(*cursor++ != ':')
-                return 0;
-
-        // Expect "INSTR"
-        char const *const type = cursor;
-
-        if((type[0] | 0x20) != 'i' ||
-                (type[1] | 0x20) != 'n' ||
-                (type[2] | 0x20) != 's' ||
-                (type[3] | 0x20) != 't' ||
-                (type[4] | 0x20) != 'r')
-        {
-                return 0;
-        }
-
-        cursor += 5;
-
-        // Expect optional instrument instance number
-        /*unsigned int instance = */(void)parse_optional_int(cursor);
-
-        // Expect NUL
-        if(*cursor != '\0')
-                return 0;
-
-        return new vxi_resource(std::string(hostname, hostname_end));
-}
-
-vxi_resource::creator vxi_resource::creator::instance;
-
-}
