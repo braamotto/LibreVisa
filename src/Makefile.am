@@ -38,13 +38,13 @@ libvisa_la_LDFLAGS = -export-symbols $(srcdir)/libvisa.sym
 dist_noinst_DATA = libvisa.sym
 
 if WITH_USB
-USB_SOURCES = usb.cpp
+USB_SOURCES = usb/usb.cpp
 else
 USB_SOURCES =
 endif
 
 if WITH_VXI
-VXI_SOURCES = vxi.cpp
+VXI_SOURCES = vxi/vxi.cpp
 else
 VXI_SOURCES =
 endif
