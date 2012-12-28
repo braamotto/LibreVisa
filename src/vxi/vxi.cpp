@@ -47,7 +47,7 @@ namespace freevisa {
 class vxi_resource :
         public resource
 {
-public:
+private:
         vxi_resource(std::string const &hostname);
 
         virtual ViStatus Close();
@@ -58,7 +58,6 @@ public:
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
 
-private:
         // RPC
         CLIENT *client;
 
@@ -236,7 +235,7 @@ ViStatus vxi_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 class vxi_resource::creator :
         public resource_creator
 {
-public:
+private:
         creator();
         ~creator() throw();
 
