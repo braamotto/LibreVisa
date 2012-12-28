@@ -20,6 +20,7 @@ private:
         virtual ViStatus Close();
 
         openusb_handle_t openusb;
+        openusb_dev_handle_t dev;
 
         class creator;
 };
