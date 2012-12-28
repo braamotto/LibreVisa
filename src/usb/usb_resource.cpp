@@ -35,7 +35,7 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
 
                 found = true;
 
-                if(serial.size() != devdata->serialnumber->bLength)
+                if((serial.size()*2+2) != devdata->serialnumber->bLength)
                         found = false;
 
                 if(found && serial.compare(devdata->serialnumber->bString))
