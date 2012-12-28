@@ -24,6 +24,7 @@ public:
 
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
+        virtual ViStatus ReadSTB(ViUInt16 *);
 
         ViUInt32 GetFmtReadBufSiz() { return fmt_read_buf.size; }
         void SetFmtReadBufSiz(ViUInt32 i) { fmt_read_buf.size = i; }

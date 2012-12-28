@@ -24,6 +24,7 @@ libvisa_la_SOURCES = \
 	viParseRsrc.cpp \
 	viPrintf.cpp \
 	viRead.cpp \
+	viReadSTB.cpp \
 	viSetAttribute.cpp \
 	viSetBuf.cpp \
 	viSPrintf.cpp \

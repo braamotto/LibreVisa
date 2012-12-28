@@ -37,6 +37,11 @@ ViStatus session::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
         return res->Write(buf, count, retCount);
 }
 
+ViStatus session::ReadSTB(ViUInt16 *retStatus)
+{
+        return res->ReadSTB(retStatus);
+}
+
 ViStatus session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId accessKey)
 {
         if(accessMode != VI_SHARED_LOCK && accessMode != VI_EXCLUSIVE_LOCK)

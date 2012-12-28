@@ -34,6 +34,11 @@ public:
                 return VI_ERROR_NSUP_OPER;
         }
 
+        virtual ViStatus ReadSTB(ViUInt16 *)
+        {
+                return VI_ERROR_NSUP_OPER;
+        }
+
         virtual ViStatus ParseRsrc(
                 ViRsrc,
                 ViUInt16 *,
