@@ -66,7 +66,7 @@ class dummy_creator :
         public resource_creator
 {
 public:
-        virtual resource *create(ViRsrc) const { return new dummy_resource; }
+        virtual resource *create(std::vector<std::string> const &) const { return new dummy_resource; }
         static dummy_creator instance;
 };
 

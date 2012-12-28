@@ -74,9 +74,27 @@ void resource_manager::register_creator(resource_creator const &cre)
 
 resource *resource_manager::create(ViRsrc rsrcName)
 {
+        std::string const name = rsrcName;
+
+        std::vector<std::string> components;
+        std::string::const_iterator component_begin = name.begin();
+        for(std::string::const_iterator i = name.begin(); i < name.end(); ++i)
+        {
+                if(*i != ':')
+                        continue;
+                std::string::const_iterator next = i + 1;
+                if(next == name.end())
+                        continue;
+                if(*next != ':')
+                        continue;
+                components.push_back(std::string(component_begin, i));
+                component_begin = next + 1;
+        }
+        components.push_back(std::string(component_begin, name.end()));
+
         for(creator_iterator i = creators.begin(); i != creators.end(); ++i)
         {
-                resource *rsrc = (*i)->create(rsrcName);
+                resource *rsrc = (*i)->create(components);
                 if(rsrc)
                         return rsrc;
         }

@@ -9,39 +9,33 @@
 namespace freevisa {
 namespace usb {
 
-resource *usb_resource::creator::create(ViRsrc rsrc) const
+resource *usb_resource::creator::create(std::vector<std::string> const &components) const
 {
-        if((rsrc[0] | 0x20) != 'u' ||
-                (rsrc[1] | 0x20) != 's' ||
-                (rsrc[2] | 0x20) != 'b')
+        if(components.size() < 4)
+                return 0;
+
+        std::string const &transp = components[0];
+
+        if(transp.size() < 3)
+                return 0;
+        if((transp[0] | 0x20) != 'u' ||
+                (transp[1] | 0x20) != 's' ||
+                (transp[2] | 0x20) != 'b')
         {
                 return 0;
         }
 
-        char const *cursor = rsrc + 3;
+        char const *cursor = transp.data() + 3;
 
         (void)parse_optional_int(cursor);
 
-        if(*cursor++ != ':')
-                return 0;
-        if(*cursor++ != ':')
-                return 0;
-
+        cursor = components[1].data();
         unsigned int manufacturer = parse_hex(cursor);
 
-        if(*cursor++ != ':')
-                return 0;
-        if(*cursor++ != ':')
-                return 0;
-
+        cursor = components[2].data();
         unsigned int device = parse_hex(cursor);
 
-        if(*cursor != ':')
-                return 0;
-        if(*cursor != ':')
-                return 0;
-
-        usb_string serial;
+        usb_string serial(components[3].begin(), components[3].end());
 
         return new usb_resource(manufacturer, device, serial);
 }

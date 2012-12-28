@@ -23,7 +23,7 @@ private:
                 default_resource_manager.unregister_creator(*this);
         }
 
-        virtual resource *create(ViRsrc) const;
+        virtual resource *create(std::vector<std::string> const &) const;
 
         static creator const instance;
 };

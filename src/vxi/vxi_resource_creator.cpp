@@ -21,64 +21,56 @@ vxi_resource::creator::~creator() throw()
         default_resource_manager.unregister_creator(*this);
 }
 
-vxi_resource *vxi_resource::creator::create(ViRsrc rsrc) const
+vxi_resource *vxi_resource::creator::create(std::vector<std::string> const &components) const
 {
+        if(components.size() < 2)
+                return 0;
+
         // Expect "TCPIP"
-        if((rsrc[0] | 0x20) != 't' ||
-                (rsrc[1] | 0x20) != 'c' ||
-                (rsrc[2] | 0x20) != 'p' ||
-                (rsrc[3] | 0x20) != 'i' ||
-                (rsrc[4] | 0x20) != 'p')
+        std::string const &transp = components[0];
+        if(transp.size() < 5)
+                return 0;
+
+        if((transp[0] | 0x20) != 't' ||
+                (transp[1] | 0x20) != 'c' ||
+                (transp[2] | 0x20) != 'p' ||
+                (transp[3] | 0x20) != 'i' ||
+                (transp[4] | 0x20) != 'p')
         {
                 return 0;
         }
 
         // Expect optional board number
-        char const *cursor = &rsrc[5];
+        char const *cursor = transp.data() + 5;
         /*unsigned int board = */(void)parse_optional_int(cursor);
 
-        // Expect two colons
-        if(*cursor++ != ':')
-                return 0;
-        if(*cursor++ != ':')
-                return 0;
+        std::string const &hostname = components[1];
 
-        // Expect host name
-        char const *const hostname = cursor;
-
-        while(is_valid_in_hostname(*cursor))
-                ++cursor;
-
-        char const *const hostname_end = cursor;
-
-        // Expect two colons
-        if(*cursor++ != ':')
-                return 0;
-        if(*cursor++ != ':')
-                return 0;
-
-        // Expect "INSTR"
-        char const *const type = cursor;
-
-        if((type[0] | 0x20) != 'i' ||
-                (type[1] | 0x20) != 'n' ||
-                (type[2] | 0x20) != 's' ||
-                (type[3] | 0x20) != 't' ||
-                (type[4] | 0x20) != 'r')
+        if(components.size() > 2)
         {
-                return 0;
+                // Expect "INSTR"
+                char const *const type = components[2].data();
+
+                if((type[0] | 0x20) != 'i' ||
+                        (type[1] | 0x20) != 'n' ||
+                        (type[2] | 0x20) != 's' ||
+                        (type[3] | 0x20) != 't' ||
+                        (type[4] | 0x20) != 'r')
+                {
+                        return 0;
+                }
+
+                cursor = type + 5;
+
+                // Expect optional instrument instance number
+                /*unsigned int instance = */(void)parse_optional_int(cursor);
+
         }
 
-        cursor += 5;
-
-        // Expect optional instrument instance number
-        /*unsigned int instance = */(void)parse_optional_int(cursor);
-
-        // Expect NUL
-        if(*cursor != '\0')
+        if(components.size() > 3)
                 return 0;
 
-        return new vxi_resource(std::string(hostname, hostname_end));
+        return new vxi_resource(hostname);
 }
 
 vxi_resource::creator vxi_resource::creator::instance;

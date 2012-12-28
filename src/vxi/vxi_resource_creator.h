@@ -15,7 +15,7 @@ private:
         creator();
         ~creator() throw();
 
-        virtual vxi_resource *create(ViRsrc) const;
+        virtual vxi_resource *create(std::vector<std::string> const &) const;
 
         static creator instance;
 };
