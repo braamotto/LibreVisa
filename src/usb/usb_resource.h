@@ -5,6 +5,8 @@
 
 #include <openusb.h>
 
+#include "usb_string.h"
+
 namespace freevisa {
 namespace usb {
 
@@ -12,7 +14,7 @@ class usb_resource :
         public resource
 {
 private:
-        usb_resource(unsigned int, unsigned int, unsigned int);
+        usb_resource(unsigned int, unsigned int, usb_string const &);
         ~usb_resource() throw();
 
         virtual ViStatus Close();

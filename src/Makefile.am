@@ -40,7 +40,8 @@ dist_noinst_DATA = libvisa.sym
 if WITH_USB
 USB_SOURCES = \
 	usb/usb_resource.cpp usb/usb_resource.h \
-	usb/usb_resource_creator.cpp usb/usb_resource_creator.h
+	usb/usb_resource_creator.cpp usb/usb_resource_creator.h \
+	usb/usb_string.h
 else
 USB_SOURCES =
 endif

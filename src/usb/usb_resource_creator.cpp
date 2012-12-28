@@ -41,12 +41,7 @@ resource *usb_resource::creator::create(ViRsrc rsrc) const
         if(*cursor != ':')
                 return 0;
 
-        unsigned int serial = parse_hex(cursor);
-
-        if(*cursor != ':')
-                return 0;
-        if(*cursor != ':')
-                return 0;
+        usb_string serial;
 
         return new usb_resource(manufacturer, device, serial);
 }

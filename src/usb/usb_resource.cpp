@@ -9,7 +9,7 @@
 namespace freevisa {
 namespace usb {
 
-usb_resource::usb_resource(unsigned int /*manufacturer*/, unsigned int /*device*/, unsigned int /*serial*/)
+usb_resource::usb_resource(unsigned int /*manufacturer*/, unsigned int /*device*/, usb_string const &/*serial*/)
 {
         if(openusb_init(0, &openusb) != OPENUSB_SUCCESS)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
