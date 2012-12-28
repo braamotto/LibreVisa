@@ -7,9 +7,10 @@
 #include "resource_creator.h"
 #include "resource_manager.h"
 
+#include "util.h"
+
 #include "exception.h"
 
-#include <limits>
 #include <string>
 
 #include <rpc/rpc.h>
@@ -25,19 +26,6 @@ bool is_valid_in_hostname(char c)
                 (c >= 'A' && c <= 'Z') ||
                 (c >= 'a' && c <= 'z') ||
                 (c == '-') || (c == '.');
-}
-
-unsigned int parse_optional_int(char const *&cursor)
-{
-        unsigned int ret = 0;
-        while(*cursor >= '0' && *cursor <= '9')
-        {
-                if(ret > std::numeric_limits<unsigned int>::max() / 10)
-                        return 0;
-                ret *= 10;
-                ret += *cursor - '0';
-        }
-        return ret;
 }
 
 }

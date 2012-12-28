@@ -13,6 +13,7 @@ libvisa_la_SOURCES = \
 	resource_creator.h \
 	resource_manager.cpp resource_manager.h \
 	session.cpp session.h \
+	util.h \
 	viBufWrite.cpp \
 	viClose.cpp \
 	viFlush.cpp \
