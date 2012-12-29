@@ -23,7 +23,7 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
         interface(0),
         int_in_ep(0x83),
         status_tag(0),
-        tag(0),
+        tag(1),
         io_timeout(1000),
         have_interrupt_endpoint(true)
 {
@@ -102,19 +102,22 @@ int usb_resource::Transfer(int endpoint, uint8_t *data, int len)
 
 int usb_resource::Send(msg_id_t msg_id, uint8_t *buf, int size)
 {
-        int len = (12 + size + 3) & ~3;
+        int len = buf?((12 + size + 3) & ~3):12;
         uint8_t data[len];
         memset(data, 0, len);
         data[0] = msg_id;
         data[1] = tag;
         data[2] = ~tag;
-        tag++;
+        if(!++tag)
+                ++tag;
         data[4] = size & 0xFF;
         data[5] = (size >> 8) & 0xFF;
         data[6] = (size >> 16) & 0xFF;
         data[7] = (size >> 24) & 0xFF;
-        data[8] = 1;
-        memcpy(&data[12], buf, size);
+        if(msg_id == DEV_DEP_MSG_OUT)
+                data[8] = 1;
+        if(buf)
+                memcpy(&data[12], buf, size);
         int endpoint = 0x01;
         int total_sent = 0;
         while (total_sent < len)
@@ -158,7 +161,7 @@ ViStatus usb_resource::Read(ViBuf buf, ViUInt32 buf_size, ViUInt32 *result)
 {
         if (buf_size > 64)
                 buf_size = 64;
-        if (Send(REQUEST_DEV_DEP_MSG_IN, 0, 0) < 0)
+        if (Send(REQUEST_DEV_DEP_MSG_IN, 0, buf_size) < 0)
                 return VI_ERROR_IO;
         int len = (12 + buf_size + 3) & ~3;
         uint8_t data[len];
@@ -183,8 +186,8 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
                 {
                         USB_REQ_DEV_TO_HOST|USB_REQ_TYPE_CLASS|USB_REQ_RECIP_INTERFACE,
                         READ_STATUS_BYTE,
-                        openusb_cpu_to_le16(status_tag),
-                        openusb_cpu_to_le16(interface),
+                        status_tag,
+                        interface,
                 },
                 buffer,
                 sizeof buffer,
@@ -193,8 +196,6 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
                 { 0, 0 },
                 0
         };
-
-        status_tag = (status_tag + 1) & 0x7f;
 
         uint32_t rc = openusb_ctrl_xfer(dev, 0, 0, &creq);
 
@@ -207,25 +208,35 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
                 return VI_SUCCESS;
         }
 
-        unsigned char ibuffer[2];
-
-        openusb_intr_request ireq =
+        for(;;)
         {
-                128,
-                ibuffer,
-                sizeof ibuffer,
-                io_timeout,
-                0,
-                { 0, 0 },
-                0
-        };
+                unsigned char ibuffer[2];
 
-        rc = openusb_intr_xfer(dev, interface, int_in_ep, &ireq);
+                openusb_intr_request ireq =
+                {
+                        128,
+                        ibuffer,
+                        sizeof ibuffer,
+                        io_timeout,
+                        0,
+                        { 0, 0 },
+                        0
+                };
 
-        if(rc != OPENUSB_SUCCESS)
-                throw exception(VI_ERROR_IO);
+                rc = openusb_intr_xfer(dev, interface, int_in_ep, &ireq);
 
-        *retStatus = ibuffer[1];
+                if(rc != OPENUSB_SUCCESS)
+                        return VI_ERROR_IO;
+
+                if(ibuffer[0] == (status_tag | 0x80))
+                {
+                        *retStatus = ibuffer[1];
+                        break;
+                }
+        }
+
+        status_tag = (status_tag + 1) & 0x7f;
+
         return VI_SUCCESS;
 }
 
