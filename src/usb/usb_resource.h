@@ -36,6 +36,7 @@ private:
         uint8_t int_in_ep;
         uint8_t status_tag;
         uint8_t tag;
+        uint8_t capabilities[24];
         unsigned int io_timeout;
         bool have_interrupt_endpoint;
 

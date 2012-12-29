@@ -13,6 +13,16 @@ namespace usb {
 
 enum
 {
+        // Class requests
+        INITIATE_ABORT_BULK_OUT = 1,
+        CHECK_ABORT_BULK_OUT_STATUS = 2,
+        INITIATE_ABORT_BULK_IN = 3,
+        CHECK_ABORT_BULK_IN_STATUS = 4,
+        INITIATE_CLEAR = 5,
+        CHECK_CLEAR_STATUS = 6,
+        GET_CAPABILITIES = 7,
+
+        // Subclass requests
         READ_STATUS_BYTE = 128,
         REN_CONTROL = 160,
         GO_TO_LOCAL = 161,
@@ -69,6 +79,25 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
                 throw exception(VI_ERROR_SYSTEM_ERROR);
         if(openusb_claim_interface(dev, interface, USB_INIT_DEFAULT) != OPENUSB_SUCCESS)
                 throw exception(VI_ERROR_RSRC_BUSY);
+
+        openusb_ctrl_request req =
+        {
+                {
+                        USB_REQ_DEV_TO_HOST|USB_REQ_TYPE_CLASS|USB_REQ_RECIP_INTERFACE,
+                        GET_CAPABILITIES,
+                        0,
+                        interface,
+                },
+                capabilities,
+                sizeof capabilities,
+                io_timeout,
+                0,
+                { 0, 0 },
+                0
+        };
+
+        if(openusb_ctrl_xfer(dev, interface, 0, &req) != OPENUSB_SUCCESS)
+                throw exception(VI_ERROR_SYSTEM_ERROR);
 }
 
 usb_resource::~usb_resource() throw()
