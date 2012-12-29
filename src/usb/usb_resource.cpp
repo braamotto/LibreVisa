@@ -180,7 +180,7 @@ ViStatus usb_resource::Write(ViBuf buf, ViUInt32 size, ViUInt32 *result)
 
 ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt32 *result)
 {
-        if (Send(REQUEST_DEV_DEP_MSG_IN, 0, 256) < 0)
+        if (Send(REQUEST_DEV_DEP_MSG_IN, 0, payload_buf_size) < 0)
                 return VI_ERROR_IO;
 
         int endpoint = 0x82;
@@ -200,6 +200,7 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
                 int received = Transfer(endpoint, rx_buf, sizeof(rx_buf));
                 if (received < 0)
                         return VI_ERROR_IO;
+                rx_buf_offset = 0;
                 rx_buf_bytes = received;
                 int header_bytes = MIN(rx_buf_bytes, 12 - header_received);
                 memcpy(&header[header_received], rx_buf, header_bytes);
@@ -232,6 +233,7 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
                 int received = Transfer(endpoint, rx_buf, sizeof(rx_buf));
                 if (received < 0)
                         return VI_ERROR_IO;
+                rx_buf_offset = 0;
                 rx_buf_bytes = received;
                 int payload_bytes = MIN(rx_buf_bytes, payload_size - payload_received);
                 if (payload_copied < payload_to_copy)
