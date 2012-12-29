@@ -34,7 +34,11 @@ private:
         openusb_handle_t openusb;
         openusb_dev_handle_t dev;
         uint8_t interface;
-        uint8_t int_in_ep;
+
+        uint8_t bulk_in_ep;
+        uint8_t bulk_out_ep;
+        uint8_t intr_in_ep;
+
         uint8_t status_tag;
         uint8_t tag;
         uint8_t capabilities[24];

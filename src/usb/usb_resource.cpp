@@ -33,7 +33,7 @@ enum
 
 usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string const &serial) :
         interface(0),
-        int_in_ep(0x83),
+        intr_in_ep(0x83),
         status_tag(0),
         tag(1),
         io_timeout(1000),
@@ -297,7 +297,7 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
                         0
                 };
 
-                rc = openusb_intr_xfer(dev, interface, int_in_ep, &ireq);
+                rc = openusb_intr_xfer(dev, interface, intr_in_ep, &ireq);
 
                 if(rc != OPENUSB_SUCCESS)
                         return VI_ERROR_IO;
