@@ -208,7 +208,7 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
         // Calculate payload sizing.
         int payload_size = header[4] | (header[5] << 8) | (header[6] << 16) | (header[7] << 24);
         int payload_received = 0;
-        int payload_to_copy = MIN(payload_size, payload_buf_size);
+        int payload_to_copy = MIN(payload_size, (int)payload_buf_size);
         int payload_copied = 0;
 
         // Some or all of the payload may be already received.

@@ -42,7 +42,7 @@ private:
         bool have_interrupt_endpoint;
         uint8_t rx_buf[64];
         unsigned int rx_buf_offset;
-        unsigned int rx_buf_bytes;
+        int rx_buf_bytes;
 
         class creator;
 };
