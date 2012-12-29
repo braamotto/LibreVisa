@@ -21,6 +21,7 @@ public:
         ViStatus SetAttribute(ViAttr, ViAttrState);
 
         ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
+        ViStatus FindRsrc(ViString expr, ViFindList *findList, ViUInt32 *retCount, ViRsrc instrDesc);
 
         ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);

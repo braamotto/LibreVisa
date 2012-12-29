@@ -16,6 +16,7 @@ libvisa_la_SOURCES = \
 	util.h \
 	viBufWrite.cpp \
 	viClose.cpp \
+	viFindRsrc.cpp \
 	viFlush.cpp \
 	viGetAttribute.cpp \
 	viLock.cpp \

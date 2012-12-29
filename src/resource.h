@@ -24,6 +24,11 @@ public:
                 return VI_ERROR_NSUP_OPER;
         }
 
+        virtual ViStatus FindRsrc(ViString, ViFindList *, ViUInt32 *, ViRsrc)
+        {
+                return VI_ERROR_NSUP_OPER;
+        }
+
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *)
         {
                 return VI_ERROR_NSUP_OPER;

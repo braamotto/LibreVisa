@@ -27,6 +27,11 @@ ViStatus session::Open(ViRsrc rsrc, ViAccessMode accessMode, ViUInt32 timeout, V
         return res->Open(rsrc, accessMode, timeout, vi);
 }
 
+ViStatus session::FindRsrc(ViString expr, ViFindList *findList, ViUInt32 *retCount, ViRsrc instrDesc)
+{
+        return res->FindRsrc(expr, findList, retCount, instrDesc);
+}
+
 ViStatus session::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {
         return res->Read(buf, count, retCount);
