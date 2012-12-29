@@ -22,7 +22,7 @@ private:
                 REQUEST_DEV_DEP_MSG_IN = 2
         } msg_id_t;
 
-        virtual int Transfer(int, uint8_t *, int);
+        virtual int Transfer(uint8_t, uint8_t *, int);
         virtual int Send(msg_id_t, uint8_t *, int);
         virtual int Receive(uint8_t *, int);
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);

@@ -84,7 +84,7 @@ ViStatus usb_resource::Close()
         return VI_SUCCESS;
 }
 
-int usb_resource::Transfer(int endpoint, uint8_t *data, int len)
+int usb_resource::Transfer(uint8_t endpoint, uint8_t *data, int len)
 {
         struct openusb_bulk_request request;
         request.payload = data;
