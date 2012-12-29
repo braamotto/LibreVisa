@@ -116,6 +116,8 @@ int usb_resource::Send(msg_id_t msg_id, uint8_t *buf, int size)
         data[7] = (size >> 24) & 0xFF;
         if(msg_id == DEV_DEP_MSG_OUT)
                 data[8] = 1;
+        else
+                data[9] = 0x0a;
         if(buf)
                 memcpy(&data[12], buf, size);
         int endpoint = 0x01;
