@@ -22,13 +22,14 @@ private:
                 REQUEST_DEV_DEP_MSG_IN = 2
         } msg_id_t;
 
-        virtual int Transfer(uint8_t, uint8_t *, int);
-        virtual int Send(msg_id_t, uint8_t *, int);
-        virtual int Receive(uint8_t *, int);
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus Close();
         virtual ViStatus ReadSTB(ViUInt16 *);
+
+        int Transfer(uint8_t, uint8_t *, int);
+        int Send(msg_id_t, uint8_t *, int);
+        int Receive(uint8_t *, int);
 
         openusb_handle_t openusb;
         openusb_dev_handle_t dev;
@@ -39,6 +40,9 @@ private:
         uint8_t capabilities[24];
         unsigned int io_timeout;
         bool have_interrupt_endpoint;
+        uint8_t rx_buf[64];
+        unsigned int rx_buf_offset;
+        unsigned int rx_buf_bytes;
 
         class creator;
 };
