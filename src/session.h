@@ -12,19 +12,19 @@ class session :
 public:
         session(resource *);
 
-        virtual ~session() throw() { }
+        ~session() throw() { }
 
-        virtual ViStatus Close();
-        virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
-        virtual ViStatus Unlock();
-        virtual ViStatus GetAttribute(ViAttr, void *);
-        virtual ViStatus SetAttribute(ViAttr, ViAttrState);
+        ViStatus Close();
+        ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
+        ViStatus Unlock();
+        ViStatus GetAttribute(ViAttr, void *);
+        ViStatus SetAttribute(ViAttr, ViAttrState);
 
-        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
+        ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
 
-        virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
-        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
-        virtual ViStatus ReadSTB(ViUInt16 *);
+        ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
+        ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
+        ViStatus ReadSTB(ViUInt16 *);
 
         ViUInt32 GetFmtReadBufSiz() { return fmt_read_buf.size; }
         void SetFmtReadBufSiz(ViUInt32 i) { fmt_read_buf.size = i; }
