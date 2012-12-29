@@ -70,7 +70,7 @@ vxi_resource::vxi_resource(std::string const &hostname) :
         if(!intr_svc)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
-        if(!svc_register(intr_svc, DEVICE_ASYNC, DEVICE_ASYNC_VERSION, device_intr_1, IPPROTO_UDP))
+        if(!svc_register(intr_svc, DEVICE_ASYNC, DEVICE_ASYNC_VERSION, device_intr_1, 0))
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
         sockaddr_storage ss;
