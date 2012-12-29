@@ -17,10 +17,21 @@ private:
         usb_resource(unsigned int, unsigned int, usb_string const &);
         ~usb_resource() throw();
 
+        typedef enum {
+                DEV_DEP_MSG_OUT = 1,
+                REQUEST_DEV_DEP_MSG_IN = 2
+        } msg_id_t;
+
+        virtual int Transfer(int, uint8_t *, int);
+        virtual int Send(msg_id_t, uint8_t *, int);
+        virtual int Receive(uint8_t *, int);
+        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
+        virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus Close();
 
         openusb_handle_t openusb;
         openusb_dev_handle_t dev;
+        uint8_t tag;
 
         class creator;
 };
