@@ -92,7 +92,7 @@ int usb_resource::Transfer(uint8_t endpoint, uint8_t *data, int len)
         request.timeout = 1000;
         request.flags = 0;
         request.next = 0;
-        int interface = 0;
+
         int rc = openusb_bulk_xfer(dev, interface, endpoint, &request);
         if (rc < 0)
                 return rc;
