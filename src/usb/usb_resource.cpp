@@ -8,6 +8,8 @@
 
 #include "exception.h"
 
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 namespace freevisa {
 namespace usb {
 
@@ -132,20 +134,6 @@ int usb_resource::Send(msg_id_t msg_id, uint8_t *buf, int size)
         return size;
 }
 
-int usb_resource::Receive(uint8_t *data, int size)
-{
-        int endpoint = 0x82;
-        int total_read = 0;
-        while (total_read < size)
-        {
-                int read = Transfer(endpoint, &data[total_read], size - total_read);
-                if (read < 0)
-                        return read;
-                total_read += read;
-        }
-        return size;
-}
-
 ViStatus usb_resource::Write(ViBuf buf, ViUInt32 size, ViUInt32 *result)
 {
         if (Send(DEV_DEP_MSG_OUT, buf, size) < 0)
@@ -159,21 +147,72 @@ ViStatus usb_resource::Write(ViBuf buf, ViUInt32 size, ViUInt32 *result)
         }
 }
 
-ViStatus usb_resource::Read(ViBuf buf, ViUInt32 buf_size, ViUInt32 *result)
+ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt32 *result)
 {
         if (Send(REQUEST_DEV_DEP_MSG_IN, 0, 256) < 0)
                 return VI_ERROR_IO;
-        int len = (12 + buf_size + 3) & ~3;
-        uint8_t data[len];
-        if (Receive(data, 12) < 0)
-                return VI_ERROR_IO;
-        uint32_t size = data[4] | (data[5] << 8) | (data[6] << 16) | (data[7] << 24);
-        if (size > buf_size)
-                size = buf_size;
-        if (Receive(&data[12], size) < 0)
-                return VI_ERROR_IO;
-        memcpy(buf, &data[12], size);
-        *result = size;
+
+        int endpoint = 0x82;
+        uint8_t header[12];
+        int header_received = 0;
+
+        // Some or all of the next header may be already received.
+        int header_bytes = MIN(rx_buf_bytes, 12);
+        memcpy(header, &rx_buf[rx_buf_offset], header_bytes);
+        header_received += header_bytes;
+        rx_buf_offset += header_bytes;
+        rx_buf_bytes -= header_bytes;
+
+        // Make further transfers to receive rest of header.
+        while (header_received < 12)
+        {
+                rx_buf_bytes = Transfer(endpoint, rx_buf, sizeof(rx_buf));
+                if (rx_buf_bytes < 0)
+                        return VI_ERROR_IO;
+                int header_bytes = MIN(rx_buf_bytes, 12 - header_received);
+                memcpy(&header[header_received], rx_buf, header_bytes);
+                header_received += header_bytes;
+                rx_buf_offset = header_bytes;
+                rx_buf_bytes -= header_bytes;
+        }
+
+        // Calculate payload sizing.
+        int payload_size = header[4] | (header[5] << 8) | (header[6] << 16) | (header[7] << 24);
+        int payload_received = 0;
+        int payload_to_copy = MIN(payload_size, payload_buf_size);
+        int payload_copied = 0;
+
+        // Some or all of the payload may be already received.
+        int payload_bytes = MIN(rx_buf_bytes, payload_size);
+        if (payload_copied < payload_to_copy)
+        {
+                int copy_bytes = MIN(payload_bytes, payload_to_copy);
+                memcpy(&payload_buf[payload_copied], &rx_buf[rx_buf_offset], copy_bytes);
+                payload_copied += copy_bytes;
+        }
+        payload_received += payload_bytes;
+        rx_buf_offset += payload_bytes;
+        rx_buf_bytes -= payload_bytes;
+
+        // Make further transfers to receive rest of payload.
+        while (payload_received < payload_size)
+        {
+                rx_buf_bytes = Transfer(endpoint, rx_buf, sizeof(rx_buf));
+                if (rx_buf_bytes < 0)
+                        return VI_ERROR_IO;
+                int payload_bytes = MIN(rx_buf_bytes, payload_size - payload_received);
+                if (payload_copied < payload_to_copy)
+                {
+                        int copy_bytes = MIN(payload_bytes, payload_to_copy);
+                        memcpy(&payload_buf[payload_copied], &rx_buf[rx_buf_offset], copy_bytes);
+                        payload_copied += copy_bytes;
+                }
+                payload_received += payload_bytes;
+                rx_buf_offset = payload_bytes;
+                rx_buf_bytes -= payload_bytes;
+        }
+
+        *result = payload_copied;
         return VI_SUCCESS;
 }
 
