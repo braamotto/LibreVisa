@@ -37,7 +37,9 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
         status_tag(0),
         tag(1),
         io_timeout(1000),
-        have_interrupt_endpoint(true)
+        have_interrupt_endpoint(true),
+        rx_buf_offset(0),
+        rx_buf_bytes(0)
 {
         if(openusb_init(0, &openusb) != OPENUSB_SUCCESS)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
@@ -232,7 +234,7 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
                 int payload_bytes = MIN(rx_buf_bytes, payload_size - payload_received);
                 if (payload_copied < payload_to_copy)
                 {
-                        int copy_bytes = MIN(payload_bytes, payload_to_copy);
+                        int copy_bytes = MIN(payload_bytes, payload_to_copy - payload_copied);
                         memcpy(&payload_buf[payload_copied], &rx_buf[rx_buf_offset], copy_bytes);
                         payload_copied += copy_bytes;
                 }
