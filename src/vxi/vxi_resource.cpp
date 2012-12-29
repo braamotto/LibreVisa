@@ -180,6 +180,24 @@ ViStatus vxi_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
         return VI_SUCCESS;
 }
 
+ViStatus vxi_resource::ReadSTB(ViUInt16 *retStatus)
+{
+        Device_GenericParms dgp =
+        {
+                lid,
+                0,
+                lock_timeout,
+                io_timeout
+        };
+        Device_ReadStbResp *resp = device_readstb_1(&dgp, client);
+
+        /// @todo handle errors
+
+        *retStatus = resp->stb;
+
+        return VI_SUCCESS;
+}
+
 }
 }
 

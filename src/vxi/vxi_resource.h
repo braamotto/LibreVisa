@@ -24,6 +24,7 @@ private:
         virtual ViStatus SetAttribute(ViAttr, ViAttrState);
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
+        virtual ViStatus ReadSTB(ViUInt16 *);
 
         // RPC
         CLIENT *client;
