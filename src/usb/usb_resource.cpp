@@ -159,9 +159,7 @@ ViStatus usb_resource::Write(ViBuf buf, ViUInt32 size, ViUInt32 *result)
 
 ViStatus usb_resource::Read(ViBuf buf, ViUInt32 buf_size, ViUInt32 *result)
 {
-        if (buf_size > 64)
-                buf_size = 64;
-        if (Send(REQUEST_DEV_DEP_MSG_IN, 0, buf_size) < 0)
+        if (Send(REQUEST_DEV_DEP_MSG_IN, 0, 256) < 0)
                 return VI_ERROR_IO;
         int len = (12 + buf_size + 3) & ~3;
         uint8_t data[len];
