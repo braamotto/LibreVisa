@@ -3,7 +3,7 @@
 
 #include "resource.h"
 
-#include <openusb.h>
+#include <libusb-1.0/libusb.h>
 
 #include "usb_string.h"
 
@@ -31,8 +31,9 @@ private:
         int Send(msg_id_t, uint8_t *, int);
         int Receive(uint8_t *, int);
 
-        openusb_handle_t openusb;
-        openusb_dev_handle_t dev;
+        libusb_context *libusb;
+        libusb_device_handle *dev;
+
         uint8_t interface;
 
         uint8_t bulk_in_ep;

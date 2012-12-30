@@ -13,18 +13,18 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 # Checks for libraries.
-AC_CHECK_LIB([openusb], [usb_open])
+AC_CHECK_LIB([usb-1.0], [libusb_init])
 AC_CHECK_LIB([vxiclient], [create_link_1])
 
 # Checks for header files.
-AC_CHECK_HEADER([openusb.h])
+AC_CHECK_HEADER([libusb-1.0/libusb.h])
 AC_CHECK_HEADER([vxi.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
 
-AM_CONDITIONAL([WITH_USB], [test $ac_cv_lib_openusb_usb_open = yes -a $ac_cv_header_openusb_h = yes])
+AM_CONDITIONAL([WITH_USB], [test $ac_cv_lib_usb_1_0_libusb_init = yes -a $ac_cv_header_libusb_1_0_libusb_h = yes])
 AM_CONDITIONAL([WITH_VXI], [test $ac_cv_lib_vxiclient_create_link_1 = yes -a $ac_cv_header_vxi_h = yes])
 
 AC_OUTPUT

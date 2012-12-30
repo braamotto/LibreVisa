@@ -31,6 +31,14 @@ enum
         LOCAL_LOCKOUT = 162
 };
 
+/// @todo replace by libusb data type once they have one.
+struct string_descriptor
+{
+        uint8_t bLength;
+        uint8_t bDescriptorType;
+        uint16_t bString[0];
+};
+
 usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string const &serial) :
         interface(0),
         intr_in_ep(0x83),
@@ -41,74 +49,96 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
         rx_buf_offset(0),
         rx_buf_bytes(0)
 {
-        if(openusb_init(0, &openusb) != OPENUSB_SUCCESS)
+        if(libusb_init(&libusb) != LIBUSB_SUCCESS)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
-        openusb_devid_t *devids = 0;
-        uint32_t num_devids = 0;
+        libusb_device **devices = 0;
 
-        if(openusb_get_devids_by_vendor(openusb, vendor, product, &devids, &num_devids) != OPENUSB_SUCCESS)
+        ssize_t num_devices = libusb_get_device_list(libusb, &devices);
+
+        if(num_devices < 0)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
-        if(!num_devids)
-                throw exception(VI_ERROR_SYSTEM_ERROR);
+        if(num_devices == 0)
+                throw exception(VI_ERROR_RSRC_NFOUND);
 
-        openusb_devid_t devid;
-        bool found = false;
+        libusb_device_handle *selected_device = 0;
 
-        for(uint32_t i = 0; !found && i < num_devids; ++i)
+        for(ssize_t i = 0; !selected_device && i < num_devices; ++i)
         {
-                openusb_dev_data_t *devdata;
+                bool acceptable = true;
 
-                if(openusb_get_device_data(openusb, devids[i], 0, &devdata) != OPENUSB_SUCCESS)
-                        continue;
+                libusb_device_descriptor ddesc;
 
-                found = true;
+                if(acceptable && libusb_get_device_descriptor(devices[i], &ddesc) != LIBUSB_SUCCESS)
+                        acceptable = false;
 
-                if((serial.size()*2+2) != devdata->serialnumber->bLength)
-                        found = false;
+                if(acceptable && libusb_le16_to_cpu(ddesc.idVendor) != vendor)
+                        acceptable = false;
+                if(acceptable && libusb_le16_to_cpu(ddesc.idProduct) != product)
+                        acceptable = false;
 
-                if(found && serial.compare(devdata->serialnumber->bString))
-                        found = false;
+                if(libusb_open(devices[i], &selected_device) != LIBUSB_SUCCESS)
+                        acceptable = false;
 
-                if(found)
-                        devid = devids[i];
+                if(acceptable)
+                {
+                        /// @todo may not be portable everywhere
+                        union
+                        {
+                                string_descriptor str;
+                                unsigned char bytes[64];
+                        } serialno;
 
-                openusb_free_device_data(devdata);
+                        int serialno_len = libusb_get_string_descriptor(
+                                selected_device,
+                                ddesc.iSerialNumber,
+                                0,
+                                serialno.bytes,
+                                sizeof serialno.bytes);
+                        if(serialno_len < 0)
+                                acceptable = false;
+                        else if(serialno_len != serialno.str.bLength)
+                                acceptable = false;
+                        else if((serial.size()*2+2) != unsigned(serialno_len))
+                                acceptable = false;
+                        else if(serial.compare(0, serial.size(), serialno.str.bString))
+                                acceptable = false;
+                }
+
+                if(!acceptable)
+                {
+                        libusb_close(selected_device);
+                        selected_device = 0;
+                }
+
         }
 
-        openusb_free_devid_list(devids);
+        libusb_free_device_list(devices, 1);
 
-        if(openusb_open_device(openusb, devid, USB_INIT_DEFAULT, &dev) != OPENUSB_SUCCESS)
-                throw exception(VI_ERROR_SYSTEM_ERROR);
-        if(openusb_claim_interface(dev, interface, USB_INIT_DEFAULT) != OPENUSB_SUCCESS)
+        dev = selected_device;
+
+        if(libusb_claim_interface(dev, interface) != LIBUSB_SUCCESS)
                 throw exception(VI_ERROR_RSRC_BUSY);
 
-        openusb_ctrl_request req =
-        {
-                {
-                        USB_REQ_DEV_TO_HOST|USB_REQ_TYPE_CLASS|USB_REQ_RECIP_INTERFACE,
-                        GET_CAPABILITIES,
-                        0,
-                        interface,
-                },
+        int rc = libusb_control_transfer(
+                dev,
+                LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE,
+                GET_CAPABILITIES,
+                interface,
+                0,
                 capabilities,
                 sizeof capabilities,
-                io_timeout,
-                0,
-                { 0, 0 },
-                0
-        };
-
-        if(openusb_ctrl_xfer(dev, interface, 0, &req) != OPENUSB_SUCCESS)
+                io_timeout);
+        if(rc != sizeof capabilities)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 }
 
 usb_resource::~usb_resource() throw()
 {
-        openusb_release_interface(dev, interface);
-        openusb_close_device(dev);
-        openusb_fini(openusb);
+        libusb_release_interface(dev, interface);
+        libusb_close(dev);
+        libusb_exit(libusb);
 }
 
 ViStatus usb_resource::Close()
@@ -119,18 +149,12 @@ ViStatus usb_resource::Close()
 
 int usb_resource::Transfer(uint8_t endpoint, uint8_t *data, int len)
 {
-        struct openusb_bulk_request request;
-        request.payload = data;
-        request.length = len;
-        request.timeout = 1000;
-        request.flags = 0;
-        request.next = 0;
-
-        int rc = openusb_bulk_xfer(dev, interface, endpoint, &request);
+        int actual;
+        int rc = libusb_bulk_transfer(dev, endpoint, data, len, &actual, io_timeout);
         if (rc < 0)
                 return rc;
         else
-                return request.result.transferred_bytes;
+                return actual;
 }
 
 int usb_resource::Send(msg_id_t msg_id, uint8_t *buf, int size)
@@ -255,25 +279,17 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
 {
         unsigned char buffer[3];
 
-        openusb_ctrl_request creq =
-        {
-                {
-                        USB_REQ_DEV_TO_HOST|USB_REQ_TYPE_CLASS|USB_REQ_RECIP_INTERFACE,
-                        READ_STATUS_BYTE,
-                        status_tag,
-                        interface,
-                },
+        int rc = libusb_control_transfer(
+                dev,
+                LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE,
+                READ_STATUS_BYTE,
+                status_tag,
+                interface,
                 buffer,
                 sizeof buffer,
-                io_timeout,
-                0,
-                { 0, 0 },
-                0
-        };
+                io_timeout);
 
-        uint32_t rc = openusb_ctrl_xfer(dev, 0, 0, &creq);
-
-        if(rc != OPENUSB_SUCCESS)
+        if(rc != LIBUSB_SUCCESS)
                 throw exception(VI_ERROR_IO);
 
         if(!have_interrupt_endpoint)
@@ -286,20 +302,16 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
         {
                 unsigned char ibuffer[2];
 
-                openusb_intr_request ireq =
-                {
-                        128,
+                int actual;
+                rc = libusb_interrupt_transfer(
+                        dev,
+                        intr_in_ep,
                         ibuffer,
                         sizeof ibuffer,
-                        io_timeout,
-                        0,
-                        { 0, 0 },
-                        0
-                };
+                        &actual,
+                        io_timeout);
 
-                rc = openusb_intr_xfer(dev, interface, intr_in_ep, &ireq);
-
-                if(rc != OPENUSB_SUCCESS)
+                if(rc != LIBUSB_SUCCESS)
                         return VI_ERROR_IO;
 
                 if(ibuffer[0] == (status_tag | 0x80))
