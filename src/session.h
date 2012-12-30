@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_session_h_
-#define freevisa_session_h_ 1
+#ifndef librevisa_session_h_
+#define librevisa_session_h_ 1
 
 #include "object.h"
 #include "resource.h"
 
-namespace freevisa {
+namespace librevisa {
 
 class session :
         public object

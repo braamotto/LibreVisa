@@ -25,7 +25,7 @@
 
 #include <algorithm>
 
-namespace freevisa {
+namespace librevisa {
 
 event_queue::event_queue(size_type size) :
         size(size),

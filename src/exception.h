@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_exception_h_
-#define freevisa_exception_h_ 1
+#ifndef librevisa_exception_h_
+#define librevisa_exception_h_ 1
 
 #include "visa.h"
 
-namespace freevisa {
+namespace librevisa {
 
 class exception
 {

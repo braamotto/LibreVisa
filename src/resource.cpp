@@ -21,7 +21,7 @@
 
 #include "resource.h"
 
-namespace freevisa {
+namespace librevisa {
 
 resource::resource() :
         refcount(0), exclusive_lock_holder(0)

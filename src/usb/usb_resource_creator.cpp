@@ -23,7 +23,7 @@
 
 #include "util.h"
 
-namespace freevisa {
+namespace librevisa {
 namespace usb {
 
 resource *usb_resource::creator::create(std::vector<std::string> const &components) const

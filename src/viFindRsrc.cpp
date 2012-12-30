@@ -22,7 +22,7 @@
 #include "object_cache.h"
 #include "session.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viFindRsrc(ViSession vi, ViString expr, ViPFindList findList, ViPUInt32 retCount, ViRsrc instrDesc)
 {

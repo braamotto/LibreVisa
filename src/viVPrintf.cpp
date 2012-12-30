@@ -26,7 +26,7 @@
 #include "visa.h"
 #include "base_vprintf.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList params)
 {

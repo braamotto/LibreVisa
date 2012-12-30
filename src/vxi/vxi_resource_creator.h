@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_vxi_resource_creator_h_
-#define freevisa_vxi_resource_creator_h_ 1
+#ifndef librevisa_vxi_resource_creator_h_
+#define librevisa_vxi_resource_creator_h_ 1
 
 #include "vxi_resource.h"
 
 #include "resource_creator.h"
 
-namespace freevisa {
+namespace librevisa {
 namespace vxi {
 
 class vxi_resource::creator :

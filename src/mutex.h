@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_mutex_h_
-#define freevisa_mutex_h_ 1
+#ifndef librevisa_mutex_h_
+#define librevisa_mutex_h_ 1
 
 #include <pthread.h>
 
-namespace freevisa {
+namespace librevisa {
 
 class mutex
 {

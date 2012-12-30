@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_event_h_
-#define freevisa_event_h_ 1
+#ifndef librevisa_event_h_
+#define librevisa_event_h_ 1
 
 #include "object.h"
 
-namespace freevisa {
+namespace librevisa {
 
 class event :
         public object

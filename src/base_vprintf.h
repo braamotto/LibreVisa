@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_base_vprintf_h_
-#define freevisa_base_vprintf_h_ 1
+#ifndef librevisa_base_vprintf_h_
+#define librevisa_base_vprintf_h_ 1
 
-namespace freevisa {
+namespace librevisa {
         // buf -> viVSPrintf, !buf -> viVPrintf
         ViStatus base_vprintf(ViSession vi, ViPBuf buf, ViString writeFmt, ViVAList params);
 }

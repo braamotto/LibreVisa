@@ -24,7 +24,7 @@
 
 #include <visa.h>
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viReadSTB(ViSession vi, ViPUInt16 retStatus)
 {

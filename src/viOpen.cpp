@@ -24,7 +24,7 @@
 #include "object_cache.h"
 #include "session.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viOpen(ViSession sesn, ViRsrc rsrcName, ViAccessMode accessMode, ViUInt32 timeout, ViSession *vi)
 {

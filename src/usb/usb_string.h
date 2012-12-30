@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_usb_string_h_
-#define freevisa_usb_string_h_ 1
+#ifndef librevisa_usb_string_h_
+#define librevisa_usb_string_h_ 1
 
 #include <string>
 
 #include <stdint.h>
 
-namespace freevisa {
+namespace librevisa {
 namespace usb {
 
 typedef std::basic_string<uint16_t> usb_string;

@@ -24,7 +24,7 @@
 
 #include <visa.h>
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viRead(ViSession vi, ViPBuf buf, ViUInt32 count, ViPUInt32 retCount)
 {

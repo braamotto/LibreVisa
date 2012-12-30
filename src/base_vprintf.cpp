@@ -27,7 +27,7 @@
 #include "object_cache.h"
 #include "session.h"
 
-namespace freevisa {
+namespace librevisa {
 
 /// @todo stuff strings into buffer in chunks instead of single-character-wise for speed
 ViStatus buf_put(ViSession vi, ViPBuf &userstring, ViChar c)

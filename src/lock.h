@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_lock_h_
-#define freevisa_lock_h_ 1
+#ifndef librevisa_lock_h_
+#define librevisa_lock_h_ 1
 
 #include "mutex.h"
 
-namespace freevisa {
+namespace librevisa {
 
 class lock
 {

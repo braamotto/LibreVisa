@@ -22,7 +22,7 @@
 #include "resource_manager.h"
 #include "object_cache.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viOpenDefaultRM(ViSession *sesn)
 {

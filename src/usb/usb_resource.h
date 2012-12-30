@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_usb_resource_h_
-#define freevisa_usb_resource_h_ 1
+#ifndef librevisa_usb_resource_h_
+#define librevisa_usb_resource_h_ 1
 
 #include "resource.h"
 
@@ -25,7 +25,7 @@
 
 #include "usb_string.h"
 
-namespace freevisa {
+namespace librevisa {
 namespace usb {
 
 class usb_resource :

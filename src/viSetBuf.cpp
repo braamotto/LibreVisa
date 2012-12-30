@@ -23,7 +23,7 @@
 #include "object_cache.h"
 #include "session.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
 {

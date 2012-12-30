@@ -22,7 +22,7 @@
 #include "object_cache.h"
 #include "session.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 extern "C" ViStatus viLock(ViSession vi, ViAccessMode lockType, ViUInt32 timeout, ViKeyId requestedKey, ViKeyId accessKey);
 

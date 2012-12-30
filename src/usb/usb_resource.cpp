@@ -28,7 +28,7 @@
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-namespace freevisa {
+namespace librevisa {
 namespace usb {
 
 enum

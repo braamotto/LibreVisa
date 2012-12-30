@@ -32,7 +32,7 @@
 
 namespace {
 
-using namespace freevisa;
+using namespace librevisa;
 
 class dummy_resource :
         public resource

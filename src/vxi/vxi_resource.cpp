@@ -31,7 +31,7 @@
 
 extern "C" void device_intr_1(struct svc_req *rqstp, register SVCXPRT *transp);
 
-namespace freevisa {
+namespace librevisa {
 namespace vxi {
 
 vxi_resource::vxi_resource(std::string const &hostname) :

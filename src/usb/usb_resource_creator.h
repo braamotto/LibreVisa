@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_usb_resource_creator_h_
-#define freevisa_usb_resource_creator_h_ 1
+#ifndef librevisa_usb_resource_creator_h_
+#define librevisa_usb_resource_creator_h_ 1
 
 #include "usb_resource.h"
 
 #include "resource_creator.h"
 #include "resource_manager.h"
 
-namespace freevisa {
+namespace librevisa {
 namespace usb {
 
 class usb_resource::creator :

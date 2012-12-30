@@ -25,7 +25,7 @@
 #include "object_cache.h"
 #include "session.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 extern "C" ViStatus viSPrintf(ViSession vi, ViPBuf buf, ViString writeFmt, ...)
 {

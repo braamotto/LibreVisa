@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_tests_dummy_h_
-#define freevisa_tests_dummy_h_
+#ifndef librevisa_tests_dummy_h_
+#define librevisa_tests_dummy_h_
 
 #include <visa.h>
 #include <stdbool.h>

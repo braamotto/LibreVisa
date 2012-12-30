@@ -1,7 +1,7 @@
 # Doxyfile 1.8.1.2
 
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "FreeVISA"
+PROJECT_NAME           = "LibreVISA"
 PROJECT_NUMBER         =
 PROJECT_BRIEF          =
 PROJECT_LOGO           =

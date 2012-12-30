@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_util_h_
-#define freevisa_util_h_ 1
+#ifndef librevisa_util_h_
+#define librevisa_util_h_ 1
 
 #include <limits>
 
-namespace freevisa {
+namespace librevisa {
 
 inline bool is_valid_in_hostname(char c)
 {

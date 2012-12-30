@@ -106,4 +106,4 @@ viWaitOnEvent
 viWrite
 viWriteAsync
 viWriteFromFile
-_ZN8freevisa16resource_manager16register_creatorERKNS_16resource_creatorE
+_ZN9librevisa16resource_manager16register_creatorERKNS_16resource_creatorE

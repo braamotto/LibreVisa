@@ -22,7 +22,7 @@
 #include "object_cache.h"
 #include "object.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viGetAttribute(ViObject vi, ViAttr attribute, void *attrState)
 {

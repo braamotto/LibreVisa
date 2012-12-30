@@ -21,7 +21,7 @@
 
 #include "object.h"
 
-namespace freevisa {
+namespace librevisa {
 
 object::object()
 {

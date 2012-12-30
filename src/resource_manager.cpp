@@ -26,7 +26,7 @@
 #include "resource.h"
 #include "object_cache.h"
 
-namespace freevisa {
+namespace librevisa {
 
 ViStatus resource_manager::Open(ViRsrc rsrcName, ViAccessMode /*accessMode*/, ViUInt32 /*timeout*/, ViSession *vi)
 {

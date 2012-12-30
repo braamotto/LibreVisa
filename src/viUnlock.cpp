@@ -22,7 +22,7 @@
 #include "object_cache.h"
 #include "session.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viUnlock(ViSession vi)
 {

@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_object_cache_h_
-#define freevisa_object_cache_h_ 1
+#ifndef librevisa_object_cache_h_
+#define librevisa_object_cache_h_ 1
 
 #include "exception.h"
 
 #include <map>
 
-namespace freevisa {
+namespace librevisa {
 
 class object;
 class resource;

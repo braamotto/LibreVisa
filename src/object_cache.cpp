@@ -25,7 +25,7 @@
 
 #include <cassert>
 
-namespace freevisa {
+namespace librevisa {
 
 object *object_cache::get_object(ViObject vi) throw(exception)
 {

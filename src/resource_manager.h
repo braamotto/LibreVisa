@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef freevisa_resource_manager_h_
-#define freevisa_resource_manager_h_ 1
+#ifndef librevisa_resource_manager_h_
+#define librevisa_resource_manager_h_ 1
 
 #include "resource.h"
 
 #include <list>
 
-namespace freevisa {
+namespace librevisa {
 
 class resource_creator;
 

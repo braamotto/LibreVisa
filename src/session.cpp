@@ -21,7 +21,7 @@
 
 #include "session.h"
 
-namespace freevisa {
+namespace librevisa {
 
 session::session(resource *res) :
         res(res),

@@ -24,7 +24,7 @@
 #include "object_cache.h"
 #include "session.h"
 
-using namespace freevisa;
+using namespace librevisa;
 
 ViStatus viWrite(ViSession vi, ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {

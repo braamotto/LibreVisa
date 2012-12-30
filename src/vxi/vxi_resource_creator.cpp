@@ -25,7 +25,7 @@
 
 #include "util.h"
 
-namespace freevisa {
+namespace librevisa {
 namespace vxi {
 
 vxi_resource::creator::creator()
