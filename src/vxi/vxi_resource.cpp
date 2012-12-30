@@ -70,7 +70,7 @@ vxi_resource::vxi_resource(std::string const &hostname) :
         if(!intr_svc)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
-        if(!svc_register(intr_svc, DEVICE_ASYNC, DEVICE_ASYNC_VERSION, device_intr_1, 0))
+        if(!svc_register(intr_svc, DEVICE_INTR, DEVICE_INTR_VERSION, device_intr_1, 0))
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
         sockaddr_storage ss;
@@ -89,8 +89,8 @@ vxi_resource::vxi_resource(std::string const &hostname) :
         {
                 ntohl(sin->sin_addr.s_addr),
                 ntohs(sin->sin_port),
-                DEVICE_ASYNC,
-                DEVICE_ASYNC_VERSION,
+                DEVICE_INTR,
+                DEVICE_INTR_VERSION,
                 DEVICE_UDP
         };
 
