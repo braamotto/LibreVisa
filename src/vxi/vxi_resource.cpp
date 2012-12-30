@@ -18,7 +18,7 @@ namespace freevisa {
 namespace vxi {
 
 vxi_resource::vxi_resource(std::string const &hostname) :
-        io_timeout(10), lock_timeout(10)
+        io_timeout(1000), lock_timeout(1000)
 {
         int sock = RPC_ANYSOCK;
 
