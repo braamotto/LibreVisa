@@ -99,7 +99,9 @@ vxi_resource::vxi_resource(std::string const &hostname) :
         if(!error)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
-        if(error->error)
+        if(error->error == 8)
+                ; /// @todo handle case where interrupt channel is unsupported
+        else if(error->error)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
         /// @todo handle errors
