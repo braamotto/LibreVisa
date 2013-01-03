@@ -105,7 +105,7 @@ vxi_resource::vxi_resource(std::string const &hostname) :
         Device_RemoteFunc rfn =
         {
                 ntohl(sin->sin_addr.s_addr),
-                ntohs(sin->sin_port),
+                ntohs(intr_svc->xp_port),
                 DEVICE_INTR,
                 DEVICE_INTR_VERSION,
                 DEVICE_UDP
