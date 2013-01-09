@@ -1,0 +1,15 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: librevisa
+Description: Open-source VISA library for GPIB/USBTMC/LXI
+URL: http://www.librevisa.org
+Requires:
+Requires.private: @LIBREVISA_PKGLIBS@
+Version: @VERSION@
+Libs: -L${libdir} -lvisa
+Libs.private:
+Cflags: -I${includedir}
+

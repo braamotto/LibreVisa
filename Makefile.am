@@ -19,3 +19,7 @@ SUBDIRS = src tests
 include_HEADERS = \
 	include/visa.h \
 	include/visatype.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = librevisa.pc
+

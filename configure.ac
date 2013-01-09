@@ -26,7 +26,8 @@ LT_INIT
 PKG_PROG_PKG_CONFIG([0.22])
 
 AC_CONFIG_HEADER([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile tests/io/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile tests/io/Makefile
+		 librevisa.pc])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -35,9 +36,17 @@ AC_PROG_LIBTOOL
 # Checks for libraries.
 AC_CHECK_LIB([vxiclient], [create_link_1])
 
+# This variable collects the pkg-config names of all detected libs.
+# It is then used to construct the "Requires.private:" field in the
+# librevisa.pc file.
+LIBREVISA_PKGLIBS=""
+
 PKG_CHECK_MODULES([libusb], [libusb-1.0 >= 1.0.8],
                   [CXXFLAGS="$CXXFLAGS $libusb_CFLAGS";
-                  LIBS="$LIBS $libusb_LIBS"])
+                  LIBS="$LIBS $libusb_LIBS";
+		  LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS libusb-1.0"], [:])
+
+AC_SUBST(LIBREVISA_PKGLIBS)
 
 # Checks for header files.
 AC_CHECK_HEADER([vxi.h])
