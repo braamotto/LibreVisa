@@ -21,6 +21,10 @@ AC_INIT([librevisa], [0.0.20121230], [Simon.Richter@hogyros.de])
 AM_INIT_AUTOMAKE([1.10 foreign])
 LT_INIT
 
+# Initialize pkg-config.
+# We require at least 0.22, as "Requires.private" behaviour changed there.
+PKG_PROG_PKG_CONFIG([0.22])
+
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile tests/io/Makefile])
 
@@ -29,18 +33,20 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 # Checks for libraries.
-AC_CHECK_LIB([usb-1.0], [libusb_init])
 AC_CHECK_LIB([vxiclient], [create_link_1])
 
+PKG_CHECK_MODULES([libusb], [libusb-1.0 >= 1.0.8],
+                  [CXXFLAGS="$CXXFLAGS $libusb_CFLAGS";
+                  LIBS="$LIBS $libusb_LIBS"])
+
 # Checks for header files.
-AC_CHECK_HEADER([libusb-1.0/libusb.h])
 AC_CHECK_HEADER([vxi.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
 
-AM_CONDITIONAL([WITH_USB], [test $ac_cv_lib_usb_1_0_libusb_init = yes -a $ac_cv_header_libusb_1_0_libusb_h = yes])
+AM_CONDITIONAL([WITH_USB], [test "x$libusb_CFLAGS" != "x"])
 AM_CONDITIONAL([WITH_VXI], [test $ac_cv_lib_vxiclient_create_link_1 = yes -a $ac_cv_header_vxi_h = yes])
 
 AC_OUTPUT

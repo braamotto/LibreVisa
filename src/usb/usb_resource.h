@@ -21,7 +21,7 @@
 
 #include "resource.h"
 
-#include <libusb-1.0/libusb.h>
+#include <libusb.h>
 
 #include "usb_string.h"
 
