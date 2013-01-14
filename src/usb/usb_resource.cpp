@@ -287,11 +287,10 @@ int usb_resource::Send(msg_id_t msg_id, uint8_t *buf, int size)
                 data[9] = 0x0a;
         if(buf)
                 memcpy(&data[12], buf, size);
-        int endpoint = 0x01;
         int total_sent = 0;
         while (total_sent < len)
         {
-                int sent = Transfer(endpoint, &data[total_sent], len - total_sent);
+                int sent = Transfer(bulk_out_ep, &data[total_sent], len - total_sent);
                 if (sent < 0)
                         return sent;
                 total_sent += sent;
@@ -317,7 +316,6 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
         if (Send(REQUEST_DEV_DEP_MSG_IN, 0, payload_buf_size) < 0)
                 return VI_ERROR_IO;
 
-        int endpoint = 0x82;
         uint8_t header[12];
         int header_received = 0;
 
@@ -331,7 +329,7 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
         // Make further transfers to receive rest of header.
         while (header_received < 12)
         {
-                int received = Transfer(endpoint, rx_buf, sizeof(rx_buf));
+                int received = Transfer(bulk_in_ep, rx_buf, sizeof(rx_buf));
                 if (received < 0)
                         return VI_ERROR_IO;
                 rx_buf_offset = 0;
@@ -364,7 +362,7 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
         // Make further transfers to receive rest of payload.
         while (payload_received < payload_size)
         {
-                int received = Transfer(endpoint, rx_buf, sizeof(rx_buf));
+                int received = Transfer(bulk_in_ep, rx_buf, sizeof(rx_buf));
                 if (received < 0)
                         return VI_ERROR_IO;
                 rx_buf_offset = 0;
