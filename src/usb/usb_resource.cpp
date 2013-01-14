@@ -231,6 +231,14 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
 
         dev = selected_device;
 
+        /// @todo set configuration
+        //if(libusb_set_configuration(dev, configuration) != LIBUSB_SUCCESS)
+        //        throw exception(VI_ERROR_RSRC_BUSY);
+
+        /// @todo set altsetting
+        //if(libusb_set_interface_alt_setting(dev, interface, altsetting) != LIBUSB_SUCCESS)
+        //        throw exception(VI_ERROR_RSRC_BUSY);
+
         if(libusb_kernel_driver_active(dev, interface))
         {
                 if(libusb_detach_kernel_driver(dev, interface) != LIBUSB_SUCCESS)
