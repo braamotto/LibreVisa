@@ -52,6 +52,8 @@ private:
         libusb_context *libusb;
         libusb_device_handle *dev;
 
+        uint8_t configuration;
+        uint8_t altsetting;
         uint8_t interface;
 
         uint8_t bulk_in_ep;

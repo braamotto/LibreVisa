@@ -124,6 +124,98 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
                                 acceptable = false;
                 }
 
+                bool valid_configuration = false;
+
+                for(uint8_t c = 0; acceptable && c < ddesc.bNumConfigurations; ++c)
+                {
+                        libusb_config_descriptor *cdesc;
+                        if(libusb_get_config_descriptor(devices[i], c, &cdesc) != LIBUSB_SUCCESS)
+                        {
+                                acceptable = false;
+                                break;
+                        }
+
+                        for(uint8_t in = 0; (in < cdesc->bNumInterfaces); ++in)
+                        {
+                                libusb_interface const &intf = cdesc->interface[in];
+
+                                for(uint8_t as = 0; as < intf.num_altsetting; ++as)
+                                {
+                                        libusb_interface_descriptor const &idesc = intf.altsetting[as];
+                                        if(idesc.bInterfaceClass != LIBUSB_CLASS_APPLICATION)
+                                                continue;
+
+                                        if(idesc.bInterfaceSubClass != 0x03)
+                                                continue;
+
+                                        if(idesc.bInterfaceProtocol > 0x01)
+                                                continue;
+
+                                        uint8_t bulk_in_ep = 0;
+                                        uint8_t bulk_out_ep = 0;
+                                        uint8_t intr_in_ep = 0;
+
+                                        for(uint8_t ep = 0; ep < idesc.bNumEndpoints; ++ep)
+                                        {
+                                                libusb_endpoint_descriptor const &edesc = idesc.endpoint[ep];
+                                                if((edesc.bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) == LIBUSB_ENDPOINT_IN)
+                                                {
+                                                        switch(edesc.bmAttributes & LIBUSB_TRANSFER_TYPE_MASK)
+                                                        {
+                                                        case LIBUSB_TRANSFER_TYPE_BULK:
+                                                                if(bulk_in_ep)
+                                                                        acceptable = false;
+                                                                else
+                                                                        bulk_in_ep = edesc.bEndpointAddress;
+                                                                break;
+                                                        case LIBUSB_TRANSFER_TYPE_INTERRUPT:
+                                                                if(intr_in_ep)
+                                                                        acceptable = false;
+                                                                else
+                                                                        intr_in_ep = edesc.bEndpointAddress;
+                                                                break;
+                                                        default:
+                                                                acceptable = false;
+                                                        }
+                                                }
+                                                else
+                                                {
+                                                        switch(edesc.bmAttributes & LIBUSB_TRANSFER_TYPE_MASK)
+                                                        {
+                                                        case LIBUSB_TRANSFER_TYPE_BULK:
+                                                                if(bulk_out_ep)
+                                                                        acceptable = false;
+                                                                else
+                                                                        bulk_out_ep = edesc.bEndpointAddress;
+                                                                break;
+                                                        default:
+                                                                acceptable = false;
+                                                        }
+                                                }
+                                        }
+
+                                        if(!bulk_in_ep || !bulk_out_ep)
+                                                acceptable = false;
+
+                                        this->configuration = cdesc->bConfigurationValue;
+                                        this->interface = idesc.bInterfaceNumber;
+                                        this->altsetting = idesc.bAlternateSetting;
+
+                                        this->bulk_in_ep = bulk_in_ep;
+                                        this->bulk_out_ep = bulk_out_ep;
+                                        this->intr_in_ep = intr_in_ep;
+
+                                        valid_configuration = true;
+
+                                }
+                        }
+
+                        libusb_free_config_descriptor(cdesc);
+                }
+
+                if(!valid_configuration)
+                        acceptable = false;
+
                 if(!acceptable)
                 {
                         libusb_close(selected_device);
