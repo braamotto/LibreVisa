@@ -94,7 +94,7 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
                 if(acceptable && libusb_le16_to_cpu(ddesc.idProduct) != product)
                         acceptable = false;
 
-                if(libusb_open(devices[i], &dev) != LIBUSB_SUCCESS)
+                if(acceptable && libusb_open(devices[i], &dev) != LIBUSB_SUCCESS)
                         acceptable = false;
 
                 if(acceptable)
@@ -214,7 +214,7 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
                 if(!valid_configuration)
                         acceptable = false;
 
-                if(!acceptable)
+                if(!acceptable && dev)
                 {
                         libusb_close(dev);
                         dev = 0;
