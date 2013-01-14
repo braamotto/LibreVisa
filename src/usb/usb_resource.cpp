@@ -59,7 +59,6 @@ struct string_descriptor
 
 usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string const &serial) :
         interface(0),
-        intr_in_ep(0x83),
         status_tag(0),
         tag(1),
         io_timeout(1000),
