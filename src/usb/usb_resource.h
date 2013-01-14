@@ -65,7 +65,7 @@ private:
         uint8_t capabilities[24];
         unsigned int io_timeout;
         bool have_interrupt_endpoint;
-        uint8_t rx_buf[64];
+        uint8_t rx_buf[1500];
         unsigned int rx_buf_offset;
         int rx_buf_bytes;
 
