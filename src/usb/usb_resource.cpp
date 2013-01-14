@@ -58,6 +58,7 @@ struct string_descriptor
 };
 
 usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string const &serial) :
+        dev(0),
         interface(0),
         status_tag(0),
         tag(1),
@@ -79,9 +80,7 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
         if(num_devices == 0)
                 throw exception(VI_ERROR_RSRC_NFOUND);
 
-        libusb_device_handle *selected_device = 0;
-
-        for(ssize_t i = 0; !selected_device && i < num_devices; ++i)
+        for(ssize_t i = 0; !dev && i < num_devices; ++i)
         {
                 bool acceptable = true;
 
@@ -95,7 +94,7 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
                 if(acceptable && libusb_le16_to_cpu(ddesc.idProduct) != product)
                         acceptable = false;
 
-                if(libusb_open(devices[i], &selected_device) != LIBUSB_SUCCESS)
+                if(libusb_open(devices[i], &dev) != LIBUSB_SUCCESS)
                         acceptable = false;
 
                 if(acceptable)
@@ -108,7 +107,7 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
                         } serialno;
 
                         int serialno_len = libusb_get_string_descriptor(
-                                selected_device,
+                                dev,
                                 ddesc.iSerialNumber,
                                 0,
                                 serialno.bytes,
@@ -217,18 +216,16 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
 
                 if(!acceptable)
                 {
-                        libusb_close(selected_device);
-                        selected_device = 0;
+                        libusb_close(dev);
+                        dev = 0;
                 }
 
         }
 
         libusb_free_device_list(devices, 1);
 
-        if(!selected_device)
+        if(!dev)
                 throw exception(VI_ERROR_RSRC_NFOUND);
-
-        dev = selected_device;
 
         /// @todo set configuration
         //if(libusb_set_configuration(dev, configuration) != LIBUSB_SUCCESS)
