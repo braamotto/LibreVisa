@@ -410,7 +410,7 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
                 sizeof buffer,
                 io_timeout);
 
-        if(rc != LIBUSB_SUCCESS)
+        if(rc != sizeof buffer)
                 throw exception(VI_ERROR_IO);
 
         if(!have_interrupt_endpoint)
