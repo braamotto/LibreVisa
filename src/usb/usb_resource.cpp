@@ -231,6 +231,12 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
 
         dev = selected_device;
 
+        if(libusb_kernel_driver_active(dev, interface))
+        {
+                if(libusb_detach_kernel_driver(dev, interface) != LIBUSB_SUCCESS)
+                        throw exception(VI_ERROR_RSRC_BUSY);
+        }
+
         if(libusb_claim_interface(dev, interface) != LIBUSB_SUCCESS)
                 throw exception(VI_ERROR_RSRC_BUSY);
 
