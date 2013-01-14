@@ -226,6 +226,9 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
 
         libusb_free_device_list(devices, 1);
 
+        if(!selected_device)
+                throw exception(VI_ERROR_RSRC_NFOUND);
+
         dev = selected_device;
 
         if(libusb_claim_interface(dev, interface) != LIBUSB_SUCCESS)
