@@ -61,6 +61,11 @@ public:
                 return VI_ERROR_NSUP_OPER;
         }
 
+        virtual ViStatus WaitOnEvent(ViEventType, ViUInt32, ViPEventType, ViPEvent)
+        {
+                return VI_ERROR_NSUP_OPER;
+        }
+
         virtual ViStatus ParseRsrc(
                 ViRsrc,
                 ViUInt16 *,

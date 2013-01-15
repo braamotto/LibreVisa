@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2012 Simon Richter
+#   Copyright (C) 2012,2013 Simon Richter
 #   Copyright (C) 2012 A. Pic
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ libvisa_la_SOURCES = \
 	viUnlock.cpp \
 	viVPrintf.cpp \
 	viVSPrintf.cpp \
+	viWaitOnEvent.cpp \
 	viWrite.cpp \
 	$(USB_SOURCES) \
 	$(VXI_SOURCES)

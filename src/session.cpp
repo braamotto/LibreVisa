@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 Simon Richter
+ * Copyright (C) 2012,2013 Simon Richter
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,11 @@ ViStatus session::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 ViStatus session::ReadSTB(ViUInt16 *retStatus)
 {
         return res->ReadSTB(retStatus);
+}
+
+ViStatus session::WaitOnEvent(ViEventType inEventType, ViUInt32 timeout, ViPEventType outEventType, ViPEvent outContext)
+{
+        return res->WaitOnEvent(inEventType, timeout, outEventType, outContext);
 }
 
 ViStatus session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId accessKey)

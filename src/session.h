@@ -45,6 +45,8 @@ public:
         ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
         ViStatus ReadSTB(ViUInt16 *);
 
+        ViStatus WaitOnEvent(ViEventType inEventType, ViUInt32 timeout, ViPEventType outEventType, ViPEvent outContext);
+
         ViUInt32 GetFmtReadBufSiz() { return fmt_read_buf.size; }
         void SetFmtReadBufSiz(ViUInt32 i) { fmt_read_buf.size = i; }
         ViUInt32 GetFmtReadBufCnt() { return fmt_read_buf.count; }
