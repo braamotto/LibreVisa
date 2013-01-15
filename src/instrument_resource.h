@@ -28,6 +28,10 @@ class instrument_resource :
         protected event_queue
 {
 public:
+        virtual ViStatus WaitOnEvent(ViEventType, ViUInt32, ViPEventType, ViPEvent);
+
+private:
+        // Not useful for instrument resources
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *)
         {
                 return VI_ERROR_NSUP_OPER;

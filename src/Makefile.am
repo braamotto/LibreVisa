@@ -22,7 +22,7 @@ libvisa_la_SOURCES = \
 	event.h \
 	event_queue.cpp event_queue.h \
 	exception.h \
-	instrument_resource.h \
+	instrument_resource.cpp instrument_resource.h \
 	lock.h \
 	mutex.h \
 	object.cpp object.h \

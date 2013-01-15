@@ -61,6 +61,11 @@ public:
                 return VI_SUCCESS;
         }
 
+        virtual ViStatus ReadSTB(ViUInt16 *)
+        {
+                return VI_ERROR_NSUP_OPER;
+        }
+
         struct read_op
         {
                 char const *data;

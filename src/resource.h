@@ -42,16 +42,8 @@ public:
 
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *) = 0;
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *) = 0;
-        /// @todo implement in all derivers, then make abstract
-        virtual ViStatus ReadSTB(ViUInt16 *)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
-        /// @todo implement in all derivers, then make abstract
-        virtual ViStatus WaitOnEvent(ViEventType, ViUInt32, ViPEventType, ViPEvent)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
+        virtual ViStatus ReadSTB(ViUInt16 *) = 0;
+        virtual ViStatus WaitOnEvent(ViEventType, ViUInt32, ViPEventType, ViPEvent) = 0;
 
         bool lock_exclusive(session const *);
         void unlock_exclusive();
