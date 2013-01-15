@@ -36,16 +36,8 @@ public:
 
         virtual ViStatus GetAttribute(ViAttr, void *);
 
-        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
-
-        virtual ViStatus FindRsrc(ViString, ViFindList *, ViUInt32 *, ViRsrc)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
-
+        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *) = 0;
+        virtual ViStatus FindRsrc(ViString, ViFindList *, ViUInt32 *, ViRsrc) = 0;
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *)
         {
                 return VI_ERROR_NSUP_OPER;
@@ -66,16 +58,7 @@ public:
                 return VI_ERROR_NSUP_OPER;
         }
 
-        virtual ViStatus ParseRsrc(
-                ViRsrc,
-                ViUInt16 *,
-                ViUInt16 *,
-                ViString * = 0,
-                ViString * = 0,
-                ViString * = 0)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
+        virtual ViStatus ParseRsrc(ViRsrc, ViUInt16 *, ViUInt16 *, ViString * = 0, ViString * = 0, ViString * = 0) = 0;
 
         bool lock_exclusive(session const *);
         void unlock_exclusive();
