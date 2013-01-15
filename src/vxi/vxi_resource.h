@@ -18,7 +18,7 @@
 #ifndef librevisa_vxi_resource_h_
 #define librevisa_vxi_resource_h_ 1
 
-#include "resource.h"
+#include "instrument_resource.h"
 
 #include <string>
 
@@ -29,7 +29,7 @@ namespace librevisa {
 namespace vxi {
 
 class vxi_resource :
-        public resource
+        public instrument_resource
 {
 private:
         vxi_resource(std::string const &hostname);

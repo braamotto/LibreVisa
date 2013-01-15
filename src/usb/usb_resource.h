@@ -19,7 +19,7 @@
 #ifndef librevisa_usb_resource_h_
 #define librevisa_usb_resource_h_ 1
 
-#include "resource.h"
+#include "instrument_resource.h"
 
 #include <libusb.h>
 
@@ -29,7 +29,7 @@ namespace librevisa {
 namespace usb {
 
 class usb_resource :
-        public resource
+        public instrument_resource
 {
 private:
         usb_resource(unsigned int, unsigned int, usb_string const &);

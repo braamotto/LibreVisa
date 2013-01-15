@@ -21,7 +21,7 @@
 
 #include "dummy.h"
 
-#include "resource.h"
+#include "instrument_resource.h"
 #include "resource_creator.h"
 #include "resource_manager.h"
 
@@ -35,7 +35,7 @@ namespace {
 using namespace librevisa;
 
 class dummy_resource :
-        public resource
+        public instrument_resource
 {
 public:
         virtual ViStatus Close() { delete this; return VI_SUCCESS; }
