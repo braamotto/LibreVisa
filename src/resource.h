@@ -38,21 +38,15 @@ public:
 
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *) = 0;
         virtual ViStatus FindRsrc(ViString, ViFindList *, ViUInt32 *, ViRsrc) = 0;
-        virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
 
-        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
-
+        virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *) = 0;
+        virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *) = 0;
+        /// @todo implement in all derivers, then make abstract
         virtual ViStatus ReadSTB(ViUInt16 *)
         {
                 return VI_ERROR_NSUP_OPER;
         }
-
+        /// @todo implement in all derivers, then make abstract
         virtual ViStatus WaitOnEvent(ViEventType, ViUInt32, ViPEventType, ViPEvent)
         {
                 return VI_ERROR_NSUP_OPER;
