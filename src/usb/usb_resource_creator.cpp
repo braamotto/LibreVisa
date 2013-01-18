@@ -23,8 +23,13 @@
 
 #include "resource_manager.h"
 
+#include "findlist.h"
+
 #include "util.h"
 #include "exception.h"
+
+#include <sstream>
+#include <iomanip>
 
 namespace librevisa {
 namespace usb {
@@ -44,31 +49,54 @@ usb_resource::creator::~creator() throw()
 
 resource *usb_resource::creator::create(std::vector<std::string> const &components) const
 {
-        if(components.size() < 4)
-                return 0;
+        create_or_find_args args;
+        args.create = &components;
+        return create_or_find(CREATE, args);
+}
 
-        std::string const &transp = components[0];
+void usb_resource::creator::find(findlist &list) const
+{
+        create_or_find_args args;
+        args.find = &list;
+        create_or_find(FIND, args);
+}
 
-        if(transp.size() < 3)
-                return 0;
-        if((transp[0] | 0x20) != 'u' ||
-                (transp[1] | 0x20) != 's' ||
-                (transp[2] | 0x20) != 'b')
+resource *usb_resource::creator::create_or_find(
+        create_or_find_mode mode,
+        create_or_find_args args) const
+{
+        unsigned int vendor, product;
+        usb_string serial;
+
+        if(mode == CREATE)
         {
-                return 0;
+                std::vector<std::string> const &components = *args.create;
+                if(components.size() < 4)
+                        return 0;
+
+                std::string const &transp = components[0];
+
+                if(transp.size() < 3)
+                        return 0;
+                if((transp[0] | 0x20) != 'u' ||
+                        (transp[1] | 0x20) != 's' ||
+                        (transp[2] | 0x20) != 'b')
+                {
+                        return 0;
+                }
+
+                char const *cursor = transp.data() + 3;
+
+                (void)parse_optional_int(cursor);
+
+                cursor = components[1].data();
+                vendor = parse_hex(cursor);
+
+                cursor = components[2].data();
+                product = parse_hex(cursor);
+
+                serial.assign(components[3].begin(), components[3].end());
         }
-
-        char const *cursor = transp.data() + 3;
-
-        (void)parse_optional_int(cursor);
-
-        cursor = components[1].data();
-        unsigned int vendor = parse_hex(cursor);
-
-        cursor = components[2].data();
-        unsigned int product = parse_hex(cursor);
-
-        usb_string serial(components[3].begin(), components[3].end());
 
         if(!libusb)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
@@ -95,18 +123,21 @@ resource *usb_resource::creator::create(std::vector<std::string> const &componen
                 if(acceptable && libusb_get_device_descriptor(devices[i], &ddesc) != LIBUSB_SUCCESS)
                         acceptable = false;
 
-                if(acceptable && libusb_le16_to_cpu(ddesc.idVendor) != vendor)
-                        acceptable = false;
-                if(acceptable && libusb_le16_to_cpu(ddesc.idProduct) != product)
-                        acceptable = false;
+                if(mode == CREATE)
+                {
+                        if(acceptable && libusb_le16_to_cpu(ddesc.idVendor) != vendor)
+                                acceptable = false;
+                        if(acceptable && libusb_le16_to_cpu(ddesc.idProduct) != product)
+                                acceptable = false;
 
-                usb_string dev_serial;
+                        usb_string dev_serial;
 
-                if(acceptable && !open_device_and_get_serial(devices[i], ddesc.iSerialNumber, dev, dev_serial))
-                        acceptable = false;
+                        if(acceptable && !open_device_and_get_serial(devices[i], ddesc.iSerialNumber, dev, dev_serial))
+                                acceptable = false;
 
-                if(dev_serial != serial)
-                        acceptable = false;
+                        if(acceptable && dev_serial != serial)
+                                acceptable = false;
+                }
 
                 bool valid_configuration = false;
 
@@ -200,7 +231,32 @@ resource *usb_resource::creator::create(std::vector<std::string> const &componen
                 if(!valid_configuration)
                         acceptable = false;
 
-                if(!acceptable && dev)
+                if(acceptable && mode == FIND)
+                {
+                        usb_string dev_serial;
+
+                        if(!open_device_and_get_serial(devices[i], ddesc.iSerialNumber, dev, dev_serial))
+                                acceptable = false;
+
+                        if(acceptable)
+                        {
+                                std::string dev_serial_ascii(dev_serial.begin(), dev_serial.end());
+
+                                std::ostringstream ss;
+                                ss << "USB";
+                                ss << unsigned(libusb_get_bus_number(devices[i]));
+                                ss << "::";
+                                ss << "0x" << std::hex << std::setfill('0') << std::setw(4) << ddesc.idVendor;
+                                ss << "::";
+                                ss << "0x" << std::hex << std::setfill('0') << std::setw(4) << ddesc.idProduct;
+                                ss << "::";
+                                ss << dev_serial_ascii;
+
+                                args.find->add(ss.str());
+                        }
+                }
+
+                if((mode == FIND || !acceptable) && dev)
                 {
                         libusb_close(dev);
                         dev = 0;
@@ -209,6 +265,9 @@ resource *usb_resource::creator::create(std::vector<std::string> const &componen
         }
 
         libusb_free_device_list(devices, 1);
+
+        if(mode == FIND)
+                return 0;
 
         if(!dev)
                 throw exception(VI_ERROR_RSRC_NFOUND);

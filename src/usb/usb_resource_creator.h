@@ -35,9 +35,23 @@ private:
         ~creator() throw();
 
         virtual resource *create(std::vector<std::string> const &) const;
+        virtual void find(findlist &) const;
 
         libusb_context *libusb;
 
+        enum create_or_find_mode
+        {
+                CREATE,
+                FIND
+        };
+
+        union create_or_find_args
+        {
+                std::vector<std::string> const *create;
+                findlist *find;
+        };
+
+        resource *create_or_find(create_or_find_mode, create_or_find_args) const;
         bool open_device_and_get_serial(libusb_device *, uint16_t, libusb_device_handle *&, usb_string &) const;
 
         static creator const instance;
