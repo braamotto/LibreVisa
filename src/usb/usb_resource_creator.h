@@ -38,6 +38,8 @@ private:
 
         libusb_context *libusb;
 
+        bool open_device_and_get_serial(libusb_device *, uint16_t, libusb_device_handle *&, usb_string &) const;
+
         static creator const instance;
 };
 

@@ -70,14 +70,6 @@ resource *usb_resource::creator::create(std::vector<std::string> const &componen
 
         usb_string serial(components[3].begin(), components[3].end());
 
-        /// @todo replace by libusb data type once they have one.
-        struct string_descriptor
-        {
-                uint8_t bLength;
-                uint8_t bDescriptorType;
-                uint16_t bString[0];
-        };
-
         if(!libusb)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
@@ -108,33 +100,13 @@ resource *usb_resource::creator::create(std::vector<std::string> const &componen
                 if(acceptable && libusb_le16_to_cpu(ddesc.idProduct) != product)
                         acceptable = false;
 
-                if(acceptable && libusb_open(devices[i], &dev) != LIBUSB_SUCCESS)
+                usb_string dev_serial;
+
+                if(acceptable && !open_device_and_get_serial(devices[i], ddesc.iSerialNumber, dev, dev_serial))
                         acceptable = false;
 
-                if(acceptable)
-                {
-                        /// @todo may not be portable everywhere
-                        union
-                        {
-                                string_descriptor str;
-                                unsigned char bytes[64];
-                        } serialno;
-
-                        int serialno_len = libusb_get_string_descriptor(
-                                dev,
-                                ddesc.iSerialNumber,
-                                0,
-                                serialno.bytes,
-                                sizeof serialno.bytes);
-                        if(serialno_len < 0)
-                                acceptable = false;
-                        else if(serialno_len != serialno.str.bLength)
-                                acceptable = false;
-                        else if((serial.size()*2+2) != unsigned(serialno_len))
-                                acceptable = false;
-                        else if(serial.compare(0, serial.size(), serialno.str.bString))
-                                acceptable = false;
-                }
+                if(dev_serial != serial)
+                        acceptable = false;
 
                 bool valid_configuration = false;
 
@@ -242,6 +214,46 @@ resource *usb_resource::creator::create(std::vector<std::string> const &componen
                 throw exception(VI_ERROR_RSRC_NFOUND);
 
         return new usb_resource(dev, info);
+}
+
+bool usb_resource::creator::open_device_and_get_serial(
+        libusb_device *devinfo,
+        uint16_t iSerialNumber,
+        libusb_device_handle *&dev,
+        usb_string &serial) const
+{
+        if(libusb_open(devinfo, &dev) != LIBUSB_SUCCESS)
+                return false;
+
+        /// @todo replace by libusb data type once they have one.
+        struct string_descriptor
+        {
+                uint8_t bLength;
+                uint8_t bDescriptorType;
+                uint16_t bString[0];
+        };
+
+        /// @todo may not be portable everywhere
+        union
+        {
+                string_descriptor str;
+                unsigned char bytes[64];
+        } serialno;
+
+        int serialno_len = libusb_get_string_descriptor(
+                dev,
+                iSerialNumber,
+                0,
+                serialno.bytes,
+                sizeof serialno.bytes);
+        if(serialno_len < 0)
+                return false;
+        else if(serialno_len != serialno.str.bLength)
+                return false;
+        else if(serialno_len & 1)
+                return false;
+        serial.assign(serialno.str.bString, serialno_len/2-1);
+        return true;
 }
 
 usb_resource::creator const usb_resource::creator::instance;
