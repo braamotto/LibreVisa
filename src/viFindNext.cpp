@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 Simon Richter
+ * Copyright (C) 2013 Simon Richter
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef librevisa_resource_creator_h_
-#define librevisa_resource_creator_h_ 1
-
-#include <string>
-#include <vector>
-
-#include "visa.h"
-
-namespace librevisa {
-
-class resource;
-class findlist;
-
-class resource_creator
-{
-public:
-        virtual resource *create(std::vector<std::string> const &) const = 0;
-        virtual void find(findlist &) const { }
-};
-
-}
-
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
+
+#include <visa.h>
+
+#include "object_cache.h"
+
+#include "findlist.h"
+
+using namespace librevisa;
+
+ViStatus viFindNext(ViFindList vi, ViChar desc[])
+{
+        try
+        {
+                return objects.get_findlist(vi)->FindNext(desc);
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
+}

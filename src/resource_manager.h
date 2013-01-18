@@ -34,11 +34,7 @@ public:
 
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
 
-        /// @todo implement
-        virtual ViStatus FindRsrc(ViString, ViFindList *, ViUInt32 *, ViRsrc)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
+        virtual ViStatus FindRsrc(ViString, ViFindList *, ViUInt32 *, ViRsrc);
 
         virtual ViStatus ParseRsrc(
                 ViRsrc rsrc,

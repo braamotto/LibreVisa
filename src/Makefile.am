@@ -23,6 +23,7 @@ libvisa_la_SOURCES = \
 	event.h \
 	event_queue.cpp event_queue.h \
 	exception.h \
+	findlist.cpp findlist.h \
 	instrument_resource.cpp instrument_resource.h \
 	lock.h \
 	mutex.h \
@@ -35,6 +36,7 @@ libvisa_la_SOURCES = \
 	util.h \
 	viBufWrite.cpp \
 	viClose.cpp \
+	viFindNext.cpp \
 	viFindRsrc.cpp \
 	viFlush.cpp \
 	viGetAttribute.cpp \

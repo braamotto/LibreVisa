@@ -28,20 +28,26 @@ class object;
 class resource;
 class resource_manager;
 class session;
+class findlist;
 
 class object_cache
 {
 public:
         object *get_object(ViObject) throw(exception);
         session *get_session(ViSession) throw(exception);
+        findlist *get_findlist(ViFindList) throw(exception);
 
         void remove(ViObject) throw(exception);
 
         ViSession add(resource *) throw(exception);
+        ViFindList create_findlist() throw(exception);
 
 private:
         typedef std::map<ViSession, session> smap;
         smap sessions;
+
+        typedef std::map<ViFindList, findlist> fmap;
+        fmap findlists;
 
         ViObject find_id() throw(exception);
 };

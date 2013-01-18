@@ -25,6 +25,7 @@
 
 #include "resource.h"
 #include "object_cache.h"
+#include "findlist.h"
 
 namespace librevisa {
 
@@ -73,6 +74,26 @@ ViStatus resource_manager::SetAttribute(ViAttr attr, ViAttrState attrState)
 {
         return resource::SetAttribute(attr, attrState);
 }
+
+ViStatus resource_manager::FindRsrc(
+        ViString /*expr*/,
+        ViPFindList findList,
+        ViPUInt32 retCount,
+        ViRsrc instrDesc)
+{
+        *findList = objects.create_findlist();
+        findlist *list = objects.get_findlist(*findList);
+
+        for(creator_iterator i = creators.begin(); i != creators.end(); ++i)
+        {
+                (*i)->find(*list);
+        }
+
+        *retCount = list->size();
+
+        return list->FindNext(instrDesc);
+}
+
 
 ViStatus resource_manager::ParseRsrc(
         ViRsrc,//rsrc,
