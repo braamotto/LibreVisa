@@ -21,7 +21,8 @@
 #include "usb_resource.h"
 
 #include "resource_creator.h"
-#include "resource_manager.h"
+
+#include <libusb.h>
 
 namespace librevisa {
 namespace usb {
@@ -30,17 +31,12 @@ class usb_resource::creator :
         public resource_creator
 {
 private:
-        creator()
-        {
-                default_resource_manager.register_creator(*this);
-        }
-
-        ~creator() throw()
-        {
-                default_resource_manager.unregister_creator(*this);
-        }
+        creator();
+        ~creator() throw();
 
         virtual resource *create(std::vector<std::string> const &) const;
+
+        libusb_context *libusb;
 
         static creator const instance;
 };

@@ -32,7 +32,18 @@ class usb_resource :
         public instrument_resource
 {
 private:
-        usb_resource(unsigned int, unsigned int, usb_string const &);
+        struct interface_info
+        {
+                uint8_t configuration;
+                uint8_t interface;
+                uint8_t altsetting;
+
+                uint8_t bulk_in_ep;
+                uint8_t bulk_out_ep;
+                uint8_t intr_in_ep;
+        };
+
+        usb_resource(libusb_device_handle *, interface_info const &);
         ~usb_resource() throw();
 
         typedef enum {
@@ -49,16 +60,9 @@ private:
         int Send(msg_id_t, uint8_t *, int);
         int Receive(uint8_t *, int);
 
-        libusb_context *libusb;
         libusb_device_handle *dev;
 
-        uint8_t configuration;
-        uint8_t altsetting;
-        uint8_t interface;
-
-        uint8_t bulk_in_ep;
-        uint8_t bulk_out_ep;
-        uint8_t intr_in_ep;
+        interface_info info;
 
         uint8_t status_tag;
         uint8_t tag;

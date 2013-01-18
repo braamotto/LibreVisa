@@ -49,17 +49,9 @@ enum
         LOCAL_LOCKOUT = 162
 };
 
-/// @todo replace by libusb data type once they have one.
-struct string_descriptor
-{
-        uint8_t bLength;
-        uint8_t bDescriptorType;
-        uint16_t bString[0];
-};
-
-usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string const &serial) :
-        dev(0),
-        interface(0),
+usb_resource::usb_resource(libusb_device_handle *dev, interface_info const &info) :
+        dev(dev),
+        info(info),
         status_tag(0),
         tag(1),
         io_timeout(1000),
@@ -67,188 +59,28 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
         rx_buf_offset(0),
         rx_buf_bytes(0)
 {
-        if(libusb_init(&libusb) != LIBUSB_SUCCESS)
-                throw exception(VI_ERROR_SYSTEM_ERROR);
-
-        libusb_device **devices = 0;
-
-        ssize_t num_devices = libusb_get_device_list(libusb, &devices);
-
-        if(num_devices < 0)
-                throw exception(VI_ERROR_SYSTEM_ERROR);
-
-        if(num_devices == 0)
-                throw exception(VI_ERROR_RSRC_NFOUND);
-
-        for(ssize_t i = 0; !dev && i < num_devices; ++i)
-        {
-                bool acceptable = true;
-
-                libusb_device_descriptor ddesc;
-
-                if(acceptable && libusb_get_device_descriptor(devices[i], &ddesc) != LIBUSB_SUCCESS)
-                        acceptable = false;
-
-                if(acceptable && libusb_le16_to_cpu(ddesc.idVendor) != vendor)
-                        acceptable = false;
-                if(acceptable && libusb_le16_to_cpu(ddesc.idProduct) != product)
-                        acceptable = false;
-
-                if(acceptable && libusb_open(devices[i], &dev) != LIBUSB_SUCCESS)
-                        acceptable = false;
-
-                if(acceptable)
-                {
-                        /// @todo may not be portable everywhere
-                        union
-                        {
-                                string_descriptor str;
-                                unsigned char bytes[64];
-                        } serialno;
-
-                        int serialno_len = libusb_get_string_descriptor(
-                                dev,
-                                ddesc.iSerialNumber,
-                                0,
-                                serialno.bytes,
-                                sizeof serialno.bytes);
-                        if(serialno_len < 0)
-                                acceptable = false;
-                        else if(serialno_len != serialno.str.bLength)
-                                acceptable = false;
-                        else if((serial.size()*2+2) != unsigned(serialno_len))
-                                acceptable = false;
-                        else if(serial.compare(0, serial.size(), serialno.str.bString))
-                                acceptable = false;
-                }
-
-                bool valid_configuration = false;
-
-                for(uint8_t c = 0; acceptable && c < ddesc.bNumConfigurations; ++c)
-                {
-                        libusb_config_descriptor *cdesc;
-                        if(libusb_get_config_descriptor(devices[i], c, &cdesc) != LIBUSB_SUCCESS)
-                        {
-                                acceptable = false;
-                                break;
-                        }
-
-                        for(uint8_t in = 0; (in < cdesc->bNumInterfaces); ++in)
-                        {
-                                libusb_interface const &intf = cdesc->interface[in];
-
-                                for(uint8_t as = 0; as < intf.num_altsetting; ++as)
-                                {
-                                        libusb_interface_descriptor const &idesc = intf.altsetting[as];
-                                        if(idesc.bInterfaceClass != LIBUSB_CLASS_APPLICATION)
-                                                continue;
-
-                                        if(idesc.bInterfaceSubClass != 0x03)
-                                                continue;
-
-                                        if(idesc.bInterfaceProtocol > 0x01)
-                                                continue;
-
-                                        uint8_t bulk_in_ep = 0;
-                                        uint8_t bulk_out_ep = 0;
-                                        uint8_t intr_in_ep = 0;
-
-                                        for(uint8_t ep = 0; ep < idesc.bNumEndpoints; ++ep)
-                                        {
-                                                libusb_endpoint_descriptor const &edesc = idesc.endpoint[ep];
-                                                if((edesc.bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) == LIBUSB_ENDPOINT_IN)
-                                                {
-                                                        switch(edesc.bmAttributes & LIBUSB_TRANSFER_TYPE_MASK)
-                                                        {
-                                                        case LIBUSB_TRANSFER_TYPE_BULK:
-                                                                if(bulk_in_ep)
-                                                                        acceptable = false;
-                                                                else
-                                                                        bulk_in_ep = edesc.bEndpointAddress;
-                                                                break;
-                                                        case LIBUSB_TRANSFER_TYPE_INTERRUPT:
-                                                                if(intr_in_ep)
-                                                                        acceptable = false;
-                                                                else
-                                                                        intr_in_ep = edesc.bEndpointAddress;
-                                                                break;
-                                                        default:
-                                                                acceptable = false;
-                                                        }
-                                                }
-                                                else
-                                                {
-                                                        switch(edesc.bmAttributes & LIBUSB_TRANSFER_TYPE_MASK)
-                                                        {
-                                                        case LIBUSB_TRANSFER_TYPE_BULK:
-                                                                if(bulk_out_ep)
-                                                                        acceptable = false;
-                                                                else
-                                                                        bulk_out_ep = edesc.bEndpointAddress;
-                                                                break;
-                                                        default:
-                                                                acceptable = false;
-                                                        }
-                                                }
-                                        }
-
-                                        if(!bulk_in_ep || !bulk_out_ep)
-                                                acceptable = false;
-
-                                        this->configuration = cdesc->bConfigurationValue;
-                                        this->interface = idesc.bInterfaceNumber;
-                                        this->altsetting = idesc.bAlternateSetting;
-
-                                        this->bulk_in_ep = bulk_in_ep;
-                                        this->bulk_out_ep = bulk_out_ep;
-                                        this->intr_in_ep = intr_in_ep;
-
-                                        valid_configuration = true;
-
-                                }
-                        }
-
-                        libusb_free_config_descriptor(cdesc);
-                }
-
-                if(!valid_configuration)
-                        acceptable = false;
-
-                if(!acceptable && dev)
-                {
-                        libusb_close(dev);
-                        dev = 0;
-                }
-
-        }
-
-        libusb_free_device_list(devices, 1);
-
-        if(!dev)
-                throw exception(VI_ERROR_RSRC_NFOUND);
-
         /// @todo set configuration
         //if(libusb_set_configuration(dev, configuration) != LIBUSB_SUCCESS)
         //        throw exception(VI_ERROR_RSRC_BUSY);
 
         /// @todo set altsetting
-        //if(libusb_set_interface_alt_setting(dev, interface, altsetting) != LIBUSB_SUCCESS)
+        //if(libusb_set_interface_alt_setting(dev, info.interface, altsetting) != LIBUSB_SUCCESS)
         //        throw exception(VI_ERROR_RSRC_BUSY);
 
-        if(libusb_kernel_driver_active(dev, interface))
+        if(libusb_kernel_driver_active(dev, info.interface))
         {
-                if(libusb_detach_kernel_driver(dev, interface) != LIBUSB_SUCCESS)
+                if(libusb_detach_kernel_driver(dev, info.interface) != LIBUSB_SUCCESS)
                         throw exception(VI_ERROR_RSRC_BUSY);
         }
 
-        if(libusb_claim_interface(dev, interface) != LIBUSB_SUCCESS)
+        if(libusb_claim_interface(dev, info.interface) != LIBUSB_SUCCESS)
                 throw exception(VI_ERROR_RSRC_BUSY);
 
         int rc = libusb_control_transfer(
                 dev,
                 LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE,
                 GET_CAPABILITIES,
-                interface,
+                info.interface,
                 0,
                 capabilities,
                 sizeof capabilities,
@@ -259,9 +91,8 @@ usb_resource::usb_resource(unsigned int vendor, unsigned int product, usb_string
 
 usb_resource::~usb_resource() throw()
 {
-        libusb_release_interface(dev, interface);
+        libusb_release_interface(dev, info.interface);
         libusb_close(dev);
-        libusb_exit(libusb);
 }
 
 ViStatus usb_resource::Close()
@@ -303,7 +134,7 @@ int usb_resource::Send(msg_id_t msg_id, uint8_t *buf, int size)
         int total_sent = 0;
         while (total_sent < len)
         {
-                int sent = Transfer(bulk_out_ep, &data[total_sent], len - total_sent);
+                int sent = Transfer(info.bulk_out_ep, &data[total_sent], len - total_sent);
                 if (sent < 0)
                         return sent;
                 total_sent += sent;
@@ -342,7 +173,7 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
         // Make further transfers to receive rest of header.
         while (header_received < 12)
         {
-                int received = Transfer(bulk_in_ep, rx_buf, sizeof(rx_buf));
+                int received = Transfer(info.bulk_in_ep, rx_buf, sizeof(rx_buf));
                 if (received < 0)
                         return VI_ERROR_IO;
                 rx_buf_offset = 0;
@@ -375,7 +206,7 @@ ViStatus usb_resource::Read(ViBuf payload_buf, ViUInt32 payload_buf_size, ViUInt
         // Make further transfers to receive rest of payload.
         while (payload_received < payload_size)
         {
-                int received = Transfer(bulk_in_ep, rx_buf, sizeof(rx_buf));
+                int received = Transfer(info.bulk_in_ep, rx_buf, sizeof(rx_buf));
                 if (received < 0)
                         return VI_ERROR_IO;
                 rx_buf_offset = 0;
@@ -405,7 +236,7 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
                 LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE,
                 READ_STATUS_BYTE,
                 status_tag,
-                interface,
+                info.interface,
                 buffer,
                 sizeof buffer,
                 io_timeout);
@@ -426,7 +257,7 @@ ViStatus usb_resource::ReadSTB(ViUInt16 *retStatus)
                 int actual;
                 rc = libusb_interrupt_transfer(
                         dev,
-                        intr_in_ep,
+                        info.intr_in_ep,
                         ibuffer,
                         sizeof ibuffer,
                         &actual,
