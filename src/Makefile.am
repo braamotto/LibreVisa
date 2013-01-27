@@ -26,6 +26,7 @@ libvisa_la_SOURCES = \
 	findlist.cpp findlist.h \
 	instrument_resource.cpp instrument_resource.h \
 	lock.h \
+	messagepump.cpp messagepump.h \
 	mutex.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
@@ -73,9 +74,17 @@ endif
 if WITH_VXI
 VXI_SOURCES = \
 	vxi/vxi_resource.cpp vxi/vxi_resource.h \
-	vxi/vxi_resource_creator.cpp vxi/vxi_resource_creator.h
+	vxi/vxi_resource_creator.cpp vxi/vxi_resource_creator.h \
+	$(AVAHI_SOURCES)
 else
 VXI_SOURCES =
+endif
+
+if WITH_AVAHI
+AVAHI_SOURCES = \
+	vxi/avahi.cpp vxi/avahi.h
+else
+AVAHI_SOURCES =
 endif
 
 INCLUDES = -I$(top_srcdir)/include

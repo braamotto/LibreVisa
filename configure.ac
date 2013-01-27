@@ -47,6 +47,12 @@ PKG_CHECK_MODULES([libusb], [libusb-1.0 >= 1.0.8],
                   LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS libusb-1.0";
                   WITH_USB=yes], [WITH_USB=no])
 
+PKG_CHECK_MODULES([libavahi_client], [avahi-client >= 0.6],
+                  [CXXFLAGS="$CXXFLAGS $libavahi_client_CFLAGS";
+                  LIBS="$LIBS $libavahi_client_LIBS";
+                  LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS libavahi-client";
+                  WITH_AVAHI=yes], [WITH_AVAHI=no])
+
 AC_SUBST(LIBREVISA_PKGLIBS)
 
 # Checks for header files.
@@ -58,5 +64,6 @@ AC_CHECK_HEADER([vxi.h])
 
 AM_CONDITIONAL([WITH_USB], [test "x$WITH_USB" = "xyes"])
 AM_CONDITIONAL([WITH_VXI], [test $ac_cv_lib_vxiclient_create_link_1 = yes -a $ac_cv_header_vxi_h = yes])
+AM_CONDITIONAL([WITH_AVAHI], [test "x$WITH_AVAHI" = "xyes"])
 
 AC_OUTPUT
