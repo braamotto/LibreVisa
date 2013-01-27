@@ -44,7 +44,8 @@ LIBREVISA_PKGLIBS=""
 PKG_CHECK_MODULES([libusb], [libusb-1.0 >= 1.0.8],
                   [CXXFLAGS="$CXXFLAGS $libusb_CFLAGS";
                   LIBS="$LIBS $libusb_LIBS";
-		  LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS libusb-1.0"], [:])
+                  LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS libusb-1.0";
+                  WITH_USB=yes], [WITH_USB=no])
 
 AC_SUBST(LIBREVISA_PKGLIBS)
 
@@ -55,7 +56,7 @@ AC_CHECK_HEADER([vxi.h])
 
 # Checks for library functions.
 
-AM_CONDITIONAL([WITH_USB], [test "x$libusb_CFLAGS" != "x"])
+AM_CONDITIONAL([WITH_USB], [test "x$WITH_USB" = "xyes"])
 AM_CONDITIONAL([WITH_VXI], [test $ac_cv_lib_vxiclient_create_link_1 = yes -a $ac_cv_header_vxi_h = yes])
 
 AC_OUTPUT
