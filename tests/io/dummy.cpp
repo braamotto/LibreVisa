@@ -22,6 +22,7 @@
 #include "dummy.h"
 
 #include "instrument_resource.h"
+#include "findlist.h"
 #include "resource_creator.h"
 #include "resource_manager.h"
 
@@ -89,6 +90,10 @@ class dummy_creator :
 {
 public:
         virtual resource *create(std::vector<std::string> const &) const { return new dummy_resource; }
+        virtual void find(findlist &list) const
+        {
+                list.add("DUMMY");
+        }
         static dummy_creator instance;
 };
 

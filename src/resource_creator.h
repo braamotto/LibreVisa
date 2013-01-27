@@ -32,7 +32,7 @@ class resource_creator
 {
 public:
         virtual resource *create(std::vector<std::string> const &) const = 0;
-        virtual void find(findlist &) const { }
+        virtual void find(findlist &) const = 0;
 };
 
 }

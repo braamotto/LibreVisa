@@ -33,6 +33,7 @@ private:
         ~creator() throw();
 
         virtual vxi_resource *create(std::vector<std::string> const &) const;
+        virtual void find(findlist &) const { }
 
         static creator instance;
 };
