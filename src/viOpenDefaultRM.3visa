@@ -1,0 +1,31 @@
+.TH viOpenDefaultRM 3visa "27 January 2013" "LibreVISA" "LibreVISA Programmers' Manual"
+.SH NAME
+viOpenDefaultRM \- Create and return a handle to the default VISA resource
+manager
+.SH SYNOPSIS
+.B #include <visa.h>
+.sp
+.BI "ViStatus viOpenDefaultRM(ViSession *" resource_manager ");"
+.SH DESCRIPTION
+This function creates a new handle referencing the default VISA resource
+manager, and stores it at the address given by the
+.IR resource_manager
+parameter. This handle can then be used to find and open instruments or
+instrument buses. This is typically the first function invoked by client
+applications.
+.sp
+When the handle is no longer needed, it should be closed using the
+.BR viClose()
+function. 
+.SH RETURN VALUE
+On success,
+.BR VI_SUCCESS
+is returned, and the new handle is stored at the given address.
+.sp
+On failure, an error code is returned, and the new handle initialized to
+.BR VI_NULL.
+.SH SEE ALSO
+.BR viClose(3visa),
+.BR viFindRsrc(3visa),
+.BR viOpen(3visa),
+.BR visa(7visa)
