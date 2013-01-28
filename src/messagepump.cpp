@@ -353,7 +353,7 @@ void messagepump::timeout_free(AvahiTimeout *t)
 }
 #endif
 
-timeval const messagepump::null_timeout = { 0, 0 };
+timeval const messagepump::null_timeout = { 0, 1000000 };
 
 messagepump main;
 
