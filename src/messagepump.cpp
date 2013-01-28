@@ -189,15 +189,19 @@ void messagepump::run(unsigned int stopafter)
                 timeval next = limit;
                 for(std::list<timeout>::iterator i = timeouts.begin(); i != timeouts.end(); ++i)
                 {
-                        while(i->avahi.tv.tv_sec == -1 && i != timeouts.end())
-                                i = timeouts.erase(i);
-                        if(i->avahi.tv.tv_sec == 0)
-                                continue;
-                        if(i->avahi.tv < now)
+                        switch(i->interface)
                         {
-                                i->avahi.tv = null_timeout;
-                                i->avahi.callback(&i->avahi, i->avahi.userdata);
-                                continue;
+                        case timeout::AVAHI:
+                                while(i->avahi.tv.tv_sec == -1 && i != timeouts.end())
+                                        i = timeouts.erase(i);
+                                if(i->avahi.tv.tv_sec == 0)
+                                        continue;
+                                if(i->avahi.tv < now)
+                                {
+                                        i->avahi.tv = null_timeout;
+                                        i->avahi.callback(&i->avahi, i->avahi.userdata);
+                                        continue;
+                                }
                         }
                 }
 
@@ -211,15 +215,19 @@ void messagepump::run(unsigned int stopafter)
 
                 for(std::list<watch>::iterator i = watches.begin(); i != watches.end(); ++i)
                 {
-                        while(i->avahi.fd == -1 && i != watches.end())
-                                i = watches.erase(i);
+                        switch(i->interface)
+                        {
+                        case watch::AVAHI:
+                                while(i->avahi.fd == -1 && i != watches.end())
+                                        i = watches.erase(i);
 
-                        if(i->avahi.event & AVAHI_WATCH_IN)
-                                FD_SET(i->avahi.fd, &readfds);
-                        if(i->avahi.event & AVAHI_WATCH_OUT)
-                                FD_SET(i->avahi.fd, &writefds);
-                        if(i->avahi.event && i->avahi.fd > maxfd)
-                                maxfd = i->avahi.fd;
+                                if(i->avahi.event & AVAHI_WATCH_IN)
+                                        FD_SET(i->avahi.fd, &readfds);
+                                if(i->avahi.event & AVAHI_WATCH_OUT)
+                                        FD_SET(i->avahi.fd, &writefds);
+                                if(i->avahi.event && i->avahi.fd > maxfd)
+                                        maxfd = i->avahi.fd;
+                        }
                 }
 
                 int rc = ::select(maxfd + 1, &readfds, &writefds, &exceptfds, &next);
@@ -229,9 +237,13 @@ void messagepump::run(unsigned int stopafter)
                 {
                         for(std::list<watch>::iterator i = watches.begin(); i != watches.end(); ++i)
                         {
-                                AvahiWatchEvent ev = watch_get_events(&i->avahi);
-                                if(ev)
-                                        i->avahi.callback(&i->avahi, i->avahi.fd, ev, i->avahi.userdata);
+                                switch(i->interface)
+                                {
+                                case watch::AVAHI:
+                                        AvahiWatchEvent ev = watch_get_events(&i->avahi);
+                                        if(ev)
+                                                i->avahi.callback(&i->avahi, i->avahi.fd, ev, i->avahi.userdata);
+                                }
                         }
                 }
 
