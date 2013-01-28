@@ -220,6 +220,7 @@ void messagepump::run(unsigned int stopafter)
 
         for(;;)
         {
+                bool restart = false;
                 timeval next = limit;
                 for(std::list<timeout>::iterator i = timeouts.begin(); i != timeouts.end(); ++i)
                 {
@@ -235,11 +236,15 @@ void messagepump::run(unsigned int stopafter)
                                 {
                                         i->avahi.tv = null_timeout;
                                         i->avahi.callback(&i->avahi, i->avahi.userdata);
+                                        restart = true;
                                         continue;
                                 }
 #endif
                         }
                 }
+
+                if(restart)
+                        continue;
 
                 next -= now;
 
