@@ -47,10 +47,10 @@ PKG_CHECK_MODULES([libusb], [libusb-1.0 >= 1.0.8],
                   LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS libusb-1.0";
                   WITH_USB=yes], [WITH_USB=no])
 
-PKG_CHECK_MODULES([libavahi_client], [avahi-client >= 0.6],
-                  [CXXFLAGS="$CXXFLAGS $libavahi_client_CFLAGS";
-                  LIBS="$LIBS $libavahi_client_LIBS";
-                  LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS libavahi-client";
+PKG_CHECK_MODULES([avahi_client], [avahi-client >= 0.6],
+                  [CXXFLAGS="$CXXFLAGS $avahi_client_CFLAGS";
+                  LIBS="$LIBS $avahi_client_LIBS";
+                  LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS avahi-client";
                   WITH_AVAHI=yes;
                   AC_DEFINE([WITH_AVAHI], [1], [AVAHI support])], [WITH_AVAHI=no])
 
