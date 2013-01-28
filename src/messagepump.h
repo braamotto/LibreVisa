@@ -18,7 +18,9 @@
 #ifndef librevisa_messagepump_h_
 #define librevisa_messagepump_h_ 1
 
+#ifdef WITH_AVAHI
 #include <avahi-common/watch.h>
+#endif
 
 #include <sys/select.h>
 
@@ -33,6 +35,7 @@ public:
 
         void run(unsigned int timeout);
 
+#ifdef WITH_AVAHI
         operator AvahiPoll const *(void) const throw() { return &avahi; }
 
         AvahiWatch* watch_new(int fd, AvahiWatchEvent event, AvahiWatchCallback callback, void *userdata);
@@ -42,6 +45,7 @@ public:
         AvahiTimeout *timeout_new(timeval const *tv, AvahiTimeoutCallback callback, void *userdata);
         void timeout_update(AvahiTimeout *t, timeval const *tv);
         void timeout_free(AvahiTimeout *t);
+#endif
 
 private:
         struct watch;
@@ -56,7 +60,9 @@ private:
 
         static timeval const null_timeout;
 
+#ifdef WITH_AVAHI
         AvahiPoll avahi;
+#endif
 };
 
 extern messagepump main;

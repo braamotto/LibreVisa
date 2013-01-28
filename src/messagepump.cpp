@@ -23,6 +23,7 @@
 
 #include <sys/time.h>
 
+#ifdef WITH_AVAHI
 extern "C" {
         static AvahiWatch *avahi_watch_new(AvahiPoll const *api, int fd, AvahiWatchEvent event, AvahiWatchCallback callback, void *userdata);
         static void avahi_watch_update(AvahiWatch *w, AvahiWatchEvent event);
@@ -89,6 +90,7 @@ inline AvahiWatchEvent &operator|=(AvahiWatchEvent &lhs, AvahiWatchEvent rhs)
 {
         return (lhs = AvahiWatchEvent(unsigned(lhs) | unsigned(rhs)));
 }
+#endif
 
 inline timeval operator+(timeval const &lhs, unsigned int microseconds)
 {
@@ -128,44 +130,59 @@ namespace librevisa {
 
 struct messagepump::watch
 {
+#ifdef WITH_AVAHI
         watch(AvahiWatch const &avahi) : interface(AVAHI), avahi(avahi) { }
+#endif
         watch(watch const &w) : interface(w.interface)
         {
                 switch(interface)
                 {
+#ifdef WITH_AVAHI
                 case AVAHI:
                         this->avahi = w.avahi;
                         break;
+#endif
                 }
         }
 
         enum
         {
+#ifdef WITH_AVAHI
                 AVAHI
+#endif
         } interface;
         union
         {
+#ifdef WITH_AVAHI
                 AvahiWatch avahi;
+#endif
         };
 };
 
 struct messagepump::timeout
 {
+#ifdef WITH_AVAHI
         timeout(AvahiTimeout const &avahi) : interface(AVAHI), avahi(avahi) { }
+#endif
 
         enum
         {
+#ifdef WITH_AVAHI
                 AVAHI
+#endif
         } interface;
 
         union
         {
+#ifdef WITH_AVAHI
                 AvahiTimeout avahi;
+#endif
         };
 };
 
 messagepump::messagepump() throw()
 {
+#ifdef WITH_AVAHI
         avahi.userdata = reinterpret_cast<void *>(this);
         avahi.watch_new = &avahi_watch_new;
         avahi.watch_update = &avahi_watch_update;
@@ -174,6 +191,7 @@ messagepump::messagepump() throw()
         avahi.timeout_new = &avahi_timeout_new;
         avahi.timeout_update = &avahi_timeout_update;
         avahi.timeout_free = &avahi_timeout_free;
+#endif
         return;
 }
 
@@ -191,6 +209,7 @@ void messagepump::run(unsigned int stopafter)
                 {
                         switch(i->interface)
                         {
+#ifdef WITH_AVAHI
                         case timeout::AVAHI:
                                 while(i->avahi.tv.tv_sec == -1 && i != timeouts.end())
                                         i = timeouts.erase(i);
@@ -202,6 +221,7 @@ void messagepump::run(unsigned int stopafter)
                                         i->avahi.callback(&i->avahi, i->avahi.userdata);
                                         continue;
                                 }
+#endif
                         }
                 }
 
@@ -217,6 +237,7 @@ void messagepump::run(unsigned int stopafter)
                 {
                         switch(i->interface)
                         {
+#ifdef WITH_AVAHI
                         case watch::AVAHI:
                                 while(i->avahi.fd == -1 && i != watches.end())
                                         i = watches.erase(i);
@@ -227,6 +248,7 @@ void messagepump::run(unsigned int stopafter)
                                         FD_SET(i->avahi.fd, &writefds);
                                 if(i->avahi.event && i->avahi.fd > maxfd)
                                         maxfd = i->avahi.fd;
+#endif
                         }
                 }
 
@@ -239,10 +261,12 @@ void messagepump::run(unsigned int stopafter)
                         {
                                 switch(i->interface)
                                 {
+#ifdef WITH_AVAHI
                                 case watch::AVAHI:
                                         AvahiWatchEvent ev = watch_get_events(&i->avahi);
                                         if(ev)
                                                 i->avahi.callback(&i->avahi, i->avahi.fd, ev, i->avahi.userdata);
+#endif
                                 }
                         }
                 }
@@ -253,6 +277,7 @@ void messagepump::run(unsigned int stopafter)
         }
 }
 
+#ifdef WITH_AVAHI
 AvahiWatch *messagepump::watch_new(int fd, AvahiWatchEvent event, AvahiWatchCallback callback, void *userdata)
 {
         AvahiWatch avahi = { this, fd, event, callback, userdata };
@@ -298,6 +323,7 @@ void messagepump::timeout_free(AvahiTimeout *t)
 {
         t->tv.tv_sec = -1;
 }
+#endif
 
 timeval const messagepump::null_timeout = { 0, 0 };
 

@@ -51,7 +51,8 @@ PKG_CHECK_MODULES([libavahi_client], [avahi-client >= 0.6],
                   [CXXFLAGS="$CXXFLAGS $libavahi_client_CFLAGS";
                   LIBS="$LIBS $libavahi_client_LIBS";
                   LIBREVISA_PKGLIBS="$LIBREVISA_PKGLIBS libavahi-client";
-                  WITH_AVAHI=yes], [WITH_AVAHI=no])
+                  WITH_AVAHI=yes;
+                  AC_DEFINE([WITH_AVAHI], [1], [AVAHI support])], [WITH_AVAHI=no])
 
 AC_SUBST(LIBREVISA_PKGLIBS)
 
