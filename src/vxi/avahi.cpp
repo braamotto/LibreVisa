@@ -25,20 +25,13 @@
 
 #include "messagepump.h"
 
+
 #include <avahi-client/client.h>
 #include <avahi-client/lookup.h>
 
-namespace librevisa {
-namespace vxi {
-
-avahi::avahi()
-{
-        default_resource_manager.register_creator(*this);
-}
-
-avahi::~avahi() throw()
-{
-        default_resource_manager.unregister_creator(*this);
+extern "C" {
+static void avahi_client_callback(AvahiClient *, AvahiClientState, void *);
+static void avahi_service_browser_callback(AvahiServiceBrowser *, AvahiIfIndex, AvahiProtocol, AvahiBrowserEvent, const char *, const char *, const char *, AvahiLookupResultFlags, void *);
 }
 
 static void avahi_client_callback(
@@ -59,6 +52,19 @@ static void avahi_service_browser_callback(
         AvahiLookupResultFlags,
         void *)
 {
+}
+
+namespace librevisa {
+namespace vxi {
+
+avahi::avahi()
+{
+        default_resource_manager.register_creator(*this);
+}
+
+avahi::~avahi() throw()
+{
+        default_resource_manager.unregister_creator(*this);
 }
 
 void avahi::find(findlist &list) const
