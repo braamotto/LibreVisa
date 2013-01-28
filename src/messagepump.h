@@ -24,15 +24,14 @@
 
 namespace librevisa {
 
-class messagepump :
-        private AvahiPoll
+class messagepump
 {
 public:
         messagepump() throw();
 
         void run(unsigned int timeout);
 
-        operator AvahiPoll const *(void) const throw() { return this; }
+        operator AvahiPoll const *(void) const throw() { return &avahi; }
 
         AvahiWatch* watch_new(int fd, AvahiWatchEvent event, AvahiWatchCallback callback, void *userdata);
         void watch_update(AvahiWatch *w, AvahiWatchEvent event);
@@ -54,6 +53,8 @@ private:
         fd_set exceptfds;
 
         static timeval const null_timeout;
+
+        AvahiPoll avahi;
 };
 
 extern messagepump main;

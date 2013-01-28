@@ -164,14 +164,14 @@ struct messagepump::timeout
 
 messagepump::messagepump() throw()
 {
-        AvahiPoll::userdata = reinterpret_cast<void *>(this);
-        AvahiPoll::watch_new = &avahi_watch_new;
-        AvahiPoll::watch_update = &avahi_watch_update;
-        AvahiPoll::watch_get_events = &avahi_watch_get_events;
-        AvahiPoll::watch_free = &avahi_watch_free;
-        AvahiPoll::timeout_new = &avahi_timeout_new;
-        AvahiPoll::timeout_update = &avahi_timeout_update;
-        AvahiPoll::timeout_free = &avahi_timeout_free;
+        avahi.userdata = reinterpret_cast<void *>(this);
+        avahi.watch_new = &avahi_watch_new;
+        avahi.watch_update = &avahi_watch_update;
+        avahi.watch_get_events = &avahi_watch_get_events;
+        avahi.watch_free = &avahi_watch_free;
+        avahi.timeout_new = &avahi_timeout_new;
+        avahi.timeout_update = &avahi_timeout_update;
+        avahi.timeout_free = &avahi_timeout_free;
         return;
 }
 
