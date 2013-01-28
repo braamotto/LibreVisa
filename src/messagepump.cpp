@@ -241,6 +241,8 @@ void messagepump::run(unsigned int stopafter)
                                         restart = true;
                                         continue;
                                 }
+                                if(i->avahi.tv < next)
+                                        next = i->avahi.tv;
 #endif
                         }
 
