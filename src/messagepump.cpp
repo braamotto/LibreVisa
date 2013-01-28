@@ -229,7 +229,7 @@ void messagepump::run(unsigned int stopafter)
                         case timeout::AVAHI:
                                 while(i->avahi.tv.tv_sec == -1 && i != timeouts.end())
                                         i = timeouts.erase(i);
-                                if(i->avahi.tv.tv_sec == 0)
+                                if(i->avahi.tv == null_timeout)
                                         continue;
                                 if(i->avahi.tv < now)
                                 {
