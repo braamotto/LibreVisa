@@ -164,6 +164,17 @@ struct messagepump::timeout
 #ifdef WITH_AVAHI
         timeout(AvahiTimeout const &avahi) : interface(AVAHI), avahi(avahi) { }
 #endif
+        timeout(timeout const &t) : interface(t.interface)
+        {
+                switch(interface)
+                {
+#ifdef WITH_AVAHI
+                case AVAHI:
+                        this->avahi = t.avahi;
+                        break;
+#endif
+                }
+        }
 
         enum
         {
