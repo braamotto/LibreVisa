@@ -20,6 +20,8 @@
 
 #include <avahi-common/watch.h>
 
+#include <sys/select.h>
+
 #include <list>
 
 namespace librevisa {

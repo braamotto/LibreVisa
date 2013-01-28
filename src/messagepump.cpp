@@ -21,6 +21,8 @@
 
 #include "messagepump.h"
 
+#include <sys/time.h>
+
 extern "C" {
         static AvahiWatch *avahi_watch_new(AvahiPoll const *api, int fd, AvahiWatchEvent event, AvahiWatchCallback callback, void *userdata);
         static void avahi_watch_update(AvahiWatch *w, AvahiWatchEvent event);
