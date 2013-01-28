@@ -64,6 +64,9 @@ static void avahi_service_browser_callback(
 void avahi::find(findlist &list) const
 {
         AvahiClient *client = avahi_client_new(main, AvahiClientFlags(0), &avahi_client_callback, 0, 0);
+        if(!client)
+                return;
+
         AvahiServiceBrowser *browser = avahi_service_browser_new(
                 client,
                 AVAHI_IF_UNSPEC,
