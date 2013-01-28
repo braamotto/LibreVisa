@@ -120,6 +120,11 @@ inline timeval &operator-=(timeval &lhs, timeval const &rhs)
         return lhs;
 }
 
+inline bool operator==(timeval const &lhs, timeval const &rhs)
+{
+        return lhs.tv_sec == rhs.tv_sec && lhs.tv_usec == rhs.tv_usec;
+}
+
 inline bool operator<(timeval const &lhs, timeval const &rhs)
 {
         return lhs.tv_sec < rhs.tv_sec ||
