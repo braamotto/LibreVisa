@@ -16,7 +16,7 @@ On success,
 .BR VI_SUCCESS
 is returned.
 .SH SEE ALSO
-.BR viOpen(3visa),
-.BR viOpenDefaultRM(3visa),
-.BR viFindRsrc(3visa),
+.BR viOpen(3visa) ,
+.BR viOpenDefaultRM(3visa) ,
+.BR viFindRsrc(3visa) ,
 .BR visa(7visa)
