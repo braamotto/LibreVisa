@@ -1,0 +1,22 @@
+.TH viClose 3visa "27 January 2013" "LibreVISA" "LibreVISA Programmers' Manual"
+.SH NAME
+viClose \- Close a handle to a VISA session, find list or event
+manager
+.SH SYNOPSIS
+.B #include <visa.h>
+.sp
+.BI "ViStatus viClose(ViObject " object ");"
+.SH DESCRIPTION
+Closes the handle
+.IR object
+and frees the underlying object. Connections to a resource are terminated
+only when the last session is closed.
+.SH RETURN VALUE
+On success,
+.BR VI_SUCCESS
+is returned.
+.SH SEE ALSO
+.BR viOpen(3visa),
+.BR viOpenDefaultRM(3visa),
+.BR viFindRsrc(3visa),
+.BR visa(7visa)

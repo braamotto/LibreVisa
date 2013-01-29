@@ -16,6 +16,7 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 dist_man_MANS = \
+	viClose.3visa \
 	viOpenDefaultRM.3visa
 
 lib_LTLIBRARIES = libvisa.la
