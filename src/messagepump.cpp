@@ -221,6 +221,7 @@ void messagepump::run(unsigned int stopafter)
         for(;;)
         {
                 bool restart = false;
+                bool have_timeout = false;
                 timeval next = limit;
                 for(std::list<timeout>::iterator i = timeouts.begin(); i != timeouts.end(); ++i)
                 {
@@ -241,6 +242,7 @@ void messagepump::run(unsigned int stopafter)
                                         restart = true;
                                         continue;
                                 }
+                                have_timeout = true;
                                 if(i->avahi.tv < next)
                                         next = i->avahi.tv;
 #endif
@@ -279,6 +281,9 @@ void messagepump::run(unsigned int stopafter)
 #endif
                         }
                 }
+
+                if(!have_timeout && maxfd == -1)
+                        return;
 
                 int rc = ::select(maxfd + 1, &readfds, &writefds, &exceptfds, &next);
                 if(rc == -1)
