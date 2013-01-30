@@ -1,7 +1,6 @@
 .TH viClose 3visa "27 January 2013" "LibreVISA" "LibreVISA Programmers' Manual"
 .SH NAME
 viClose \- Close a handle to a VISA session, find list or event
-manager
 .SH SYNOPSIS
 .B #include <visa.h>
 .sp

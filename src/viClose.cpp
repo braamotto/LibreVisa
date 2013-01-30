@@ -26,6 +26,13 @@
 
 using namespace librevisa;
 
+/** Close a handle to a VISA session, find list or event.
+ * Closes the handle vi and frees the underlying object. Connections to a
+ * resource are terminated only when the last session is closed.
+ * @param[in]   vi              Handle to be closed
+ * @return      status code
+ * @retval      VI_SUCCESS      Handle successfully closed
+ */
 ViStatus viClose(ViObject vi)
 {
         try
