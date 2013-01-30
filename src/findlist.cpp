@@ -34,6 +34,7 @@ ViStatus findlist::FindNext(ViRsrc rsrc)
                 return VI_ERROR_RSRC_NFOUND;
 
         resources.front().copy(rsrc, 256);
+        rsrc[resources.front().size()] = '\0';
         resources.pop_front();
         return VI_SUCCESS;
 }
