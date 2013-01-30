@@ -1,0 +1,13 @@
+/**
+ * @mainpage librevisa API
+ *
+ * @section sec_intro Introduction
+ *
+ * <a href="http://www.librevisa.org/">librevisa</a> is a shared
+ * library written in C++, which provides the basic API for talking to VISA
+ * capable devices.
+ *
+ * @section sec_website Website
+ *
+ * <a href="http://www.librevisa.org/">librevisa.org</a>
+ */
