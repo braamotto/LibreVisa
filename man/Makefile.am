@@ -1,5 +1,6 @@
 #
-#   Copyright (C) 2012 Simon Richter
+#   Copyright (C) 2012,2013 Simon Richter
+#   Copyright (C) 2012 A. Pic
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -14,12 +15,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = src man tests
-
-include_HEADERS = \
-	include/visa.h \
-	include/visatype.h
-
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = librevisa.pc
-
+dist_man_MANS = \
+	viClose.3visa \
+	viOpenDefaultRM.3visa
