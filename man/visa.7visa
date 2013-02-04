@@ -1,0 +1,56 @@
+.TH visa 7visa "29 January 2013" "LibreVISA" "LibreVISA Programmers' Manual"
+.SH NAME
+visa \- Virtual Instrument Software Architecture
+.SH SYNOPSIS
+.B #include <visa.h>
+.SH DESCRIPTION
+The Virtual Instrument Software Architecture provides a generic interface
+for communication with test and measurement equipment. 
+.SS Resource Names
+Each device is identified by a resource name that specifies the type of
+connection used, location information and the device type.
+.TP
+.B USB Devices
+.BR USB [\c
+.IR bus ]\c
+.BI :: manufacturer :: product :: serial\c
+.RB [ ::\c
+.IR type ]
+.sp
+The
+.I manufacturer
+and
+.I product
+identifiers must be given as hexadecimal numbers prefixed with
+.BR 0x .
+The
+.I serial
+number is mandatory, even if the device would be unique otherwise.
+.TP
+.B Ethernet/VXI-11 Devices
+.BR TCPIP [\c
+.IR interface ]\c
+.BI :: host\c
+.RB [ ::\c
+.IR type ]
+.SS Resource Manager
+Access to resources is mediated through a resource manager; while
+technically there could be multiple instances, usually only the default
+resource manager is used.
+.sp
+A handle to the default resource manager can be obtained from the
+.BR viOpenDefaultRM (3visa)
+function.
+.SS Finding Devices
+If the resource name is not known in advance, the resource manager can be
+queried for a list of known devices by using the
+.BR viFindRsrc (3visa)
+function.
+.sp
+This function returns a
+.B ViFindList
+object (along with the first known resource), and further resource names
+are then queried from the find list using
+.BR viFindNext (3visa)
+before finally freeing the list using
+.BR viClose (3visa).

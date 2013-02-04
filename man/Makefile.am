@@ -17,4 +17,5 @@
 
 dist_man_MANS = \
 	viClose.3visa \
-	viOpenDefaultRM.3visa
+	viOpenDefaultRM.3visa \
+	visa.7visa
