@@ -61,7 +61,7 @@ private:
 
         event::data *data;
 
-        size_type count() const
+        size_type get_count() const
         {
                 return (writep>readp)?(writep-readp):(size-readp+writep);
         }

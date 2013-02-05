@@ -43,7 +43,7 @@ void event_queue::set_size(size_type newsize)
 
         {
                 // When shrinking, discard newest events
-                size_type const newcount = std::min(count(), newsize);
+                size_type const newcount = std::min(get_count(), newsize);
 
                 if(readp < writep)
                 {
