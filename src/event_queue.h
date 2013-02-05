@@ -22,6 +22,7 @@
 
 #include "mutex.h"
 #include "condvar.h"
+#include "lock.h"
 
 namespace librevisa {
 
@@ -32,12 +33,27 @@ public:
 
         typedef unsigned int size_type;
 
-        size_type get_size() { return size; }
-        void set_size(size_type size);
+        class locked :
+                public lock
+        {
+        public:
+                locked(event_queue &queue) :
+                        lock(queue.cs),
+                        queue(queue) { }
+
+                size_type get_size() { return queue.get_size(); }
+                void set_size(size_type size) { queue.set_size(size); }
+
+        private:
+                event_queue &queue;
+        };
 
 private:
         mutex cs;
         condvar cv;
+
+        size_type get_size() { return size; }
+        void set_size(size_type size);
 
         size_type size;
         size_type readp;

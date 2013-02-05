@@ -21,8 +21,6 @@
 
 #include "event_queue.h"
 
-#include "lock.h"
-
 #include <algorithm>
 
 namespace librevisa {
@@ -44,8 +42,6 @@ void event_queue::set_size(size_type newsize)
         event::data *newdata = new event::data[newsize];
 
         {
-                lock cs_lock(cs);
-
                 // When shrinking, discard newest events
                 size_type const newcount = std::min(count(), newsize);
 
