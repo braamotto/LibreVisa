@@ -22,6 +22,8 @@
 
 namespace librevisa {
 
+class condvar;
+
 class mutex
 {
 public:
@@ -33,6 +35,7 @@ public:
 
 private:
         pthread_mutex_t impl;
+        friend class condvar;
 };
 
 }

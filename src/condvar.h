@@ -15,7 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <pthread.h>
+#include "mutex.h"
+
+#include <cerrno>
 
 #ifndef librevisa_condvar_h_
 #define librevisa_condvar_h_ 1
@@ -27,6 +29,12 @@ class condvar
 public:
         condvar() { pthread_cond_init(&impl, 0); }
         ~condvar() throw() { pthread_cond_destroy(&impl); }
+
+        void wait(mutex &cs) { pthread_cond_wait(&impl, &cs.impl); }
+        bool wait(mutex &cs, timespec const &ts)
+        {
+                return pthread_cond_timedwait(&impl, &cs.impl, &ts) != ETIMEDOUT;
+        }
 
 private:
         pthread_cond_t impl;
