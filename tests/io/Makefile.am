@@ -20,6 +20,7 @@ check_PROGRAMS = \
 	open_multi \
 	print \
 	read \
+	wait_immediate_noevents \
 	write
 
 check_LIBRARIES = libdummy.a

@@ -24,6 +24,8 @@
 #include "condvar.h"
 #include "lock.h"
 
+#include <stdint.h>
+
 namespace librevisa {
 
 class event_queue
@@ -44,6 +46,13 @@ public:
                 size_type get_size() { return queue.get_size(); }
                 void set_size(size_type size) { queue.set_size(size); }
 
+                size_type get_count() { return queue.get_count(); }
+
+                event::data &at(size_type index) { return queue.at(index); }
+
+                void wait() { queue.cv.wait(queue.cs); }
+                bool wait(timespec const &ts) { return queue.cv.wait(queue.cs, ts); }
+
         private:
                 event_queue &queue;
         };
@@ -54,6 +63,11 @@ private:
 
         size_type get_size() { return size; }
         void set_size(size_type size);
+
+        event::data &at(size_type index)
+        {
+                return data[(index + readp) % size];
+        }
 
         size_type size;
         size_type readp;

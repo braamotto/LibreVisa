@@ -3,4 +3,5 @@ open
 open_multi
 print
 read
+wait_immediate_noevents
 write

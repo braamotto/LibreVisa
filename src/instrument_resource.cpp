@@ -21,11 +21,65 @@
 
 #include "instrument_resource.h"
 
+#include "lock.h"
+#include "timeval_op.h"
+
+#include <sys/time.h>
+
 namespace librevisa {
 
-ViStatus instrument_resource::WaitOnEvent(ViEventType, ViUInt32, ViPEventType, ViPEvent)
+ViStatus instrument_resource::WaitOnEvent(
+        ViEventType inEventType,
+        ViUInt32 timeout_ms,
+        ViPEventType outEventType,
+        ViPEvent outContext)
 {
-        return VI_ERROR_NSUP_OPER;
+        timespec timeout;
+        if(timeout_ms != VI_TMO_IMMEDIATE)
+        {
+                timeval start;
+                ::gettimeofday(&start, 0);
+
+                timeout.tv_sec = start.tv_sec;
+                timeout.tv_nsec = start.tv_usec * 1000;
+        }
+
+        locked lk(*this);
+
+        for(;;)
+        {
+                size_type const count = lk.get_count();
+
+                for(size_type i = 0; i < count; ++i)
+                {
+                        event::data &data = lk.at(i);
+                        if(data.consumed)
+                                continue;
+
+                        if(data.eventType & inEventType)
+                        {
+                                data.consumed = true;
+                                *outEventType = data.eventType;
+                                if(outContext)
+                                        return VI_ERROR_NSUP_OPER;
+                                data.freed = true;
+                                return VI_SUCCESS;
+                        }
+                }
+
+                if(timeout_ms == VI_TMO_INFINITE)
+                {
+                        lk.wait();
+                }
+                else if(timeout_ms == VI_TMO_IMMEDIATE || !lk.wait(timeout))
+                {
+                        if(outEventType)
+                                *outEventType = 0;
+                        if(outContext)
+                                *outContext = VI_NULL;
+                        return VI_ERROR_TMO;
+                }
+        }
 }
 
 }

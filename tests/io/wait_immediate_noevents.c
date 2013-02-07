@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 Simon Richter
+ * Copyright (C) 2013 Simon Richter
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef librevisa_event_h_
-#define librevisa_event_h_ 1
+#include <visa.h>
 
-#include "object.h"
-
-namespace librevisa {
-
-class event :
-        public object
+int main()
 {
-public:
-        struct data
-        {
-                ViEventType eventType;
+        using_dummy_resource();
 
-                bool consumed;
-                bool freed;
-        };
-};
+        ViSession rmgr;
 
+        if(viOpenDefaultRM(&rmgr) != VI_SUCCESS)
+                return 1;
+
+        ViSession vi;
+        if(viOpen(rmgr, "DUMMY", VI_NO_LOCK, 0, &vi) != VI_SUCCESS)
+                return 1;
+
+        if(viWaitOnEvent(vi, VI_ALL_ENABLED_EVENTS, VI_TMO_IMMEDIATE, VI_NULL, VI_NULL) != VI_ERROR_TMO)
+                return 1;
+
+        if(viClose(vi) != VI_SUCCESS)
+                return 1;
+
+        if(viClose(rmgr) != VI_SUCCESS)
+                return 1;
+
+        return 0;
 }
-
-#endif
