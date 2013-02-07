@@ -17,6 +17,8 @@
 
 #include <visa.h>
 
+#include "dummy.h"
+
 int main()
 {
         using_dummy_resource();
