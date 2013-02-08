@@ -38,6 +38,8 @@ libvisa_la_SOURCES = \
 	util.h \
 	viBufWrite.cpp \
 	viClose.cpp \
+	viDisableEvent.cpp \
+	viEnableEvent.cpp \
 	viFindNext.cpp \
 	viFindRsrc.cpp \
 	viFlush.cpp \

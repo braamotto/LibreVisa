@@ -66,6 +66,21 @@ ViStatus session::ReadSTB(ViUInt16 *retStatus)
         return res->ReadSTB(retStatus);
 }
 
+ViStatus session::EnableEvent(
+        ViEventType, // eventType,
+        ViUInt16, // mechanism,
+        ViEventFilter) // context)
+{
+        return VI_ERROR_NSUP_OPER;
+}
+
+ViStatus session::DisableEvent(
+        ViEventType, // eventType,
+        ViUInt16) // mechanism)
+{
+        return VI_ERROR_NSUP_OPER;
+}
+
 ViStatus session::WaitOnEvent(
         ViEventType inEventType,
         ViUInt32 timeout_ms,
