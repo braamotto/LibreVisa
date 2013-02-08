@@ -21,6 +21,7 @@
 
 #include "object.h"
 #include "resource.h"
+#include "event_queue.h"
 
 namespace librevisa {
 
@@ -44,6 +45,9 @@ public:
         ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
         ViStatus ReadSTB(ViUInt16 *);
+
+        ViStatus EnableEvent(ViEventType eventType, ViUInt16 mechanism, ViEventFilter context);
+        ViStatus DisableEvent(ViEventType eventType, ViUInt16 mechanism);
 
         ViStatus WaitOnEvent(ViEventType inEventType, ViUInt32 timeout, ViPEventType outEventType, ViPEvent outContext);
 
@@ -95,6 +99,7 @@ private:
         buffer io_out_buf;
 
         unsigned int event_queue_length;
+        event_queue queue;
 };
 
 }

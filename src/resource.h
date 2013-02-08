@@ -43,7 +43,6 @@ public:
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *) = 0;
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *) = 0;
         virtual ViStatus ReadSTB(ViUInt16 *) = 0;
-        virtual ViStatus WaitOnEvent(ViEventType, ViUInt32, ViPEventType, ViPEvent) = 0;
 
         bool lock_exclusive(session const *);
         void unlock_exclusive();

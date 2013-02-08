@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2013 Simon Richter
+ * Copyright (C) 2012 Simon Richter
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,34 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef librevisa_instrument_resource_h_
-#define librevisa_instrument_resource_h_ 1
-
-#include "resource.h"
-
-namespace librevisa {
-
-class instrument_resource :
-        public resource
-{
-private:
-        // Not useful for instrument resources
-        virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
-
-        virtual ViStatus FindRsrc(ViString, ViFindList *, ViUInt32 *, ViRsrc)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
-
-        virtual ViStatus ParseRsrc(ViRsrc, ViUInt16 *, ViUInt16 *, ViString *, ViString *, ViString *)
-        {
-                return VI_ERROR_NSUP_OPER;
-        }
-};
-
-}
-
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
+
+#include "object_cache.h"
+#include "session.h"
+
+#include <visa.h>
+
+using namespace librevisa;
+
+ViStatus viEnableEvent(ViSession vi, ViEventType eventType, ViUInt16 mechanism, ViEventFilter context)
+{
+        try
+        {
+                return objects.get_session(vi)->EnableEvent(eventType, mechanism, context);
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
+}

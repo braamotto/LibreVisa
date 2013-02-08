@@ -21,6 +21,8 @@
 
 #include "session.h"
 
+#include <sys/time.h>
+
 namespace librevisa {
 
 session::session(resource *res) :
@@ -64,9 +66,73 @@ ViStatus session::ReadSTB(ViUInt16 *retStatus)
         return res->ReadSTB(retStatus);
 }
 
-ViStatus session::WaitOnEvent(ViEventType inEventType, ViUInt32 timeout, ViPEventType outEventType, ViPEvent outContext)
+ViStatus session::EnableEvent(
+        ViEventType, // eventType,
+        ViUInt16, // mechanism,
+        ViEventFilter) // context)
 {
-        return res->WaitOnEvent(inEventType, timeout, outEventType, outContext);
+        return VI_ERROR_NSUP_OPER;
+}
+
+ViStatus session::DisableEvent(
+        ViEventType, // eventType,
+        ViUInt16) // mechanism)
+{
+        return VI_ERROR_NSUP_OPER;
+}
+
+ViStatus session::WaitOnEvent(
+        ViEventType inEventType,
+        ViUInt32 timeout_ms,
+        ViPEventType outEventType,
+        ViPEvent outContext)
+{
+        timespec timeout;
+        if(timeout_ms != VI_TMO_IMMEDIATE)
+        {
+                timeval start;
+                ::gettimeofday(&start, 0);
+
+                timeout.tv_sec = start.tv_sec;
+                timeout.tv_nsec = start.tv_usec * 1000;
+        }
+
+        event_queue::locked lk(queue);
+
+        for(;;)
+        {
+                event_queue::size_type const count = lk.get_count();
+
+                for(event_queue::size_type i = 0; i < count; ++i)
+                {
+                        event::data &data = lk.at(i);
+                        if(data.consumed)
+                                continue;
+
+                        if(data.eventType & inEventType)
+                        {
+                                data.consumed = true;
+                                *outEventType = data.eventType;
+                                if(outContext)
+                                        return VI_ERROR_NSUP_OPER;
+                                data.freed = true;
+                                return VI_SUCCESS;
+                        }
+                }
+
+                if(timeout_ms == VI_TMO_INFINITE)
+                {
+                        lk.wait();
+                }
+                else if(timeout_ms == VI_TMO_IMMEDIATE || !lk.wait(timeout))
+                {
+                        if(outEventType)
+                                *outEventType = 0;
+                        if(outContext)
+                                *outContext = VI_NULL;
+                        return VI_ERROR_TMO;
+                }
+        }
 }
 
 ViStatus session::Lock(ViAccessMode accessMode, ViUInt32, ViKeyId, ViKeyId accessKey)
