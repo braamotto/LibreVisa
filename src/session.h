@@ -21,6 +21,7 @@
 
 #include "object.h"
 #include "resource.h"
+#include "event_queue.h"
 
 namespace librevisa {
 
@@ -95,6 +96,7 @@ private:
         buffer io_out_buf;
 
         unsigned int event_queue_length;
+        event_queue queue;
 };
 
 }

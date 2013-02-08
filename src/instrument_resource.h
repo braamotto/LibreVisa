@@ -19,17 +19,12 @@
 #define librevisa_instrument_resource_h_ 1
 
 #include "resource.h"
-#include "event_queue.h"
 
 namespace librevisa {
 
 class instrument_resource :
-        public resource,
-        protected event_queue
+        public resource
 {
-public:
-        virtual ViStatus WaitOnEvent(ViEventType, ViUInt32, ViPEventType, ViPEvent);
-
 private:
         // Not useful for instrument resources
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *)

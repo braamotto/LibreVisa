@@ -24,7 +24,7 @@ libvisa_la_SOURCES = \
 	event_queue.cpp event_queue.h \
 	exception.h \
 	findlist.cpp findlist.h \
-	instrument_resource.cpp instrument_resource.h \
+	instrument_resource.h \
 	lock.h \
 	messagepump.cpp messagepump.h \
 	mutex.h \
