@@ -28,8 +28,7 @@ namespace librevisa {
 session::session(resource *res) :
         res(res),
         exclusive_lock_count(0),
-        shared_lock_count(0),
-        event_queue_length(0)
+        shared_lock_count(0)
 {
         res->add_ref();
 }
@@ -200,7 +199,7 @@ ViStatus session::GetAttribute(ViAttr attr, void *attrState)
                 return VI_SUCCESS;
 
         case VI_ATTR_MAX_QUEUE_LENGTH:
-                *reinterpret_cast<ViUInt32 *>(attrState) = event_queue_length;
+                *reinterpret_cast<ViUInt32 *>(attrState) = event_queue::locked(queue).get_size();
                 return VI_SUCCESS;
 
         default:
@@ -218,7 +217,7 @@ ViStatus session::SetAttribute(ViAttr attr, ViAttrState attrState)
         case VI_ATTR_MAX_QUEUE_LENGTH:
                 if(attrState > 0xffffffff)
                         return VI_ERROR_NSUP_ATTR_STATE;
-                event_queue_length = attrState;
+                event_queue::locked(queue).set_size(attrState);
                 return VI_SUCCESS;
 
         default:
