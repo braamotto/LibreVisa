@@ -226,5 +226,25 @@ ViStatus session::SetAttribute(ViAttr attr, ViAttrState attrState)
         }
 }
 
+/** List of supported events. This list must be kept sorted. */
+ViEventType session::supported_events[15] =
+{
+        VI_EVENT_IO_COMPLETION,    // 0x3FFF2009
+        VI_EVENT_SERVICE_REQ,      // 0x3FFF200B
+        VI_EVENT_CLEAR,            // 0x3FFF200D
+        VI_EVENT_GPIB_CIC,         // 0x3FFF2012
+        VI_EVENT_GPIB_TALK,        // 0x3FFF2013
+        VI_EVENT_GPIB_LISTEN,      // 0x3FFF2014
+        VI_EVENT_VXI_VME_SYSFAIL,  // 0x3FFF201D
+        VI_EVENT_VXI_VME_SYSRESET, // 0x3FFF201E
+        VI_EVENT_VXI_SIGP,         // 0x3FFF2020
+        VI_EVENT_PXI_INTR,         // 0x3FFF2022
+        VI_EVENT_TCPIP_CONNECT,    // 0x3FFF2036
+        VI_EVENT_USB_INTR,         // 0x3FFF2037
+        VI_EVENT_TRIG,             // 0xBFFF200A
+        VI_EVENT_EXCEPTION,        // 0xBFFF200E
+        VI_EVENT_VXI_VME_INTR      // 0xBFFF2021
+};
+
 }
 

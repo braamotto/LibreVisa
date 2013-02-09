@@ -100,6 +100,9 @@ private:
 
         unsigned int event_queue_length;
         event_queue queue;
+
+        static unsigned int const num_supported_events = 15;
+        static ViEventType supported_events[num_supported_events];
 };
 
 }
