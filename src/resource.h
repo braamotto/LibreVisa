@@ -20,6 +20,8 @@
 
 #include "object.h"
 
+#include <list>
+
 namespace librevisa {
 
 class session;
@@ -29,10 +31,11 @@ class resource :
 {
 public:
         resource();
+        virtual ~resource() throw() { }         // required because of std::list::~list()
 
 public:
-        unsigned int add_ref() { return ++refcount; }
-        unsigned int release() { return --refcount; }
+        void add_session(session *);
+        bool remove_session(session *);
 
         virtual ViStatus GetAttribute(ViAttr, void *);
 
@@ -48,8 +51,9 @@ public:
         void unlock_exclusive();
 
 private:
-        unsigned int refcount;
         session const *exclusive_lock_holder;
+
+        std::list<session *> sessions;
 };
 
 }

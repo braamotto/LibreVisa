@@ -30,12 +30,12 @@ session::session(resource *res) :
         exclusive_lock_count(0),
         shared_lock_count(0)
 {
-        res->add_ref();
+        res->add_session(this);
 }
 
 ViStatus session::Close()
 {
-        if(res->release() != 0)
+        if(res->remove_session(this))
                 return VI_SUCCESS;
         return res->Close();
 }

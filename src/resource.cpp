@@ -24,9 +24,20 @@
 namespace librevisa {
 
 resource::resource() :
-        refcount(0), exclusive_lock_holder(0)
+        exclusive_lock_holder(0)
 {
         return;
+}
+
+void resource::add_session(session *s)
+{
+        sessions.push_back(s);
+}
+
+bool resource::remove_session(session *s)
+{
+        sessions.remove(s);
+        return !sessions.empty();
 }
 
 ViStatus resource::GetAttribute(ViAttr attr, void *attrState)
