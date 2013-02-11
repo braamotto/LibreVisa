@@ -34,6 +34,11 @@ event_queue::event_queue(size_type size) :
         return;
 }
 
+event_queue::~event_queue() throw()
+{
+        delete[] data;
+}
+
 void event_queue::set_size(size_type newsize)
 {
         if(size == newsize)

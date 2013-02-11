@@ -32,6 +32,7 @@ class event_queue
 {
 public:
         event_queue(unsigned int size = 10);
+        ~event_queue() throw();
 
         typedef unsigned int size_type;
 
