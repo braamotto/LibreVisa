@@ -78,7 +78,7 @@ private:
 
         size_type get_count() const
         {
-                return (writep>readp)?(writep-readp):(size-readp+writep);
+                return (writep>=readp)?(writep-readp):(size-readp+writep);
         }
 };
 
