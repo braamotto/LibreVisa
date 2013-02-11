@@ -33,6 +33,8 @@ class findlist;
 class object_cache
 {
 public:
+        ~object_cache() throw();
+
         object *get_object(ViObject) throw(exception);
         session *get_session(ViSession) throw(exception);
         findlist *get_findlist(ViFindList) throw(exception);
@@ -43,10 +45,10 @@ public:
         ViFindList create_findlist() throw(exception);
 
 private:
-        typedef std::map<ViSession, session> smap;
+        typedef std::map<ViSession, session *> smap;
         smap sessions;
 
-        typedef std::map<ViFindList, findlist> fmap;
+        typedef std::map<ViFindList, findlist *> fmap;
         fmap findlists;
 
         ViObject find_id() throw(exception);

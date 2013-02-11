@@ -80,6 +80,9 @@ public:
         void SetIOOutBuf(ViAByte a) { io_out_buf.buf = a; }
 
 private:
+        session(session const &);
+        session &operator=(session const &);
+
         resource *res;
 
         unsigned int exclusive_lock_count, shared_lock_count;

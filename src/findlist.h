@@ -29,6 +29,7 @@ class findlist :
         public object
 {
 public:
+        findlist() { }
         virtual ~findlist() throw() { }
 
         virtual ViStatus Close();
@@ -39,6 +40,9 @@ public:
         void add(std::string const &rsrc) { resources.push_back(rsrc); }
 
 private:
+        findlist(findlist const &);
+        findlist &operator=(findlist const &);
+
         std::list<std::string> resources;
 };
 

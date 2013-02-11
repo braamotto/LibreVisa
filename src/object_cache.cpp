@@ -28,6 +28,14 @@
 
 namespace librevisa {
 
+object_cache::~object_cache() throw()
+{
+        for(smap::iterator i = sessions.begin(); i != sessions.end(); ++i)
+                delete i->second;
+        for(fmap::iterator i = findlists.begin(); i != findlists.end(); ++i)
+                delete i->second;
+}
+
 object *object_cache::get_object(ViObject vi) throw(exception)
 {
         if(vi == VI_NULL)
@@ -36,13 +44,13 @@ object *object_cache::get_object(ViObject vi) throw(exception)
         {
                 smap::iterator i = sessions.find(vi);
                 if(i != sessions.end())
-                        return &i->second;
+                        return i->second;
         }
 
         {
                 fmap::iterator i = findlists.find(vi);
                 if(i != findlists.end())
-                        return &i->second;
+                        return i->second;
         }
 
 
@@ -57,7 +65,7 @@ session *object_cache::get_session(ViSession vi) throw(exception)
         {
                 smap::iterator i = sessions.find(vi);
                 if(i != sessions.end())
-                        return &i->second;
+                        return i->second;
         }
 
         throw exception(VI_ERROR_INV_OBJECT);
@@ -71,7 +79,7 @@ findlist *object_cache::get_findlist(ViFindList vi) throw(exception)
         {
                 fmap::iterator i = findlists.find(vi);
                 if(i != findlists.end())
-                        return &i->second;
+                        return i->second;
         }
 
         throw exception(VI_ERROR_INV_OBJECT);
@@ -84,6 +92,7 @@ void object_cache::remove(ViObject vi) throw(exception)
         smap::iterator si = sessions.find(vi);
         if(si != sessions.end())
         {
+                delete si->second;
                 sessions.erase(si);
                 return;
         }
@@ -91,6 +100,7 @@ void object_cache::remove(ViObject vi) throw(exception)
         fmap::iterator i = findlists.find(vi);
         if(i != findlists.end())
         {
+                delete i->second;
                 findlists.erase(i);
                 return;
         }
@@ -100,12 +110,12 @@ void object_cache::remove(ViObject vi) throw(exception)
 
 ViSession object_cache::add(resource *res) throw(exception)
 {
-        return sessions.insert(std::make_pair(find_id(), session(res))).first->first;
+        return sessions.insert(std::make_pair(find_id(), new session(res))).first->first;
 }
 
 ViFindList object_cache::create_findlist() throw(exception)
 {
-        return findlists.insert(std::make_pair(find_id(), findlist())).first->first;
+        return findlists.insert(std::make_pair(find_id(), new findlist)).first->first;
 }
 
 ViObject object_cache::find_id() throw(exception)
