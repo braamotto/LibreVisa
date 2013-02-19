@@ -1,4 +1,6 @@
+*.log
 *.o
+*.trs
 .deps/
 .libs/
 lock_attr_exclusive
@@ -14,3 +16,4 @@ rule_3_7_3
 rule_4_2_1
 rule_4_2_2
 rule_4_3_11
+test-suite.log
