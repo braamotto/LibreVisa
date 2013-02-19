@@ -92,8 +92,14 @@ ViStatus session::WaitOnEvent(
                 timeval start;
                 ::gettimeofday(&start, 0);
 
-                timeout.tv_sec = start.tv_sec;
-                timeout.tv_nsec = start.tv_usec * 1000;
+                timeout.tv_sec = start.tv_sec + timeout_ms / 1000;
+                timeout.tv_nsec = (start.tv_usec + (timeout_ms % 1000) * 1000) * 1000;
+
+                if(timeout.tv_nsec > 1000000000)
+                {
+                        timeout.tv_nsec -= 1000000000;
+                        timeout.tv_sec += 1;
+                }
         }
 
         event_queue::locked lk(queue);
