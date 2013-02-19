@@ -26,7 +26,7 @@ LT_INIT
 PKG_PROG_PKG_CONFIG([0.22])
 
 AC_CONFIG_HEADER([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile man/Makefile tests/Makefile tests/io/Makefile
+AC_CONFIG_FILES([Makefile src/Makefile man/Makefile tests/Makefile
 		 librevisa.pc])
 
 # Checks for programs.

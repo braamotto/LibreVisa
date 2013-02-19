@@ -3,12 +3,17 @@
 *.trs
 .deps/
 .libs/
+libdummy.a
 lock_attr_exclusive
 lock_attr_global
 lock_attr_shared
 lock_invalid_mode
 lock_recursive_exclusive
 lock_recursive_shared
+open
+open_multi
+print
+read
 rule_3_2_3
 rule_3_3_2
 rule_3_6_38
@@ -17,3 +22,5 @@ rule_4_2_1
 rule_4_2_2
 rule_4_3_11
 test-suite.log
+wait_immediate_noevents
+write
