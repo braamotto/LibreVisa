@@ -32,10 +32,7 @@ int main()
         if(viOpen(rmgr, "DUMMY", VI_NO_LOCK, 0, &vi) != VI_SUCCESS)
                 return 1;
 
-        if(viEnableEvent(vi, VI_EVENT_IO_COMPLETION, VI_QUEUE, 0) != VI_SUCCESS)
-                return 1;
-
-        if(viWaitOnEvent(vi, VI_ALL_ENABLED_EVENTS, VI_TMO_IMMEDIATE, VI_NULL, VI_NULL) != VI_ERROR_TMO)
+        if(viWaitOnEvent(vi, VI_ALL_ENABLED_EVENTS, VI_TMO_IMMEDIATE, VI_NULL, VI_NULL) != VI_ERROR_NENABLED)
                 return 1;
 
         if(viClose(vi) != VI_SUCCESS)

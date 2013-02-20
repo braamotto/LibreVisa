@@ -34,6 +34,7 @@ check_PROGRAMS = \
 	rule_4_2_2 \
 	rule_4_3_11 \
 	wait_immediate_noevents \
+	wait_nenabled \
 	wait_timeout \
 	write
 

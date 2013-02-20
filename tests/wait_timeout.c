@@ -35,6 +35,9 @@ int main()
         if(viOpen(rmgr, "DUMMY", VI_NO_LOCK, 0, &vi) != VI_SUCCESS)
                 return 1;
 
+        if(viEnableEvent(vi, VI_EVENT_IO_COMPLETION, VI_QUEUE, 0) != VI_SUCCESS)
+                return 1;
+
         struct timeval start;
         if(gettimeofday(&start, 0) != 0)
                 return 1;

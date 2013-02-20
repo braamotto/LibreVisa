@@ -19,6 +19,7 @@
 #ifndef librevisa_session_h_
 #define librevisa_session_h_ 1
 
+#include "exception.h"
 #include "object.h"
 #include "resource.h"
 #include "event_queue.h"
@@ -105,6 +106,10 @@ private:
 
         static unsigned int const num_supported_events = 15;
         static ViEventType supported_events[num_supported_events];
+
+        bool queue_enabled[num_supported_events];
+
+        static unsigned int lookup_event(ViEventType) throw(exception);
 };
 
 }

@@ -66,18 +66,52 @@ ViStatus session::ReadSTB(ViUInt16 *retStatus)
 }
 
 ViStatus session::EnableEvent(
-        ViEventType, // eventType,
-        ViUInt16, // mechanism,
+        ViEventType eventType,
+        ViUInt16 mechanism,
         ViEventFilter) // context)
 {
-        return VI_ERROR_NSUP_OPER;
+        try
+        {
+                unsigned int ev = lookup_event(eventType);
+
+                switch(mechanism)
+                {
+                case VI_QUEUE:
+                        queue_enabled[ev] = true;
+                        return VI_SUCCESS;
+
+                default:
+                        return VI_ERROR_NSUP_MECH;
+                }
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }
 
 ViStatus session::DisableEvent(
-        ViEventType, // eventType,
-        ViUInt16) // mechanism)
+        ViEventType eventType,
+        ViUInt16 mechanism)
 {
-        return VI_ERROR_NSUP_OPER;
+        try
+        {
+                unsigned int ev = lookup_event(eventType);
+
+                switch(mechanism)
+                {
+                case VI_QUEUE:
+                        queue_enabled[ev] = false;
+                        return VI_SUCCESS;
+
+                default:
+                        return VI_ERROR_NSUP_MECH;
+                }
+        }
+        catch(exception &e)
+        {
+                return e.code;
+        }
 }
 
 ViStatus session::WaitOnEvent(
@@ -102,6 +136,8 @@ ViStatus session::WaitOnEvent(
                 }
         }
 
+        bool const all_events = (inEventType == VI_ALL_ENABLED_EVENTS);
+
         event_queue::locked lk(queue);
 
         for(;;)
@@ -114,7 +150,7 @@ ViStatus session::WaitOnEvent(
                         if(data.consumed)
                                 continue;
 
-                        if(data.eventType & inEventType)
+                        if(all_events || data.eventType == inEventType)
                         {
                                 data.consumed = true;
                                 *outEventType = data.eventType;
@@ -123,6 +159,22 @@ ViStatus session::WaitOnEvent(
                                 data.freed = true;
                                 return VI_SUCCESS;
                         }
+                }
+
+                if(all_events)
+                {
+                        bool have_enabled_events = true;
+                        for(unsigned int i = 0; i < num_supported_events || (have_enabled_events = false); ++i)
+                                if(queue_enabled[i])
+                                        break;
+
+                        if(!have_enabled_events)
+                                return VI_ERROR_NENABLED;
+                }
+                else
+                {
+                        if(!queue_enabled[lookup_event(inEventType)])
+                                return VI_ERROR_NENABLED;
                 }
 
                 if(timeout_ms == VI_TMO_INFINITE)
@@ -229,6 +281,23 @@ ViStatus session::SetAttribute(ViAttr attr, ViAttrState attrState)
         default:
                 return res->SetAttribute(attr, attrState);
         }
+}
+
+unsigned int session::lookup_event(ViEventType eventType) throw(exception)
+{
+        unsigned int pos = 7;
+        for(unsigned int stepsize = 4; stepsize && pos < num_supported_events; stepsize >>= 1)
+        {
+                if(supported_events[pos] < eventType)
+                        pos += stepsize;
+                else if(supported_events[pos] > eventType)
+                        pos -= stepsize;
+
+                if(supported_events[pos] == eventType)
+                        return pos;
+        }
+
+        throw exception(VI_ERROR_INV_EVENT);
 }
 
 /** List of supported events. This list must be kept sorted. */
