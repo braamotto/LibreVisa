@@ -70,7 +70,7 @@ ViStatus _VI_FUNC viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
                 }
                 return VI_SUCCESS;
         }
-        catch(std::bad_alloc &e)
+        catch(std::bad_alloc &)
         {
                 return VI_ERROR_ALLOC;
         }
