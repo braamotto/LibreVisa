@@ -27,7 +27,7 @@ libvisa_la_SOURCES = \
 	instrument_resource.h \
 	lock.h \
 	messagepump.cpp messagepump.h \
-	mutex.h \
+	mutex.h mutex_pthread.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
 	resource.cpp resource.h \

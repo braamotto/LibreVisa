@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2013 Simon Richter
+ * Copyright (C) 2012 Simon Richter
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,9 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef librevisa_mutex_h_
-#define librevisa_mutex_h_ 1
+#ifndef librevisa_mutex_pthread_h_
+#define librevisa_mutex_pthread_h_ 1
 
-#include "mutex_pthread.h"
+#include <pthread.h>
+
+namespace librevisa {
+
+class condvar;
+
+class mutex
+{
+public:
+        mutex() throw() { pthread_mutex_init(&impl, 0); }
+        ~mutex() throw() { pthread_mutex_destroy(&impl); }
+
+        void lock() throw() { pthread_mutex_lock(&impl); }
+        void unlock() throw() { pthread_mutex_unlock(&impl); }
+
+private:
+        pthread_mutex_t impl;
+        friend class condvar;
+};
+
+}
 
 #endif
