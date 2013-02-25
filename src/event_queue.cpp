@@ -23,6 +23,10 @@
 
 #include <algorithm>
 
+#ifdef min
+#undef min
+#endif
+
 namespace librevisa {
 
 event_queue::event_queue(size_type size) :
