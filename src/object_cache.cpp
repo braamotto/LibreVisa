@@ -36,7 +36,7 @@ object_cache::~object_cache() throw()
                 delete i->second;
 }
 
-object *object_cache::get_object(ViObject vi) throw(exception)
+object *object_cache::get_object(ViObject vi)
 {
         if(vi == VI_NULL)
                 throw exception(VI_WARN_NULL_OBJECT);
@@ -57,7 +57,7 @@ object *object_cache::get_object(ViObject vi) throw(exception)
         throw exception(VI_ERROR_INV_OBJECT);
 }
 
-session *object_cache::get_session(ViSession vi) throw(exception)
+session *object_cache::get_session(ViSession vi)
 {
         if(vi == VI_NULL)
                 throw exception(VI_WARN_NULL_OBJECT);
@@ -71,7 +71,7 @@ session *object_cache::get_session(ViSession vi) throw(exception)
         throw exception(VI_ERROR_INV_OBJECT);
 }
 
-findlist *object_cache::get_findlist(ViFindList vi) throw(exception)
+findlist *object_cache::get_findlist(ViFindList vi)
 {
         if(vi == VI_NULL)
                 throw exception(VI_WARN_NULL_OBJECT);
@@ -85,7 +85,7 @@ findlist *object_cache::get_findlist(ViFindList vi) throw(exception)
         throw exception(VI_ERROR_INV_OBJECT);
 }
 
-void object_cache::remove(ViObject vi) throw(exception)
+void object_cache::remove(ViObject vi)
 {
         assert(vi != VI_NULL);
 
@@ -108,17 +108,17 @@ void object_cache::remove(ViObject vi) throw(exception)
         throw(VI_ERROR_INV_OBJECT);
 }
 
-ViSession object_cache::add(resource *res) throw(exception)
+ViSession object_cache::add(resource *res)
 {
         return sessions.insert(std::make_pair(find_id(), new session(res))).first->first;
 }
 
-ViFindList object_cache::create_findlist() throw(exception)
+ViFindList object_cache::create_findlist()
 {
         return findlists.insert(std::make_pair(find_id(), new findlist)).first->first;
 }
 
-ViObject object_cache::find_id() throw(exception)
+ViObject object_cache::find_id()
 {
         unsigned int id = 0;
         if(!sessions.empty())

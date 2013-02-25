@@ -109,7 +109,7 @@ private:
 
         bool queue_enabled[num_supported_events];
 
-        static unsigned int lookup_event(ViEventType) throw(exception);
+        static unsigned int lookup_event(ViEventType);
 };
 
 }

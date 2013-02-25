@@ -283,7 +283,7 @@ ViStatus session::SetAttribute(ViAttr attr, ViAttrState attrState)
         }
 }
 
-unsigned int session::lookup_event(ViEventType eventType) throw(exception)
+unsigned int session::lookup_event(ViEventType eventType)
 {
         unsigned int pos = 7;
         for(unsigned int stepsize = 4; stepsize && pos < num_supported_events; stepsize >>= 1)
