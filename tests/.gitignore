@@ -3,6 +3,7 @@
 *.trs
 .deps/
 .libs/
+find
 libdummy.a
 lock_attr_exclusive
 lock_attr_global

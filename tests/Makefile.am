@@ -16,6 +16,7 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 check_PROGRAMS = \
+	find \
 	lock_attr_exclusive \
 	lock_attr_global \
 	lock_attr_shared \

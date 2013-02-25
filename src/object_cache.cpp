@@ -127,6 +127,12 @@ ViObject object_cache::find_id() throw(exception)
                 if(maxses > id)
                         id = maxses;
         }
+        if(!findlists.empty())
+        {
+                unsigned int maxfl = findlists.rbegin()->first;
+                if(maxfl > id)
+                        id = maxfl;
+        }
         ++id;
         if(!id)
                 throw exception(VI_ERROR_ALLOC);
