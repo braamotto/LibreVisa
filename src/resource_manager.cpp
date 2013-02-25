@@ -37,7 +37,7 @@ ViStatus resource_manager::Open(ViRsrc rsrcName, ViAccessMode /*accessMode*/, Vi
                 *vi = objects.add(res);
                 return VI_SUCCESS;
         }
-        catch(std::bad_alloc &e)
+        catch(std::bad_alloc &)
         {
                 return VI_ERROR_ALLOC;
         }
