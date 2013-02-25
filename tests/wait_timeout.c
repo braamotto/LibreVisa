@@ -42,7 +42,7 @@ int main()
         if(gettimeofday(&start, 0) != 0)
                 return 1;
 
-        if(viWaitOnEvent(vi, VI_ALL_ENABLED_EVENTS, 1000, VI_NULL, VI_NULL) != VI_ERROR_TMO)
+        if(viWaitOnEvent(vi, VI_ALL_ENABLED_EVENTS, 100, VI_NULL, VI_NULL) != VI_ERROR_TMO)
                 return 1;
 
         struct timeval end;
@@ -53,7 +53,7 @@ int main()
                 (end.tv_sec - start.tv_sec) * 1000000 +
                 end.tv_usec - start.tv_usec;
 
-        if(elapsed < 1000000 || elapsed > 1100000)
+        if(elapsed < 100000 || elapsed > 110000)
                 return 1;
 
         if(viClose(vi) != VI_SUCCESS)
