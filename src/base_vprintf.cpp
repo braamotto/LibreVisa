@@ -93,7 +93,8 @@ ViStatus process_backslash(ViSession vi, ViPBuf &userstring, ViChar *&f)
         case '\\':
                 c = '\\';
                 break;
-        case '0' ... '7':
+        case '0': case '1': case '2': case '3':
+        case '4': case '5': case '6': case '7':
         {
                 char oct[3+1] = {0,0,0,0};
                 if((*f >= '0' && *f <= '7')) {
@@ -300,7 +301,8 @@ ViStatus base_vprintf(ViSession vi, ViPBuf userstring, ViString writeFmt, ViVALi
                                         isprec = 1;
                                         f++;
                                         goto in_fmt;
-                                case '0' ... '9':
+                                case '0': case '1': case '2': case '3': case '4':
+                                case '5': case '6': case '7': case '8': case '9':
                                         if(isprec)
                                                 prec = strtoul(f, &endptr, 10);
                                         else
