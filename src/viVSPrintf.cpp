@@ -23,6 +23,10 @@
 #include <cstdlib>
 #include <cstdarg>
 
+#ifndef va_copy
+#define va_copy(dest, src) ((void)((dest) = (src)))
+#endif
+
 #include "visa.h"
 #include "object_cache.h"
 #include "session.h"
