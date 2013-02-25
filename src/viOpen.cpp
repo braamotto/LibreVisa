@@ -26,7 +26,7 @@
 
 using namespace librevisa;
 
-ViStatus viOpen(ViSession sesn, ViRsrc rsrcName, ViAccessMode accessMode, ViUInt32 timeout, ViSession *vi)
+ViStatus _VI_FUNC viOpen(ViSession sesn, ViRsrc rsrcName, ViAccessMode accessMode, ViUInt32 timeout, ViSession *vi)
 {
         try
         {

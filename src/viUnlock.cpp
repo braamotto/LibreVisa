@@ -24,7 +24,7 @@
 
 using namespace librevisa;
 
-ViStatus viUnlock(ViSession vi)
+ViStatus _VI_FUNC viUnlock(ViSession vi)
 {
         try
         {

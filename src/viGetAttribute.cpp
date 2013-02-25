@@ -24,7 +24,7 @@
 
 using namespace librevisa;
 
-ViStatus viGetAttribute(ViObject vi, ViAttr attribute, void *attrState)
+ViStatus _VI_FUNC viGetAttribute(ViObject vi, ViAttr attribute, void *attrState)
 {
         try
         {

@@ -26,7 +26,7 @@
 
 using namespace librevisa;
 
-ViStatus viRead(ViSession vi, ViPBuf buf, ViUInt32 count, ViPUInt32 retCount)
+ViStatus _VI_FUNC viRead(ViSession vi, ViPBuf buf, ViUInt32 count, ViPUInt32 retCount)
 {
         try
         {

@@ -24,7 +24,7 @@
 
 using namespace librevisa;
 
-ViStatus viOpenDefaultRM(ViSession *sesn)
+ViStatus _VI_FUNC viOpenDefaultRM(ViSession *sesn)
 {
         try
         {

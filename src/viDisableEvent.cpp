@@ -26,7 +26,7 @@
 
 using namespace librevisa;
 
-ViStatus viDisableEvent(ViSession vi, ViEventType eventType, ViUInt16 mechanism)
+ViStatus _VI_FUNC viDisableEvent(ViSession vi, ViEventType eventType, ViUInt16 mechanism)
 {
         try
         {

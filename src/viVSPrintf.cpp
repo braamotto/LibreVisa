@@ -29,7 +29,7 @@
 
 using namespace librevisa;
 
-ViStatus viVSPrintf(ViSession vi, ViPBuf buf, ViString writeFmt, ViVAList params)
+ViStatus _VI_FUNC viVSPrintf(ViSession vi, ViPBuf buf, ViString writeFmt, ViVAList params)
 {
         try
         {

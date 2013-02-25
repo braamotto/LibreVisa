@@ -26,7 +26,7 @@
 
 using namespace librevisa;
 
-ViStatus viWrite(ViSession vi, ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
+ViStatus _VI_FUNC viWrite(ViSession vi, ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {
         try
         {

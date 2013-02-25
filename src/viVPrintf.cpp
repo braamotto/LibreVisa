@@ -28,7 +28,7 @@
 
 using namespace librevisa;
 
-ViStatus viVPrintf(ViSession vi, ViString writeFmt, ViVAList params)
+ViStatus _VI_FUNC viVPrintf(ViSession vi, ViString writeFmt, ViVAList params)
 {
 
         va_list aq;

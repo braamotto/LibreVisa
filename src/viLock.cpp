@@ -26,7 +26,7 @@
 
 using namespace librevisa;
 
-ViStatus viLock(ViSession vi, ViAccessMode lockType, ViUInt32 timeout, ViKeyId requestedKey, ViKeyId accessKey)
+ViStatus _VI_FUNC viLock(ViSession vi, ViAccessMode lockType, ViUInt32 timeout, ViKeyId requestedKey, ViKeyId accessKey)
 {
         try
         {

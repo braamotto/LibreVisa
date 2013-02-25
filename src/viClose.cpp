@@ -33,7 +33,7 @@ using namespace librevisa;
  * @return      status code
  * @retval      VI_SUCCESS      Handle successfully closed
  */
-ViStatus viClose(ViObject vi)
+ViStatus _VI_FUNC viClose(ViObject vi)
 {
         try
         {

@@ -24,7 +24,7 @@
 
 using namespace librevisa;
 
-ViStatus viFindRsrc(ViSession vi, ViString expr, ViPFindList findList, ViPUInt32 retCount, ViRsrc instrDesc)
+ViStatus _VI_FUNC viFindRsrc(ViSession vi, ViString expr, ViPFindList findList, ViPUInt32 retCount, ViRsrc instrDesc)
 {
         try
         {

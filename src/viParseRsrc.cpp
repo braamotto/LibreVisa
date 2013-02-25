@@ -21,7 +21,7 @@
 
 #include "visa.h"
 
-ViStatus viParseRsrc(ViSession, ViRsrc, ViUInt16 *, ViUInt16 *)
+ViStatus _VI_FUNC viParseRsrc(ViSession, ViRsrc, ViUInt16 *, ViUInt16 *)
 {
         return VI_SUCCESS;
 }

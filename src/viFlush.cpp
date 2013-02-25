@@ -25,7 +25,7 @@
 
 using namespace librevisa;
 
-ViStatus viFlush(ViSession vi, ViUInt16 mask)
+ViStatus _VI_FUNC viFlush(ViSession vi, ViUInt16 mask)
 {
         try
         {

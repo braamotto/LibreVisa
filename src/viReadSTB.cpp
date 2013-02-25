@@ -26,7 +26,7 @@
 
 using namespace librevisa;
 
-ViStatus viReadSTB(ViSession vi, ViPUInt16 retStatus)
+ViStatus _VI_FUNC viReadSTB(ViSession vi, ViPUInt16 retStatus)
 {
         try
         {

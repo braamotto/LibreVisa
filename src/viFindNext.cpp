@@ -27,7 +27,7 @@
 
 using namespace librevisa;
 
-ViStatus viFindNext(ViFindList vi, ViChar desc[])
+ViStatus _VI_FUNC viFindNext(ViFindList vi, ViChar desc[])
 {
         try
         {

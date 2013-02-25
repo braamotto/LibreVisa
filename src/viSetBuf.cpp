@@ -25,7 +25,7 @@
 
 using namespace librevisa;
 
-ViStatus viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
+ViStatus _VI_FUNC viSetBuf(ViSession vi, ViUInt16 mask, ViUInt32 size)
 {
         try
         {

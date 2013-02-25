@@ -22,7 +22,7 @@
 
 using namespace librevisa;
 
-ViStatus viWaitOnEvent(
+ViStatus _VI_FUNC viWaitOnEvent(
         ViSession vi,
         ViEventType inEventType,
         ViUInt32 timeout,
