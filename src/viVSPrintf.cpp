@@ -21,6 +21,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <cstdarg>
 
 #include "visa.h"
 #include "object_cache.h"
