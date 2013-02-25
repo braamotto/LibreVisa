@@ -18,6 +18,10 @@
 #ifndef librevisa_mutex_h_
 #define librevisa_mutex_h_ 1
 
+#ifdef WIN32
+#include "mutex_windows.h"
+#else
 #include "mutex_pthread.h"
+#endif
 
 #endif

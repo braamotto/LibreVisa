@@ -15,13 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef librevisa_condvar_h_
-#define librevisa_condvar_h_ 1
+#ifndef librevisa_mutex_windows_h_
+#define librevisa_mutex_windows_h_ 1
 
-#ifdef WIN32
-#include "condvar_windows.h"
-#else
-#include "condvar_pthread.h"
-#endif
+#include <Windows.h>
+
+namespace librevisa {
+
+class condvar;
+
+class mutex
+{
+public:
+        mutex() throw() { InitializeCriticalSection(&impl); }
+        ~mutex() throw() { DeleteCriticalSection(&impl); }
+
+        void lock() throw() { EnterCriticalSection(&impl); }
+        void unlock() throw() { LeaveCriticalSection(&impl); }
+
+private:
+        CRITICAL_SECTION impl;
+        friend class condvar;
+};
+
+}
 
 #endif

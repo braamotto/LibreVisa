@@ -15,13 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef librevisa_condvar_h_
-#define librevisa_condvar_h_ 1
+#include "mutex.h"
 
-#ifdef WIN32
-#include "condvar_windows.h"
-#else
-#include "condvar_pthread.h"
-#endif
+#include <Windows.h>
+
+#ifndef librevisa_condvar_windows_h_
+#define librevisa_condvar_windows_h_ 1
+
+namespace librevisa {
+
+class condvar
+{
+public:
+        condvar() { InitializeConditionVariable(&impl); }
+
+        void wait(mutex &cs) { SleepConditionVariableCS(&impl, &cs.impl, INFINITE); }
+        bool wait(mutex &cs, DWORD timeout_ms)
+        {
+                return SleepConditionVariableCS(&impl, &cs.impl, timeout_ms) != 0;
+        }
+
+private:
+        CONDITION_VARIABLE impl;
+};
+
+}
 
 #endif

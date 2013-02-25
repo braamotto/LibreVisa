@@ -19,7 +19,7 @@ lib_LTLIBRARIES = libvisa.la
 
 libvisa_la_SOURCES = \
 	base_vprintf.cpp base_vprintf.h \
-	condvar.h condvar_pthread.h \
+	condvar.h condvar_pthread.h condvar_windows.h \
 	event.h \
 	event_queue.cpp event_queue.h \
 	exception.h \
@@ -27,7 +27,7 @@ libvisa_la_SOURCES = \
 	instrument_resource.h \
 	lock.h \
 	messagepump.cpp messagepump.h \
-	mutex.h mutex_pthread.h \
+	mutex.h mutex_pthread.h mutex_windows.h \
 	object.cpp object.h \
 	object_cache.cpp object_cache.h \
 	resource.cpp resource.h \
