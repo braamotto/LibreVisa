@@ -19,7 +19,7 @@ lib_LTLIBRARIES = libvisa.la
 
 libvisa_la_SOURCES = \
 	base_vprintf.cpp base_vprintf.h \
-	condvar.h \
+	condvar.h condvar_pthread.h \
 	event.h \
 	event_queue.cpp event_queue.h \
 	exception.h \
