@@ -30,6 +30,8 @@ session::session(resource *res) :
         exclusive_lock_count(0),
         shared_lock_count(0)
 {
+        for(unsigned int i = 0; i < num_supported_events; ++i)
+                queue_enabled[i] = false;
         res->add_session(this);
 }
 
