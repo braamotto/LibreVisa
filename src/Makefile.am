@@ -25,6 +25,7 @@ libvisa_la_SOURCES = \
 	exception.h \
 	findlist.cpp findlist.h \
 	instrument_resource.h \
+	intrusive_list.h \
 	lock.h \
 	messagepump.cpp messagepump.h \
 	mutex.h mutex_pthread.h mutex_windows.h \
@@ -85,6 +86,7 @@ endif
 
 if WITH_AVAHI
 AVAHI_SOURCES = \
+	messagepump_avahi.cpp messagepump_avahi.h \
 	vxi/avahi.cpp vxi/avahi.h
 else
 AVAHI_SOURCES =

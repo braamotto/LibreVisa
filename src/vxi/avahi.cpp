@@ -24,6 +24,7 @@
 #include "resource_manager.h"
 #include "findlist.h"
 
+#include "messagepump_avahi.h"
 #include "messagepump.h"
 
 #include <sstream>
@@ -175,7 +176,7 @@ void avahi::find(findlist &list) const
 {
         find_context ctx;
         ctx.list = &list;
-        ctx.client = avahi_client_new(main, AvahiClientFlags(0), &avahi_client_callback, &ctx, 0);
+        ctx.client = avahi_client_new(&avahi_main, AvahiClientFlags(0), &avahi_client_callback, &ctx, 0);
         if(!ctx.client)
                 return;
 

@@ -18,13 +18,9 @@
 #ifndef librevisa_messagepump_h_
 #define librevisa_messagepump_h_ 1
 
-#ifdef WITH_AVAHI
-#include <avahi-common/watch.h>
-#endif
+#include "intrusive_list.h"
 
 #include <sys/select.h>
-
-#include <list>
 
 namespace librevisa {
 
@@ -35,35 +31,75 @@ public:
 
         void run(unsigned int timeout);
 
-#ifdef WITH_AVAHI
-        operator AvahiPoll const *(void) const throw() { return &avahi; }
+        enum fd_event
+        {
+                none = 0,
+                read = 1 << 0,
+                write = 1 << 1,
+                except = 1 << 2
+        };
 
-        AvahiWatch* watch_new(int fd, AvahiWatchEvent event, AvahiWatchCallback callback, void *userdata);
-        void watch_update(AvahiWatch *w, AvahiWatchEvent event);
-        AvahiWatchEvent watch_get_events(AvahiWatch *w);
-        void watch_free(AvahiWatch *w);
-        AvahiTimeout *timeout_new(timeval const *tv, AvahiTimeoutCallback callback, void *userdata);
-        void timeout_update(AvahiTimeout *t, timeval const *tv);
-        void timeout_free(AvahiTimeout *t);
-#endif
+        struct watch
+        {
+                watch *next;
+                watch *prev;
+
+                int fd;
+                fd_event event;
+
+                virtual void notify_fd_event(int fd, fd_event event) = 0;
+                virtual void cleanup() = 0;
+
+        protected:
+                ~watch() throw() { }
+        };
+
+        void register_watch(watch &);
+        void unregister_watch(watch &);
+        void update_watch(watch &, fd_event);
+        fd_event get_events(watch &);
+
+        struct timeout
+        {
+                timeout *next;
+                timeout *prev;
+
+                timeval tv;
+                virtual void notify_timeout() = 0;
+                virtual void cleanup() = 0;
+                
+        protected:
+                ~timeout() throw() { }
+        };
+
+        void register_timeout(timeout &);
+        void unregister_timeout(timeout &);
+        void update_timeout(timeout &, timeval const *);
 
 private:
-        struct watch;
-        std::list<watch> watches;
+        typedef intrusive_list<watch> watch_list;
+        typedef watch_list::iterator watch_iterator;
+        watch_list watches;
 
-        struct timeout;
-        std::list<timeout> timeouts;
+        typedef intrusive_list<timeout> timeout_list;
+        typedef timeout_list::iterator timeout_iterator;
+        timeout_list timeouts;
 
         fd_set readfds;
         fd_set writefds;
         fd_set exceptfds;
 
         static timeval const null_timeout;
-
-#ifdef WITH_AVAHI
-        AvahiPoll avahi;
-#endif
 };
+
+inline messagepump::fd_event &operator|=(
+        messagepump::fd_event &lhs,
+        messagepump::fd_event const &rhs)
+{
+        return lhs = static_cast<messagepump::fd_event>(
+                static_cast<unsigned int>(lhs) |
+                static_cast<unsigned int>(rhs));
+}
 
 extern messagepump main;
 
