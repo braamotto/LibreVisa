@@ -17,7 +17,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([librevisa], [0.0.20130213], [Simon.Richter@hogyros.de])
+AC_INIT([librevisa], [0.0.20130404], [Simon.Richter@hogyros.de])
 AM_INIT_AUTOMAKE([1.10 foreign parallel-tests])
 LT_INIT
 
