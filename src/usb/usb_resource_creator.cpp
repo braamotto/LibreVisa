@@ -38,13 +38,17 @@ usb_resource::creator::creator()
 {
         if(libusb_init(&libusb) != LIBUSB_SUCCESS)
                 libusb = 0;
-        default_resource_manager.register_creator(*this);
+        if(libusb)
+                default_resource_manager.register_creator(*this);
 }
 
 usb_resource::creator::~creator() throw()
 {
-        default_resource_manager.unregister_creator(*this);
-        libusb_exit(libusb);
+        if(libusb)
+        {
+                default_resource_manager.unregister_creator(*this);
+                libusb_exit(libusb);
+        }
 }
 
 resource *usb_resource::creator::create(std::vector<std::string> const &components) const
