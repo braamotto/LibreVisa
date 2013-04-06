@@ -20,8 +20,6 @@
 
 #include "resource.h"
 
-#include <list>
-
 namespace librevisa {
 
 class resource_creator;
@@ -30,8 +28,6 @@ class resource_manager :
         public resource
 {
 public:
-        ~resource_manager() throw() { }
-
         virtual ViStatus Open(ViRsrc, ViAccessMode, ViUInt32, ViSession *);
 
         virtual ViStatus FindRsrc(ViString, ViFindList *, ViUInt32 *, ViRsrc);
@@ -75,11 +71,8 @@ public:
 private:
         unsigned int refcount;
 
-        typedef std::list<resource_creator const *> creator_list;
-        typedef creator_list::iterator creator_iterator;
-        typedef creator_list::const_iterator creator_const_iterator;
-
-        creator_list creators;
+        static unsigned int const num_creators = 20;
+        resource_creator const *creators[num_creators];
 };
 
 extern resource_manager default_resource_manager;
