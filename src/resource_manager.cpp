@@ -84,8 +84,10 @@ ViStatus resource_manager::FindRsrc(
         *findList = objects.create_findlist();
         findlist *list = objects.get_findlist(*findList);
 
-        for(creator_iterator i = creators.begin(); i != creators.end(); ++i)
+        for(resource_creator const *const *i = creators; i != creators + num_creators; ++i)
         {
+                if(!*i)
+                        continue;
                 (*i)->find(*list);
         }
 
@@ -108,7 +110,13 @@ ViStatus resource_manager::ParseRsrc(
 
 void resource_manager::register_creator(resource_creator const &cre)
 {
-        creators.push_back(&cre);
+        for(resource_creator const **i = creators; i != creators + num_creators; ++i)
+        {
+                if(*i)
+                        continue;
+                *i = &cre;
+                break;
+        }
 }
 
 resource *resource_manager::create(ViRsrc rsrcName)
@@ -131,8 +139,10 @@ resource *resource_manager::create(ViRsrc rsrcName)
         }
         components.push_back(std::string(component_begin, name.end()));
 
-        for(creator_iterator i = creators.begin(); i != creators.end(); ++i)
+        for(resource_creator const *const *i = creators; i != creators + num_creators; ++i)
         {
+                if(!*i)
+                        continue;
                 resource *rsrc = (*i)->create(components);
                 if(rsrc)
                         return rsrc;
