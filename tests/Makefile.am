@@ -49,3 +49,5 @@ TESTS = $(check_PROGRAMS)
 INCLUDES = -I$(top_srcdir)/include
 LDADD = libdummy.a ../src/libvisa.la
 LDFLAGS = -no-install
+
+LINK = $(CXXLINK)
