@@ -27,6 +27,10 @@
 #include "messagepump_avahi.h"
 #include "messagepump.h"
 
+#include "mutex.h"
+#include "condvar.h"
+#include "lock.h"
+
 #include <sstream>
 #include <algorithm>
 
@@ -36,6 +40,8 @@
 struct find_context
 {
         librevisa::findlist *list;
+        librevisa::mutex cs;
+        librevisa::condvar cv;
         AvahiClient *client;
         std::list<AvahiServiceBrowser *> browsers;
         std::list<AvahiServiceResolver *> resolvers;
@@ -112,8 +118,10 @@ static void avahi_service_browser_callback(
                 ctx->browsers.remove(browser);
                 if(ctx->browsers.empty() && ctx->resolvers.empty())
                 {
+                        librevisa::lock l(ctx->cs);
                         avahi_client_free(ctx->client);
                         ctx->client = 0;
+                        ctx->cv.signal();
                 }
                 break;
         }
@@ -154,8 +162,10 @@ static void avahi_service_resolver_callback(
         ctx->resolvers.remove(r);
         if(ctx->browsers.empty() && ctx->resolvers.empty())
         {
+                librevisa::lock l(ctx->cs);
                 avahi_client_free(ctx->client);
                 ctx->client = 0;
+                ctx->cv.signal();
         }
 }
 
@@ -175,11 +185,17 @@ avahi::~avahi() throw()
 void avahi::find(findlist &list) const
 {
         find_context ctx;
+        lock l(ctx.cs);
         ctx.list = &list;
         ctx.client = avahi_client_new(&avahi_main, AvahiClientFlags(0), &avahi_client_callback, &ctx, 0);
         if(!ctx.client)
                 return;
 
+        timeval now;
+        ::gettimeofday(&now, 0);
+
+        timespec limit = { now.tv_sec + 5, now.tv_usec * 1000 };
+        ctx.cv.wait(ctx.cs, limit);
 
         //std::for_each(ctx.resolvers.begin(), ctx.resolvers.end(), &avahi_service_resolver_free);
         std::for_each(ctx.browsers.begin(), ctx.browsers.end(), &avahi_service_browser_free);
