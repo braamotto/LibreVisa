@@ -24,6 +24,8 @@
 #include "timeval_op.h"
 #include "lock.h"
 
+#include <queue>
+
 #include <sys/time.h>
 
 namespace librevisa {
@@ -98,7 +100,7 @@ void messagepump::run(unsigned int stopafter)
 
         for(;;)
         {
-                bool restart = false;
+                timeout *expired = 0;
                 bool have_timeout = false;
                 timeval next = limit;
 
@@ -120,9 +122,8 @@ void messagepump::run(unsigned int stopafter)
                                 if(i->tv < now)
                                 {
                                         i->tv = null_timeout;
-                                        i->notify_timeout();
-                                        restart = true;
-                                        continue;
+                                        expired = &*i;
+                                        break;
                                 }
                                 have_timeout = true;
                                 if(i->tv < next)
@@ -130,8 +131,11 @@ void messagepump::run(unsigned int stopafter)
                         }
                 }
 
-                if(restart)
+                if(expired)
+                {
+                        expired->notify_timeout();
                         continue;
+                }
 
                 if(have_timeout)
                         next -= now;
@@ -178,13 +182,30 @@ void messagepump::run(unsigned int stopafter)
                         return;
                 if(rc > 0)
                 {
-                        lock l(cs);
+                        std::queue<watch *> notify_list;
 
-                        for(watch_iterator i = watches.begin(); i != watches.end(); ++i)
                         {
-                                fd_event ev = get_events(*i);
-                                if(ev)
-                                        i->notify_fd_event(i->fd, ev);
+                                lock l(cs);
+
+                                for(watch_iterator i = watches.begin(); i != watches.end(); ++i)
+                                {
+                                        fd_event ev = get_events(*i);
+                                        if(ev)
+                                                notify_list.push(&*i);
+                                }
+                        }
+
+                        while(!notify_list.empty())
+                        {
+                                for(watch_iterator i = watches.begin(); i != watches.end(); ++i)
+                                {
+                                        if(notify_list.front() == &*i)
+                                        {
+                                                i->notify_fd_event(i->fd, get_events(*i));
+                                                break;
+                                        }
+                                }
+                                notify_list.pop();
                         }
                 }
 
