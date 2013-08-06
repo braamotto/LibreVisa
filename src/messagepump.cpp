@@ -30,13 +30,15 @@
 
 namespace librevisa {
 
-messagepump::messagepump() throw()
+messagepump::messagepump() throw() :
+        worker(*this)
 {
         return;
 }
 
 void messagepump::register_watch(watch &w)
 {
+        worker.start();
         lock l(cs);
         watches.push_front(w);
         cv.signal();
@@ -70,6 +72,7 @@ messagepump::fd_event messagepump::get_events(watch &w)
 
 void messagepump::register_timeout(timeout &t)
 {
+        worker.start();
         lock l(cs);
         timeouts.push_front(t);
         cv.signal();

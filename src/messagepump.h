@@ -22,17 +22,20 @@
 
 #include "mutex.h"
 #include "condvar.h"
+#include "thread.h"
 
 #include <sys/select.h>
 
 namespace librevisa {
 
-class messagepump
+class messagepump :
+        private thread::runnable
 {
 public:
         messagepump() throw();
 
-        void run();
+        // thread::runnable
+        virtual void run();
 
         enum fd_event
         {
@@ -96,6 +99,7 @@ private:
 
         mutex cs;
         condvar cv;
+        thread worker;
 };
 
 inline messagepump::fd_event &operator|=(
