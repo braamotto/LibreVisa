@@ -18,7 +18,7 @@
 #ifndef librevisa_mutex_windows_h_
 #define librevisa_mutex_windows_h_ 1
 
-#include <Windows.h>
+#include <windows.h>
 
 namespace librevisa {
 

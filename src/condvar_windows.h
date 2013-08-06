@@ -17,7 +17,7 @@
 
 #include "mutex.h"
 
-#include <Windows.h>
+#include <windows.h>
 
 #ifndef librevisa_condvar_windows_h_
 #define librevisa_condvar_windows_h_ 1
