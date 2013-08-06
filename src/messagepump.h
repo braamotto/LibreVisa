@@ -32,7 +32,7 @@ class messagepump
 public:
         messagepump() throw();
 
-        void run(unsigned int timeout);
+        void run();
 
         enum fd_event
         {

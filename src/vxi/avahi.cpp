@@ -180,7 +180,6 @@ void avahi::find(findlist &list) const
         if(!ctx.client)
                 return;
 
-        main.run(5000);
 
         //std::for_each(ctx.resolvers.begin(), ctx.resolvers.end(), &avahi_service_resolver_free);
         std::for_each(ctx.browsers.begin(), ctx.browsers.end(), &avahi_service_browser_free);

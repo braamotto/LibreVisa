@@ -91,18 +91,16 @@ void messagepump::update_timeout(timeout &t, timeval const *tv)
         cv.signal();
 }
 
-void messagepump::run(unsigned int stopafter)
+void messagepump::run()
 {
         timeval now;
         ::gettimeofday(&now, 0);
-
-        timeval const limit = now + stopafter * 1000;
 
         for(;;)
         {
                 timeout *expired = 0;
                 bool have_timeout = false;
-                timeval next = limit;
+                timeval next;
 
                 {
                         lock l(cs);
@@ -125,9 +123,11 @@ void messagepump::run(unsigned int stopafter)
                                         expired = &*i;
                                         break;
                                 }
-                                have_timeout = true;
-                                if(i->tv < next)
+                                if(!have_timeout || i->tv < next)
+                                {
                                         next = i->tv;
+                                        have_timeout = true;
+                                }
                         }
                 }
 
@@ -177,9 +177,10 @@ void messagepump::run(unsigned int stopafter)
                         }
                 }
 
-                int rc = ::select(maxfd + 1, &readfds, &writefds, &exceptfds, &next);
+                int rc = ::select(maxfd + 1, &readfds, &writefds, &exceptfds, have_timeout? &next : 0);
                 if(rc == -1)
                         return;
+
                 if(rc > 0)
                 {
                         std::queue<watch *> notify_list;
@@ -210,8 +211,6 @@ void messagepump::run(unsigned int stopafter)
                 }
 
                 ::gettimeofday(&now, 0);
-                if(limit < now)
-                        return;
         }
 }
 
