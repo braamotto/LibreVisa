@@ -22,6 +22,7 @@
 #include "messagepump.h"
 
 #include "timeval_op.h"
+#include "lock.h"
 
 #include <sys/time.h>
 
@@ -34,17 +35,23 @@ messagepump::messagepump() throw()
 
 void messagepump::register_watch(watch &w)
 {
+        lock l(cs);
         watches.push_front(w);
+        cv.signal();
 }
 
 void messagepump::unregister_watch(watch &w)
 {
+        lock l(cs);
         w.fd = -1;
+        cv.signal();
 }
 
 void messagepump::update_watch(watch &w, fd_event event)
 {
+        lock l(cs);
         w.event = event;
+        cv.signal();
 }
 
 messagepump::fd_event messagepump::get_events(watch &w)
@@ -61,20 +68,25 @@ messagepump::fd_event messagepump::get_events(watch &w)
 
 void messagepump::register_timeout(timeout &t)
 {
+        lock l(cs);
         timeouts.push_front(t);
+        cv.signal();
 }
 
 void messagepump::unregister_timeout(timeout &t)
 {
+        lock l(cs);
         t.tv.tv_sec = -1;
+        cv.signal();
 }
 
 void messagepump::update_timeout(timeout &t, timeval const *tv)
 {
+        lock l(cs);
         if(!tv)
                 tv = &null_timeout;
         t.tv = *tv;
-        return;
+        cv.signal();
 }
 
 void messagepump::run(unsigned int stopafter)
@@ -89,37 +101,40 @@ void messagepump::run(unsigned int stopafter)
                 bool restart = false;
                 bool have_timeout = false;
                 timeval next = limit;
-                for(timeout_iterator i = timeouts.begin(); i != timeouts.end(); ++i)
-                {
-                        while(i != timeouts.end() && i->tv.tv_sec == -1)
-                        {
-                                timeout &t = *i;
-                                i = timeouts.erase(i);
-                                t.cleanup();
-                        }
-                        if(i == timeouts.end())
-                                break;
-                        if(i->tv == null_timeout)
-                                continue;
-                        if(i->tv < now)
-                        {
-                                i->tv = null_timeout;
-                                i->notify_timeout();
-                                restart = true;
-                                continue;
-                        }
-                        have_timeout = true;
-                        if(i->tv < next)
-                                next = i->tv;
 
-                        if(i == timeouts.end())
-                                break;
+                {
+                        lock l(cs);
+
+                        for(timeout_iterator i = timeouts.begin(); i != timeouts.end(); ++i)
+                        {
+                                while(i != timeouts.end() && i->tv.tv_sec == -1)
+                                {
+                                        timeout &t = *i;
+                                        i = timeouts.erase(i);
+                                        t.cleanup();
+                                }
+                                if(i == timeouts.end())
+                                        break;
+                                if(i->tv == null_timeout)
+                                        continue;
+                                if(i->tv < now)
+                                {
+                                        i->tv = null_timeout;
+                                        i->notify_timeout();
+                                        restart = true;
+                                        continue;
+                                }
+                                have_timeout = true;
+                                if(i->tv < next)
+                                        next = i->tv;
+                        }
                 }
 
                 if(restart)
                         continue;
 
-                next -= now;
+                if(have_timeout)
+                        next -= now;
 
                 FD_ZERO(&readfds);
                 FD_ZERO(&writefds);
@@ -127,35 +142,44 @@ void messagepump::run(unsigned int stopafter)
 
                 int maxfd = -1;
 
-                for(watch_iterator i = watches.begin(); i != watches.end(); ++i)
                 {
-                        while(i != watches.end() && i->fd == -1)
+                        lock l(cs);
+
+                        for(watch_iterator i = watches.begin(); i != watches.end(); ++i)
                         {
-                                watch &w = *i;
-                                i = watches.erase(i);
-                                w.cleanup();
-                        };
-                        if(i == watches.end())
-                                break;
+                                while(i != watches.end() && i->fd == -1)
+                                {
+                                        watch &w = *i;
+                                        i = watches.erase(i);
+                                        w.cleanup();
+                                };
+                                if(i == watches.end())
+                                        break;
 
-                        if(i->event & read)
-                                FD_SET(i->fd, &readfds);
-                        if(i->event & write)
-                                FD_SET(i->fd, &writefds);
-                        if(i->event & except)
-                                FD_SET(i->fd, &exceptfds);
-                        if(i->event && i->fd > maxfd)
-                                maxfd = i->fd;
+                                if(i->event & read)
+                                        FD_SET(i->fd, &readfds);
+                                if(i->event & write)
+                                        FD_SET(i->fd, &writefds);
+                                if(i->event & except)
+                                        FD_SET(i->fd, &exceptfds);
+                                if(i->event && i->fd > maxfd)
+                                        maxfd = i->fd;
+                        }
+
+                        if(!have_timeout && maxfd == -1)
+                        {
+                                cv.wait(cs);
+                                continue;
+                        }
                 }
-
-                if(!have_timeout && maxfd == -1)
-                        return;
 
                 int rc = ::select(maxfd + 1, &readfds, &writefds, &exceptfds, &next);
                 if(rc == -1)
                         return;
                 if(rc > 0)
                 {
+                        lock l(cs);
+
                         for(watch_iterator i = watches.begin(); i != watches.end(); ++i)
                         {
                                 fd_event ev = get_events(*i);

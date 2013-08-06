@@ -20,6 +20,9 @@
 
 #include "intrusive_list.h"
 
+#include "mutex.h"
+#include "condvar.h"
+
 #include <sys/select.h>
 
 namespace librevisa {
@@ -90,6 +93,9 @@ private:
         fd_set exceptfds;
 
         static timeval const null_timeout;
+
+        mutex cs;
+        condvar cv;
 };
 
 inline messagepump::fd_event &operator|=(

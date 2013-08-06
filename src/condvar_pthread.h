@@ -36,6 +36,11 @@ public:
                 return pthread_cond_timedwait(&impl, &cs.impl, &ts) != ETIMEDOUT;
         }
 
+        void signal()
+        {
+                pthread_cond_signal(&impl);
+        }
+
 private:
         pthread_cond_t impl;
 };
