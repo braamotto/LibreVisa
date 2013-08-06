@@ -82,6 +82,8 @@ vxi_resource::vxi_resource(std::string const &hostname) :
         if(!resp)
                 throw exception(VI_ERROR_RSRC_NFOUND);
 
+        lid = resp->lid;
+
         SVCXPRT *intr_svc = svcudp_create(RPC_ANYSOCK);
 
         if(!intr_svc)
@@ -105,7 +107,7 @@ vxi_resource::vxi_resource(std::string const &hostname) :
         Device_RemoteFunc rfn =
         {
                 ntohl(sin->sin_addr.s_addr),
-                ntohs(intr_svc->xp_port),
+                intr_svc->xp_port,
                 DEVICE_INTR,
                 DEVICE_INTR_VERSION,
                 DEVICE_UDP
@@ -121,13 +123,33 @@ vxi_resource::vxi_resource(std::string const &hostname) :
         else if(error->error)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
+        fd = sock;
+        event = messagepump::read;
+        main.register_watch(*this);
+
+        Device_EnableSrqParms esp =
+        {
+                lid,
+                true,
+                {
+                        5,
+                        "hello"
+                }
+        };
+
+        error = device_enable_srq_1(&esp, client);
+        if(!error)
+                throw exception(VI_ERROR_SYSTEM_ERROR);
+        if(error->error)
+                throw exception(VI_ERROR_SYSTEM_ERROR);
+
         /// @todo handle errors
-        lid = resp->lid;
         return;
 }
 
 ViStatus vxi_resource::Close()
 {
+        main.unregister_watch(*this);
         destroy_link_1(&lid, client);
         clnt_destroy(client);
         delete this;
@@ -215,6 +237,15 @@ ViStatus vxi_resource::ReadSTB(ViUInt16 *retStatus)
         *retStatus = resp->stb;
 
         return VI_SUCCESS;
+}
+
+void vxi_resource::notify_fd_event(int fd, messagepump::fd_event event)
+{
+}
+
+void vxi_resource::cleanup()
+{
+        return;
 }
 
 }

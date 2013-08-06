@@ -20,6 +20,8 @@
 
 #include "instrument_resource.h"
 
+#include "messagepump.h"
+
 #include <string>
 
 #include <rpc/rpc.h>
@@ -29,7 +31,8 @@ namespace librevisa {
 namespace vxi {
 
 class vxi_resource :
-        public instrument_resource
+        public instrument_resource,
+        private messagepump::watch
 {
 private:
         vxi_resource(std::string const &hostname);
@@ -42,6 +45,10 @@ private:
         virtual ViStatus Read(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus ReadSTB(ViUInt16 *);
+
+        // messagepump::watch
+        virtual void notify_fd_event(int fd, messagepump::fd_event event);
+        virtual void cleanup();
 
         // RPC
         CLIENT *client;
