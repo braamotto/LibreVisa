@@ -35,6 +35,7 @@ AC_PROG_LIBTOOL
 
 # Checks for libraries.
 AC_CHECK_LIB([vxiclient], [create_link_1])
+AC_CHECK_LIB([pthread], [pthread_create])
 
 # This variable collects the pkg-config names of all detected libs.
 # It is then used to construct the "Requires.private:" field in the
