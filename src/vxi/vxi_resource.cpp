@@ -84,7 +84,7 @@ vxi_resource::vxi_resource(std::string const &hostname) :
 
         lid = resp->lid;
 
-        SVCXPRT *intr_svc = svcudp_create(RPC_ANYSOCK);
+        SVCXPRT *intr_svc = svctcp_create(RPC_ANYSOCK, 0, 0);
 
         if(!intr_svc)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
@@ -110,7 +110,7 @@ vxi_resource::vxi_resource(std::string const &hostname) :
                 intr_svc->xp_port,
                 DEVICE_INTR,
                 DEVICE_INTR_VERSION,
-                DEVICE_UDP
+                DEVICE_TCP
         };
 
         Device_Error *error = create_intr_chan_1(&rfn, client);
