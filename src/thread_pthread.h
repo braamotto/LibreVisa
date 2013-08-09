@@ -23,6 +23,7 @@
 #include "lock.h"
 
 #include <pthread.h>
+#include <signal.h>
 
 extern "C" void *thread_func(void *arg);
 
@@ -48,6 +49,11 @@ public:
                 pthread_create(&handle, 0, &thread_func, &sui);
 
                 sui.cv.wait(sui.cs);
+        }
+
+        void kill(int sig)
+        {
+                pthread_kill(handle, sig);
         }
 
 private:
