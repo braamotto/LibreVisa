@@ -35,6 +35,7 @@ public:
         messagepump() throw();
 
         // thread::runnable
+        virtual void init();
         virtual void run();
 
         enum fd_event

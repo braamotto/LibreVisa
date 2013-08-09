@@ -101,14 +101,17 @@ void messagepump::update_timeout(timeout &t, timeval const *tv)
         worker.kill(SIGUSR1);
 }
 
-void messagepump::run()
+void messagepump::init()
 {
         struct sigaction sa;
         sa.sa_handler = &ignore;
         sa.sa_flags = 0;
         sigemptyset(&sa.sa_mask);
         sigaction(SIGUSR1, &sa, 0);
+}
 
+void messagepump::run()
+{
         timeval now;
         ::gettimeofday(&now, 0);
 

@@ -29,6 +29,8 @@ void *thread_func(void *arg)
         using librevisa::lock;
         thread::startupinfo &sui = *reinterpret_cast<thread::startupinfo *>(arg);
 
+        sui.r.init();
+
         {
                 lock lk(sui.cs);
                 sui.running = true;

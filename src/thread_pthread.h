@@ -35,6 +35,7 @@ public:
         class runnable
         {
         public:
+                virtual void init() { }
                 virtual void run() = 0;
         };
 
