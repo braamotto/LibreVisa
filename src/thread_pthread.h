@@ -19,6 +19,7 @@
 #define librevisa_thread_pthread_h_ 1
 
 #include "mutex.h"
+#include "condvar.h"
 #include "lock.h"
 
 #include <pthread.h>
@@ -45,6 +46,8 @@ public:
                         return;
 
                 pthread_create(&handle, 0, &thread_func, &sui);
+
+                sui.cv.wait(sui.cs);
         }
 
 private:
@@ -54,6 +57,7 @@ private:
 
                 runnable &r;
                 mutex cs;
+                condvar cv;
                 bool running;
         };
 

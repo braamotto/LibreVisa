@@ -32,6 +32,7 @@ void *thread_func(void *arg)
         {
                 lock lk(sui.cs);
                 sui.running = true;
+                sui.cv.signal();
         }
 
         sui.r.run();
@@ -39,6 +40,7 @@ void *thread_func(void *arg)
         {
                 lock lk(sui.cs);
                 sui.running = false;
+                sui.cv.signal();
         }
 
         return 0;
