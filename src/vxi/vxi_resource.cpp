@@ -28,14 +28,72 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <poll.h>
+
+#include <iostream>
 
 extern "C" void device_intr_1(struct svc_req *rqstp, register SVCXPRT *transp);
 
 namespace librevisa {
 namespace vxi {
 
+struct vxi_resource::action
+{
+        // completion notification
+        mutex cs;
+        condvar cv;
+
+        enum {
+                OPEN,
+                READSTB,
+                READ,
+                WRITE
+        } op;
+
+        ViStatus status;
+
+        union
+        {
+                struct { } open;
+                struct
+                { 
+                        unsigned char stb;
+                } readstb;
+                struct
+                {
+                        unsigned char *buffer;
+                        size_t size;
+                        size_t count;
+                } read;
+                struct
+                {
+                        unsigned char const *buffer;
+                        size_t size;
+                        size_t count;
+                } write;
+        };
+};
+
 vxi_resource::vxi_resource(std::string const &hostname) :
+        hostname(hostname),
         io_timeout(1000), lock_timeout(1000)
+{
+        main.register_timeout(*this);
+
+        action ac;
+        ac.op = ac.OPEN;
+        perform(ac);
+
+        /// @todo handle errors
+        return;
+}
+
+vxi_resource::~vxi_resource() throw()
+{
+        return;
+}
+
+void vxi_resource::do_open(action &)
 {
         int sock = RPC_ANYSOCK;
 
@@ -178,10 +236,21 @@ ViStatus vxi_resource::SetAttribute(ViAttr attr, ViAttrState attrState)
 
 ViStatus vxi_resource::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 {
+        action ac;
+        ac.op = ac.READ;
+        ac.read.buffer = buf;
+        ac.read.size = count;
+        perform(ac);
+        *retCount = ac.read.count;
+        return ac.status;
+}
+
+void vxi_resource::do_read(action &ac)
+{
         Device_ReadParms read_parms =
         {
                 lid,
-                count,
+                ac.read.size,
                 io_timeout,
                 lock_timeout,
                 0,
@@ -190,15 +259,24 @@ ViStatus vxi_resource::Read(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
 
         Device_ReadResp *read_resp = device_read_1(&read_parms, client);
 
-        ::memcpy(buf, read_resp->data.data_val, read_resp->data.data_len);
-        *retCount = read_resp->data.data_len;
-
+        ::memcpy(ac.read.buffer, read_resp->data.data_val, read_resp->data.data_len);
+        ac.read.count = read_resp->data.data_len;
         /// @todo handle errors
-
-        return VI_SUCCESS;
+        ac.status = VI_SUCCESS;
 }
 
 ViStatus vxi_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
+{
+        action ac;
+        ac.op = ac.WRITE;
+        ac.write.buffer = buf;
+        ac.write.size = count;
+        perform(ac);
+        *retCount = ac.write.count;
+        return ac.status;
+}
+
+void vxi_resource::do_write(action &ac)
 {
         Device_WriteParms write_parms =
         {
@@ -207,21 +285,35 @@ ViStatus vxi_resource::Write(ViBuf buf, ViUInt32 count, ViUInt32 *retCount)
                 lock_timeout,
                 8,
                 {
-                        static_cast<u_int>(count),
-                        reinterpret_cast<char *>(buf)
+                        static_cast<u_int>(ac.write.size),
+                        reinterpret_cast<char *>(const_cast<unsigned char *>(ac.write.buffer))
                 }
         };
 
         Device_WriteResp *write_resp = device_write_1(&write_parms, client);
 
-        *retCount = write_resp->size;
+        if(!write_resp)
+        {
+                ac.status = VI_ERROR_SYSTEM_ERROR;
+                return;
+        }
+        
+        ac.write.count = write_resp->size;
 
         /// @todo handle errors
-
-        return VI_SUCCESS;
+        ac.status = VI_SUCCESS;
 }
 
 ViStatus vxi_resource::ReadSTB(ViUInt16 *retStatus)
+{
+        action ac;
+        ac.op = ac.READSTB;
+        perform(ac);
+        *retStatus = ac.readstb.stb;
+        return ac.status;
+}
+
+void vxi_resource::do_readstb(action &ac)
 {
         Device_GenericParms dgp =
         {
@@ -234,18 +326,57 @@ ViStatus vxi_resource::ReadSTB(ViUInt16 *retStatus)
 
         /// @todo handle errors
 
-        *retStatus = resp->stb;
-
-        return VI_SUCCESS;
+        ac.readstb.stb = resp->stb;
+        ac.status = VI_SUCCESS;
 }
 
-void vxi_resource::notify_fd_event(int fd, messagepump::fd_event event)
+void vxi_resource::notify_fd_event(int fd, messagepump::fd_event)
 {
+        fd_set readfds;
+        FD_ZERO(&readfds);
+        FD_SET(fd, &readfds);
+        svc_getreqset(&readfds);
+}
+
+void vxi_resource::notify_timeout()
+{
+        if(actions.empty())
+                return;
+
+        action &ac = *actions.front();
+        
+        {
+                lock l(ac.cs);
+
+                switch(ac.op)
+                {
+                case action::OPEN:              do_open(ac);    break;
+                case action::READSTB:           do_readstb(ac); break;
+                case action::READ:              do_read(ac);    break;
+                case action::WRITE:             do_write(ac);   break;
+                }
+
+                ac.cv.signal();
+        }
+
+        actions.pop();
 }
 
 void vxi_resource::cleanup()
 {
         return;
+}
+
+void vxi_resource::perform(action &ac)
+{
+        lock l(ac.cs);
+        actions.push(&ac);
+
+        timeval now;
+        ::gettimeofday(&now, 0);
+        main.update_timeout(*this, &now);
+
+        ac.cv.wait(ac.cs);
 }
 
 }

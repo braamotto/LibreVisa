@@ -23,6 +23,7 @@
 #include "messagepump.h"
 
 #include <string>
+#include <queue>
 
 #include <rpc/rpc.h>
 #include <vxi.h>
@@ -32,10 +33,12 @@ namespace vxi {
 
 class vxi_resource :
         public instrument_resource,
-        private messagepump::watch
+        private messagepump::watch,
+        private messagepump::timeout
 {
 private:
         vxi_resource(std::string const &hostname);
+        ~vxi_resource() throw();
 
         virtual ViStatus Close();
         virtual ViStatus Lock(ViAccessMode, ViUInt32, ViKeyId, ViKeyId);
@@ -48,6 +51,9 @@ private:
 
         // messagepump::watch
         virtual void notify_fd_event(int fd, messagepump::fd_event event);
+        // messagepump::timeout
+        virtual void notify_timeout();
+        // watch/timeout common
         virtual void cleanup();
 
         // RPC
@@ -55,8 +61,18 @@ private:
 
         Device_Link lid;
 
+        std::string const hostname;
         u_long io_timeout;
         u_long lock_timeout;
+
+        struct action;
+        std::queue<action *> actions;
+        void perform(action &);
+
+        void do_open(action &);
+        void do_readstb(action &);
+        void do_read(action &);
+        void do_write(action &);
 
         class creator;
 };
