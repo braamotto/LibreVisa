@@ -191,7 +191,7 @@ void vxi_resource::do_open(action &)
                 true,
                 {
                         5,
-                        "hello"
+                        const_cast<char *>("hello")
                 }
         };
 
