@@ -27,6 +27,7 @@
 #include <queue>
 
 #include <sys/time.h>
+#include <sys/signal.h>
 
 namespace librevisa {
 
@@ -42,6 +43,7 @@ void messagepump::register_watch(watch &w)
         lock l(cs);
         watches.push_front(w);
         cv.signal();
+        worker.kill(SIGUSR1);
 }
 
 void messagepump::unregister_watch(watch &w)
@@ -49,6 +51,7 @@ void messagepump::unregister_watch(watch &w)
         lock l(cs);
         w.fd = -1;
         cv.signal();
+        worker.kill(SIGUSR1);
 }
 
 void messagepump::update_watch(watch &w, fd_event event)
@@ -56,6 +59,7 @@ void messagepump::update_watch(watch &w, fd_event event)
         lock l(cs);
         w.event = event;
         cv.signal();
+        worker.kill(SIGUSR1);
 }
 
 messagepump::fd_event messagepump::get_events(watch &w)
@@ -76,6 +80,7 @@ void messagepump::register_timeout(timeout &t)
         lock l(cs);
         timeouts.push_front(t);
         cv.signal();
+        worker.kill(SIGUSR1);
 }
 
 void messagepump::unregister_timeout(timeout &t)
@@ -83,6 +88,7 @@ void messagepump::unregister_timeout(timeout &t)
         lock l(cs);
         t.tv.tv_sec = -1;
         cv.signal();
+        worker.kill(SIGUSR1);
 }
 
 void messagepump::update_timeout(timeout &t, timeval const *tv)
@@ -92,10 +98,17 @@ void messagepump::update_timeout(timeout &t, timeval const *tv)
                 tv = &null_timeout;
         t.tv = *tv;
         cv.signal();
+        worker.kill(SIGUSR1);
 }
 
 void messagepump::run()
 {
+        struct sigaction sa;
+        sa.sa_handler = &ignore;
+        sa.sa_flags = 0;
+        sigemptyset(&sa.sa_mask);
+        sigaction(SIGUSR1, &sa, 0);
+
         timeval now;
         ::gettimeofday(&now, 0);
 
@@ -182,7 +195,11 @@ void messagepump::run()
 
                 int rc = ::select(maxfd + 1, &readfds, &writefds, &exceptfds, have_timeout? &next : 0);
                 if(rc == -1)
+                {
+                        if(errno == EINTR)
+                                continue;
                         return;
+                }
 
                 if(rc > 0)
                 {
@@ -215,6 +232,11 @@ void messagepump::run()
 
                 ::gettimeofday(&now, 0);
         }
+}
+
+void messagepump::ignore(int)
+{
+        return;
 }
 
 timeval const messagepump::null_timeout = { 0, 1000000 };

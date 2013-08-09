@@ -100,6 +100,8 @@ private:
         mutex cs;
         condvar cv;
         thread worker;
+
+        static void ignore(int);
 };
 
 inline messagepump::fd_event &operator|=(
