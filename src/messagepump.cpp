@@ -108,6 +108,11 @@ void messagepump::init()
         sa.sa_flags = 0;
         sigemptyset(&sa.sa_mask);
         sigaction(SIGUSR1, &sa, 0);
+
+        sigset_t mask;
+        sigemptyset(&mask);
+        sigaddset(&mask, SIGUSR1);
+        pthread_sigmask(SIG_BLOCK, &mask, 0);
 }
 
 void messagepump::run()
@@ -196,7 +201,17 @@ void messagepump::run()
                         }
                 }
 
-                int rc = ::select(maxfd + 1, &readfds, &writefds, &exceptfds, have_timeout? &next : 0);
+                sigset_t mask;
+                sigemptyset(&mask);
+
+                timespec next_as_ts;
+                if(have_timeout)
+                {
+                        next_as_ts.tv_sec = next.tv_sec;
+                        next_as_ts.tv_nsec = next.tv_usec * 1000;
+                }
+
+                int rc = ::pselect(maxfd + 1, &readfds, &writefds, &exceptfds, have_timeout? &next_as_ts : 0, &mask);
                 if(rc == -1)
                 {
                         if(errno == EINTR)
