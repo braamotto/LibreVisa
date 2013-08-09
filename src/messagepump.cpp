@@ -158,6 +158,7 @@ void messagepump::run()
                 if(expired)
                 {
                         expired->notify_timeout();
+                        ::gettimeofday(&now, 0);
                         continue;
                 }
 
@@ -215,7 +216,10 @@ void messagepump::run()
                 if(rc == -1)
                 {
                         if(errno == EINTR)
+                        {
+                                ::gettimeofday(&now, 0);
                                 continue;
+                        }
                         return;
                 }
 
