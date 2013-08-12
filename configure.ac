@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2012 Simon Richter
+#   Copyright (C) 2012,2013 Simon Richter
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([librevisa], [0.0.20130412], [Simon.Richter@hogyros.de])
+AC_INIT([librevisa], [0.0.20130812], [Simon.Richter@hogyros.de])
 AM_INIT_AUTOMAKE([1.10 foreign parallel-tests])
 LT_INIT
 
