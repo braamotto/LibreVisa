@@ -423,7 +423,9 @@ void vxi_resource::perform(action &ac)
 
 void *device_intr_srq_1_svc(Device_SrqParms *, svc_req *)
 {
+        static unsigned int const zero = 0;
+
         std::cerr << "SRQ" << std::endl;
-        return 0;
+        return const_cast<unsigned int *>(&zero);
 }
 
