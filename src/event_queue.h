@@ -51,6 +51,8 @@ public:
 
                 event::data &at(size_type index) { return queue.at(index); }
 
+                void put(event::data const &evt) { queue.put(evt); }
+
                 void wait() { queue.cv.wait(queue.cs); }
                 bool wait(timespec const &ts) { return queue.cv.wait(queue.cs, ts); }
 
@@ -80,6 +82,8 @@ private:
         {
                 return (writep>=readp)?(writep-readp):(size-readp+writep);
         }
+
+        void put(event::data const &);
 };
 
 }

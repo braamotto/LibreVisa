@@ -78,4 +78,15 @@ void event_queue::set_size(size_type newsize)
         return;
 }
 
+void event_queue::put(event::data const &evt)
+{
+        event::data &dat = at(writep);
+        dat = evt;
+        dat.consumed = false;
+        dat.freed = false;
+        if(++writep == size)
+                writep = 0;
+        cv.signal();
+}
+
 }
