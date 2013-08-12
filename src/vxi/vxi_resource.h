@@ -33,7 +33,6 @@ namespace vxi {
 
 class vxi_resource :
         public instrument_resource,
-        private messagepump::watch,
         private messagepump::timeout
 {
 private:
@@ -49,12 +48,15 @@ private:
         virtual ViStatus Write(ViBuf, ViUInt32, ViUInt32 *);
         virtual ViStatus ReadSTB(ViUInt16 *);
 
-        // messagepump::watch
-        virtual void notify_fd_event(int fd, messagepump::fd_event event);
         // messagepump::timeout
         virtual void notify_timeout();
         // watch/timeout common
         virtual void cleanup();
+
+        struct rpc_watch_proxy;
+        std::list<rpc_watch_proxy> rpc_watch_proxies;
+        void update_rpc_watches();
+        void notify_rpc_watch(int fd);
 
         // RPC
         CLIENT *client;

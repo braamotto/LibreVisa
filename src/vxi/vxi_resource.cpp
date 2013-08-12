@@ -74,6 +74,16 @@ struct vxi_resource::action
         };
 };
 
+struct vxi_resource::rpc_watch_proxy : messagepump::watch
+{
+        rpc_watch_proxy(vxi_resource &master, int fd) : master(master) { this->fd = fd; event = messagepump::read; }
+
+        virtual void notify_fd_event(int fd, messagepump::fd_event) { master.notify_rpc_watch(fd); }
+        virtual void cleanup() { }
+
+        vxi_resource &master;
+};
+
 vxi_resource::vxi_resource(std::string const &hostname) :
         hostname(hostname),
         io_timeout(1000), lock_timeout(1000)
@@ -150,6 +160,8 @@ void vxi_resource::do_open(action &)
         if(!svc_register(intr_svc, DEVICE_INTR, DEVICE_INTR_VERSION, device_intr_1, 0))
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
+        update_rpc_watches();
+
         sockaddr_storage ss;
 
         socklen_t ss_len = sizeof ss;
@@ -181,10 +193,6 @@ void vxi_resource::do_open(action &)
         else if(error->error)
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
-        fd = sock;
-        event = messagepump::read;
-        main.register_watch(*this);
-
         Device_EnableSrqParms esp =
         {
                 lid,
@@ -207,7 +215,6 @@ void vxi_resource::do_open(action &)
 
 ViStatus vxi_resource::Close()
 {
-        main.unregister_watch(*this);
         destroy_link_1(&lid, client);
         clnt_destroy(client);
         delete this;
@@ -330,12 +337,44 @@ void vxi_resource::do_readstb(action &ac)
         ac.status = VI_SUCCESS;
 }
 
-void vxi_resource::notify_fd_event(int fd, messagepump::fd_event)
+void vxi_resource::update_rpc_watches()
+{
+        std::list<rpc_watch_proxy>::iterator i = rpc_watch_proxies.begin();
+        for(int fd = 0; fd < FD_SETSIZE; ++fd)
+        {
+                while(i != rpc_watch_proxies.end() && i->fd < fd)
+                        ++i;
+
+                bool const is_current = (i != rpc_watch_proxies.end() && i->fd == fd);
+                bool const active = FD_ISSET(fd, &svc_fdset);
+
+                if(active)
+                {
+                        if(!is_current)
+                        {
+                                // need to insert
+                                i = rpc_watch_proxies.insert(i, rpc_watch_proxy(*this, fd));
+                                main.register_watch(*i);
+                        }
+                        else
+                        {
+                                main.update_watch(*i, messagepump::read);
+                        }
+                }
+                else if(is_current)
+                {
+                        main.update_watch(*i, messagepump::none);
+                }
+        }
+}
+
+void vxi_resource::notify_rpc_watch(int fd)
 {
         fd_set readfds;
         FD_ZERO(&readfds);
         FD_SET(fd, &readfds);
         svc_getreqset(&readfds);
+        update_rpc_watches();
 }
 
 void vxi_resource::notify_timeout()
