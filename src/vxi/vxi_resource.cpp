@@ -160,6 +160,8 @@ void vxi_resource::do_open(action &)
         if(!svc_register(intr_svc, DEVICE_INTR, DEVICE_INTR_VERSION, device_intr_1, 0))
                 throw exception(VI_ERROR_SYSTEM_ERROR);
 
+        instances[hostname] = this;
+
         update_rpc_watches();
 
         sockaddr_storage ss;
@@ -198,8 +200,8 @@ void vxi_resource::do_open(action &)
                 lid,
                 true,
                 {
-                        5,
-                        const_cast<char *>("hello")
+                        u_int(hostname.size()),
+                        const_cast<char *>(hostname.c_str())
                 }
         };
 
@@ -217,6 +219,7 @@ ViStatus vxi_resource::Close()
 {
         destroy_link_1(&lid, client);
         clnt_destroy(client);
+        instances.erase(hostname);
         delete this;
         return VI_SUCCESS;
 }
@@ -418,14 +421,24 @@ void vxi_resource::perform(action &ac)
         ac.cv.wait(ac.cs);
 }
 
-}
-}
-
-void *device_intr_srq_1_svc(Device_SrqParms *, svc_req *)
+void vxi_resource::emit(std::string const &cookie, ViEventType event)
 {
-        static unsigned int const zero = 0;
+        std::map<std::string, vxi_resource *>::iterator i = instances.find(cookie);
+        if(i == instances.end())
+                abort();
+        i->second->emit(event);
+}
 
-        std::cerr << "SRQ" << std::endl;
+std::map<std::string, vxi_resource *> vxi_resource::instances;
+
+}
+}
+
+void *device_intr_srq_1_svc(Device_SrqParms *srqp, svc_req *)
+{
+        std::string cookie(srqp->handle.handle_val, srqp->handle.handle_len);
+        librevisa::vxi::vxi_resource::emit(cookie, VI_EVENT_SERVICE_REQ);
+        static unsigned int const zero = 0;
         return const_cast<unsigned int *>(&zero);
 }
 

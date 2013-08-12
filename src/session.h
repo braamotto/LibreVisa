@@ -110,6 +110,9 @@ private:
         bool queue_enabled[num_supported_events];
 
         static unsigned int lookup_event(ViEventType);
+
+        void emit(ViEventType);
+        friend class resource;
 };
 
 }

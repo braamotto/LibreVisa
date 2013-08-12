@@ -20,6 +20,7 @@
 #endif
 
 #include "resource.h"
+#include "session.h"
 
 namespace librevisa {
 
@@ -68,6 +69,14 @@ void resource::unlock_exclusive()
 {
         exclusive_lock_holder = 0;
         return;
+}
+
+void resource::emit(ViEventType event)
+{
+        for(std::list<session *>::iterator i = sessions.begin(); i != sessions.end(); ++i)
+        {
+                (*i)->emit(event);
+        }
 }
 
 }

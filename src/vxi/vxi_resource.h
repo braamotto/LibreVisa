@@ -24,6 +24,7 @@
 
 #include <string>
 #include <queue>
+#include <map>
 
 #include <rpc/rpc.h>
 #include <vxi.h>
@@ -76,7 +77,13 @@ private:
         void do_read(action &);
         void do_write(action &);
 
+        using instrument_resource::emit;
+        static std::map<std::string, vxi_resource *> instances;
+
         class creator;
+
+public:
+        static void emit(std::string const &cookie, ViEventType event);
 };
 
 }

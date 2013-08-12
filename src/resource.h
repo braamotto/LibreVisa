@@ -50,6 +50,9 @@ public:
         bool lock_exclusive(session const *);
         void unlock_exclusive();
 
+protected:
+        void emit(ViEventType);
+
 private:
         session const *exclusive_lock_holder;
 

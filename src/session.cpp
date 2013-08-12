@@ -302,6 +302,14 @@ unsigned int session::lookup_event(ViEventType eventType)
         throw exception(VI_ERROR_INV_EVENT);
 }
 
+void session::emit(ViEventType event)
+{
+        event::data evt;
+        evt.eventType = event;
+        event_queue::locked lk(queue);
+        lk.put(evt);
+}
+
 /** List of supported events. This list must be kept sorted. */
 ViEventType session::supported_events[15] =
 {
