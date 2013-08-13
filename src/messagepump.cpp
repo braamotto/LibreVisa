@@ -42,24 +42,21 @@ void messagepump::register_watch(watch &w)
         worker.start();
         lock l(cs);
         watches.push_front(w);
-        cv.signal();
-        worker.kill(SIGUSR1);
+        poke_worker();
 }
 
 void messagepump::unregister_watch(watch &w)
 {
         lock l(cs);
         w.fd = -1;
-        cv.signal();
-        worker.kill(SIGUSR1);
+        poke_worker();
 }
 
 void messagepump::update_watch(watch &w, fd_event event)
 {
         lock l(cs);
         w.event = event;
-        cv.signal();
-        worker.kill(SIGUSR1);
+        poke_worker();
 }
 
 messagepump::fd_event messagepump::get_events(watch &w)
@@ -79,16 +76,14 @@ void messagepump::register_timeout(timeout &t)
         worker.start();
         lock l(cs);
         timeouts.push_front(t);
-        cv.signal();
-        worker.kill(SIGUSR1);
+        poke_worker();
 }
 
 void messagepump::unregister_timeout(timeout &t)
 {
         lock l(cs);
         t.tv.tv_sec = -1;
-        cv.signal();
-        worker.kill(SIGUSR1);
+        poke_worker();
 }
 
 void messagepump::update_timeout(timeout &t, timeval const *tv)
@@ -97,8 +92,7 @@ void messagepump::update_timeout(timeout &t, timeval const *tv)
         if(!tv)
                 tv = &null_timeout;
         t.tv = *tv;
-        cv.signal();
-        worker.kill(SIGUSR1);
+        poke_worker();
 }
 
 void messagepump::init()
@@ -254,6 +248,12 @@ void messagepump::run()
 
                 ::gettimeofday(&now, 0);
         }
+}
+
+void messagepump::poke_worker()
+{
+        cv.signal();
+        worker.kill(SIGUSR1);
 }
 
 void messagepump::ignore(int)

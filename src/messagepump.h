@@ -102,6 +102,8 @@ private:
         condvar cv;
         thread worker;
 
+        void poke_worker();
+
         static void ignore(int);
 };
 
