@@ -316,6 +316,17 @@ bool usb_resource::creator::open_device_and_get_serial(
         else if(serialno_len & 1)
                 return false;
         serial.assign(serialno.str.bString, serialno_len/2-1);
+
+        // Agilent DSO 1000 series has a serial number with four trailing nulls
+        for(usb_string::size_type i = 0; i < serial.size(); ++i)
+        {
+                if(serial[i] == 0)
+                {
+                        serial.resize(i);
+                        break;
+                }
+        }
+
         return true;
 }
 
