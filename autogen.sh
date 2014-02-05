@@ -17,6 +17,7 @@
 
 aclocal
 autoheader
-libtoolize
+# MacOS uses glibtoolize. First test the waters using "which".
+which glibtoolize >/dev/null && glibtoolize || libtoolize
 automake --add-missing
 autoconf
