@@ -95,3 +95,6 @@ AVAHI_SOURCES =
 endif
 
 INCLUDES = -I$(top_srcdir)/include
+
+# Boost Library
+LIBS += -lboost_regex
