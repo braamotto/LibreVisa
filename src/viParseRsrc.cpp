@@ -21,10 +21,7 @@
 
 #include "visa.h"
 #include <string>
-#include <vector>
 #include <boost/regex.hpp>
-//#include <boost/algorithm/string.hpp>
-//#include <boost/algorithm/string/regex.hpp>
 using namespace std;
 
 /// Parse a resource string to get the interface information.
@@ -39,9 +36,9 @@ using namespace std;
 /// 
 /// @param sesn [in] Resource Manager session (should always be the Default Resource Manager for VISA returned from viOpenDefaultRM()).
 /// @param rsrcName [in] Unique symbolic name of a resource.
-/// @param intfType [out] Interface type of the given resource string.
-/// @param intfNum [out] Board number of the interface of the given resource string.
-/// @return This is the operational return status. It returns either a completion code or an error code as follows.
+/// @param pIntfType [out] Interface type of the given resource string.
+/// @param pIntfNum [out] Board number of the interface of the given resource string.
+/// @return It returns either a completion code or an error code as follows.
 /// @retval VI_SUCCESS Resource string is valid.
 /// @retval VI_ERROR_INV_SESSION The given session or object reference is invalid (both are the same value).
 /// @retval VI_ERROR_INV_OBJECT The given session or object reference is invalid (both are the same value).
@@ -51,7 +48,7 @@ using namespace std;
 /// @retval VI_ERROR_ALLOC Insufficient system resources to parse the string.
 /// @retval VI_ERROR_LIBRARY_NFOUND A code library required by VISA could not be located or loaded.
 /// @retval VI_ERROR_INTF_NUM_NCONFIG The interface type is valid but the specified interface number is not configured.
-ViStatus _VI_FUNC viParseRsrc(ViSession /*rmSesn*/, ViRsrc rsrcName, ViPUInt16 intfType, ViPUInt16 intfNum)
+ViStatus _VI_FUNC viParseRsrc(ViSession /*rmSesn*/, ViRsrc rsrcName, ViPUInt16 pIntfType, ViPUInt16 pIntfNum)
 {
   boost::cmatch match;
 
@@ -61,15 +58,32 @@ ViStatus _VI_FUNC viParseRsrc(ViSession /*rmSesn*/, ViRsrc rsrcName, ViPUInt16 i
   boost::regex regexUSB("USB(\\d*)::0x([0-9a-fA-F]{4})::0x([0-9a-fA-F]{4})::([\\d\\-.a-zA-Z]+)(|::\\d+)(|::INSTR)");
   if(regex_match(rsrcName, match, regexUSB))
   {
-    *intfType = VI_INTF_USB;
-    std::stringstream ssInterfaceNum(match[1]);
+    *pIntfType = VI_INTF_USB;
+    *pIntfNum = 0;
+    std::stringstream ssBoard(match[1]);
     std::stringstream ssUsbVendorId(match[2]);
     std::stringstream ssUsbDeviceId(match[3]);
     std::stringstream ssUsbSerial(match[4]);
-    ssInterfaceNum >> *intfNum;
+    std::stringstream ssUsbInterfaceNum(match[5]);
+    ssBoard >> *pIntfNum;
     return VI_SUCCESS;
   }
 
+  // TCPIP INSTR Resource:
+  // TCPIP[board]::host address[::LAN device name][::INSTR]
+  // TCPIP::127.0.0.1
+  boost::regex regexTCPIP("TCPIP(\\d*)::([0-9.a-zA-Z\\-_]+)(|::([0-9.a-zA-Z\\-_]+))(|::INSTR)");
+  if(regex_match(rsrcName, match, regexTCPIP))
+  {
+    *pIntfType = VI_INTF_TCPIP;
+    *pIntfNum = 0;
+    std::stringstream ssBoard(match[1]);
+    std::stringstream ssHostAddress(match[2]);
+    std::stringstream ssHostPort(match[3]);
+    ssBoard >> *pIntfNum;
+    return VI_SUCCESS;
+  }
+  
   return VI_ERROR_INV_RSRC_NAME;
 }
 
@@ -95,12 +109,12 @@ ViStatus _VI_FUNC viParseRsrc(ViSession /*rmSesn*/, ViRsrc rsrcName, ViPUInt16 i
 ///
 /// @param sesn [in] Resource Manager session (should always be the Default Resource Manager for VISA returned from viOpenDefaultRM()).
 /// @param rsrcName [in] Unique symbolic name of a resource.
-/// @param intfType [out] Interface type of the given resource string.
-/// @param intfNum [out] Board number of the interface of the given resource string.
+/// @param pIntfType [out] Interface type of the given resource string.
+/// @param pIntfNum [out] Board number of the interface of the given resource string.
 /// @param rsrcClass [out] Specifies the resource class (for example, “INSTR”) of the given resource string, as defined in Section 5.
 /// @param expandedUnaliasedName [out] This is the expanded version of the given resource string.  The format should be similar to the VISA-defined canonical resource name.
 /// @param aliasIfExists [out] Specifies the user-defined alias for the given resource string, if a VISA implementation allows aliases and an alias exists for the given resource string. 
-/// @return This is the operational return status. It returns either a completion code or an error code as follows.
+/// @return It returns either a completion code or an error code as follows.
 /// @retval VI_SUCCESS Resource string is valid.
 /// @retval VI_WARN_EXT_FUNC_NIMPL The operation succeeded, but a lower level driver did not implement the extended functionality.
 /// @retval VI_ERROR_INV_SESSION The given session or object reference is invalid (both are the same value).
@@ -111,12 +125,12 @@ ViStatus _VI_FUNC viParseRsrc(ViSession /*rmSesn*/, ViRsrc rsrcName, ViPUInt16 i
 /// @retval VI_ERROR_ALLOC Insufficient system resources to parse the string.
 /// @retval VI_ERROR_LIBRARY_NFOUND A code library required by VISA could not be located or loaded.
 /// @retval VI_ERROR_INTF_NUM_NCONFIG The interface type is valid but the specified interface number is not configured.
-ViStatus _VI_FUNC viParseRsrcEx(ViSession rmSesn, ViRsrc rsrcName, ViPUInt16 intfType, ViPUInt16 intfNum, 
-				ViChar _VI_FAR rsrcClass[],
+ViStatus _VI_FUNC viParseRsrcEx(ViSession rmSesn, ViRsrc rsrcName, ViPUInt16 pIntfType, ViPUInt16 pIntfNum,
+                                ViChar _VI_FAR rsrcClass[],
                                 ViChar _VI_FAR expandedUnaliasedName[],
                                 ViChar _VI_FAR aliasIfExists[])
 {
-  ViStatus ret = viParseRsrc(rmSesn, rsrcName, intfType, intfNum);
+  ViStatus ret = viParseRsrc(rmSesn, rsrcName, pIntfType, pIntfNum);
   if(rsrcClass) strcpy(rsrcClass, "INSTR");
   if(expandedUnaliasedName) strcpy(expandedUnaliasedName, rsrcName);
   if(aliasIfExists) aliasIfExists[0] = 0;

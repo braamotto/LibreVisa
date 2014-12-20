@@ -3,7 +3,7 @@ LibreVisa
 My Fork of LibreVisa, extended for use with PyVisa.
 
 I am trying to control a USBTMC Device using PyVisa and LibreVisa on a Debian Linux System.
-For PyVisa I had to implement the viParseRsrc() function. 
+For use with PyVisa I had to implement the viParseRsrc() function in LibreVisa. 
 
 My Python Script: 
 ```
